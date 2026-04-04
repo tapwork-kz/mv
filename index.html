@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <title>Мотивация App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f4f4f5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Мотивация">
+  <link rel="apple-touch-icon" href="icon.png">
+
+  <style>
+    :root {
+      --bg-color: #f4f4f5;
+      --text-color: #000000;
+      --btn-color: #3390ec;
+      --btn-text: #ffffff;
+      --card-bg: #ffffff;
+      --border-color: #eee;
+      --inner-bg: rgba(100, 100, 100, 0.05);
+      --form-title-color: #000000;
+      --form-input-color: #4d4d4d;
+    }
+    
+    html, body { height: 100%; overflow: hidden; margin: 0; padding: 0; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); user-select: none; -webkit-user-select: none; transition: 0.3s; padding-env(safe-area-inset-top); }
+    
+    body.dark-mode {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --card-bg: #1e1e1e;
+        --border-color: #333;
+        --inner-bg: rgba(255, 255, 255, 0.06);
+        --form-title-color: #ffffff;
+        --form-input-color: #e0e0e0;
+    }
+    body.dark-mode .card, body.dark-mode .info-box, body.dark-mode .active-outs-box {
+        background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); box-shadow:none;
+    }
+    body.dark-mode input, body.dark-mode select { background: #2c2c2e; color: #fff; border: 1px solid #444; }
+    body.dark-mode h2, body.dark-mode h3, body.dark-mode .active-outs-title, body.dark-mode .active-out-name { color: #fff; }
+    body.dark-mode .req-item { background: var(--card-bg); }
+    body.dark-mode .grid-details-container { background: var(--card-bg); }
+
+    .hidden { display: none !important; }
+    
+    .fixed-header { padding: env(safe-area-inset-top, 15px) 15px 0 15px; flex-shrink: 0; }
+    .scrollable-content { flex-grow: 1; overflow-y: auto; padding: 0 15px calc(20px + env(safe-area-inset-bottom)) 15px; }
+
+    input, select { user-select: text; -webkit-user-select: text; }
+    input[type="text"], input[type="number"], input[type="date"], select { 
+      display: block; width: 100%; height: 50px; padding: 0 14px; margin: 10px 0; border: 1px solid #ccc; 
+      border-radius: 10px; font-size: 16px; box-sizing: border-box; 
+      -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color);
+    }
+    input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; }
+    
+    .smart-date { color: var(--btn-color); font-weight: normal; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
+    
+    button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; background: var(--btn-color); transition: transform 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    button:disabled { cursor: not-allowed; opacity: 0.8; filter: grayscale(100%); }
+    button:active:not(:disabled) { transform: scale(0.97); }
+    
+    .btn-login { background-color: var(--btn-color); color: var(--btn-text); }
+    .btn-break { background-color: #f39c12; color: #fff; }
+    .btn-lunch { background-color: #27ae60; color: #fff; }
+    .btn-snack { background-color: #8e44ad; color: #fff; }
+    .btn-return { background-color: #e74c3c; color: #fff; }
+    .desc { font-size: 13px; opacity: 0.9; font-weight: normal; margin-top: 4px; }
+    
+    .card { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .card h3 { margin: 0 0 10px 0; font-size: 16px; color: var(--btn-color); }
+    
+    .form-dark h3 { color: var(--form-title-color) !important; }
+    .form-dark input, .form-dark select { color: var(--form-input-color) !important; }
+
+    .btn-green { background: #27ae60; } .btn-orange { background: #f39c12; } .btn-gray { background: #95a5a6; } .btn-red { background: #e74c3c; }
+    
+    .nav-bar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; position: relative; }
+    .badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; border: 2px solid var(--bg-color); }
+    
+    .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; }
+    .top-icons { display: flex; gap: 15px; align-items: center; }
+    .icon-btn { font-size: 26px; cursor: pointer; position: relative; display: flex; align-items: center; transition: 0.3s; }
+    
+    .info-wrapper { display: flex; gap: 5px; margin-bottom: 15px; align-items: stretch; }
+    .scrollable-blocks { display: flex; gap: 5px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 5px; flex: 1; }
+    .scrollable-blocks::-webkit-scrollbar { display: none; }
+    
+    .info-box { background: var(--card-bg); padding: 8px 4px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; transition: 0.1s; display: flex; flex-direction: column; justify-content: center; flex-shrink: 0; min-width: 70px; }
+    .info-box.pts-box { width: 100%; max-width: 170px; padding-left: 6px; padding-right: 6px; }
+    .info-box:active { transform: scale(0.97); }
+    .info-box.tabel-box { min-width: 130px; } 
+    
+    .circle-box { width: 68px; min-width: 68px; height: 68px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: none; }
+    .kpi-container { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+    .kpi-inner { width: 88%; height: 88%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    .info-box-title { font-size: 9px; color: gray; text-transform: uppercase; font-weight: bold; white-space: nowrap; margin-bottom: 5px; }
+    .info-box-value { font-size: 16px; font-weight: bold; color: var(--btn-color); }
+
+    .tabel-grid { display: flex; gap: 10px; font-size: 11px; font-weight: bold; color: var(--text-color); justify-content: center; }
+    .tabel-item { display: flex; flex-direction: column; align-items: center; }
+    .tabel-lbl { color: gray; font-size: 8px; margin-bottom: 2px;}
+
+    .inner-block { background: var(--inner-bg); border-radius: 10px; padding: 10px; }
+
+    .req-list { display: flex; flex-direction: column; gap: 10px; }
+    .req-item { padding: 15px; border-radius: 10px; background: var(--card-bg); border-left: 4px solid var(--btn-color); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .req-item.admin { border-left-color: #3498db; }
+    .req-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
+    .req-desc { font-size: 13px; color: gray; margin-bottom: 10px; }
+    .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .grid-btns button { padding: 12px; margin: 0; font-size: 14px; display:block; }
+
+    .detail-item { padding: 12px 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .detail-item:last-child { border-bottom: none; }
+    .detail-plus { color: #27ae60; font-weight: bold; font-size: 15px;}
+    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 15px;}
+    .detail-fine { color: #c0392b; font-weight: bold; font-size: 15px;}
+    .detail-val { font-weight: bold; font-size: 14px; color: var(--btn-color); }
+
+    .sc-item { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; cursor: pointer; transition: 0.2s; border-radius: 5px; }
+    .sc-item:active { background: var(--border-color); }
+    .sc-item.selected { background: var(--btn-color); font-weight: bold; color: #fff; }
+    .sc-item.selected .type-label { color: #fff !important; }
+    .sc-list-container { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; background: var(--card-bg); }
+
+    .grid-details-container { padding: 10px; background: var(--card-bg); border-radius: 12px; }
+    .grid-details-title { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-color); }
+    .grid-details-box { display: grid; gap: 2px; text-align: center; align-items: center; justify-content: center; }
+    .grid-details-header { font-size: 10px; color: gray; font-weight: bold; margin-bottom: 2px;}
+    .grid-details-value { font-size: 14px; margin-top: 0; }
+
+    .active-outs-box { border-radius: 12px; padding: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; margin-top: 20px; }
+    .active-outs-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--text-color); }
+    .active-out-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+    .active-out-item:last-child { border-bottom: none; }
+    .active-out-name { font-weight: bold; color: var(--text-color); }
+    .active-out-time { color: var(--btn-color); font-weight: bold; }
+    .active-out-time.late { color: #e74c3c; }
+
+    #toast { position: fixed; bottom: env(safe-area-inset-bottom, 20px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; }
+  </style>
+</head>
+<body style="display: flex; flex-direction: column;">
+  
+  <div id="toast" class="hidden">Уведомление</div>
+  <div id="loader-screen"><p style="color: gray; font-style: italic;">Идентификация...</p></div>
+
+  <div id="auth-screen" class="hidden scrollable-content" style="max-width: 400px; margin: 0 auto; text-align:center;">
+    <h2 style="margin-top:20px;">Вход в систему</h2>
+    <p style="color:gray; font-size:14px;">Введите ваш ИИН (вход произойдет автоматически)</p>
+    <input type="number" id="iin-input" placeholder="Введите 12 цифр" inputmode="numeric" oninput="manualLogin(this)">
+    <div id="login-error" style="color: #e74c3c; text-align:center; margin-top: 10px;"></div>
+  </div>
+
+  <div id="main-screen" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+    
+    <div class="fixed-header">
+      <div class="header-container">
+        <h2 id="user-greeting" style="margin: 0;"></h2>
+        <div class="top-icons">
+          <div id="nav-time-icon" class="icon-btn hidden" onclick="switchTab('time');">⏱️</div>
+          <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');">📤</div>
+          <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">
+            📩<span id="user-badge" class="badge hidden"></span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="nav-bar" id="nav-container">
+        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 12px; position: relative;">
+          Админ-панель 
+          <span id="admin-dot" class="badge hidden" style="padding:4px; top:0; right:0;"></span>
+        </button>
+      </div>
+
+      <div class="info-wrapper hidden" id="info-dashboard">
+        <div class="scrollable-blocks" id="scroll-container">
+          <div class="info-box" onclick="openDetails('sc')">
+            <div class="info-box-title">СЦ | Brzy</div>
+            <div class="info-box-value" id="info-sc-val">- | -</div>
+          </div>
+
+          <div class="info-box pts-box" onclick="openDetails('points')">
+            <div class="info-box-title">Мои баллы</div>
+            <div class="pts-grid" style="display:flex; gap:3px; margin-top:5px; width:100%; justify-content:space-between;">
+              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1;">
+                 <div style="font-size:8px; color:gray;">Нач.</div>
+                 <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-acc">-</div>
+              </div>
+              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1;">
+                 <div style="font-size:8px; color:gray;">Исп.</div>
+                 <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-use">-</div>
+              </div>
+              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1; background:rgba(41, 128, 185, 0.1);">
+                 <div style="font-size:8px; color:gray;">Ост.</div>
+                 <div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div>
+              </div>
+              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1; background:rgba(231, 76, 60, 0.1);">
+                 <div style="font-size:8px; color:gray;">Штрф.</div>
+                 <div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-box" onclick="openDetails('report')">
+            <div class="info-box-title">Мои отчеты</div>
+            <div class="info-box-value" style="font-size:12px;">См. детали</div>
+          </div>
+
+          <div class="info-box tabel-box">
+            <div class="info-box-title">Табель</div>
+            <div class="tabel-grid" id="info-tabel"></div>
+          </div>
+        </div>
+
+        <div class="info-box circle-box" style="width:68px; min-width:68px; height:68px;" onclick="openDetails('kpi')">
+          <div class="kpi-container" id="kpi-circle">
+            <div class="kpi-inner">
+               <span id="kpi-val" style="font-size:14px; font-weight:bold;">90%</span>
+               <span style="font-size:7px; color:gray; line-height:1; margin-top: 1px;">КФ. ЭФФ.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> <div class="scrollable-content" id="scrollable-body">
+      
+      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="hidden">
+        <p id="action-hint" style="margin-bottom: 15px; font-weight:bold;">Загрузка лимитов...</p>
+        
+        <div id="standard-buttons">
+          <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')" disabled>
+            <span>Перерыв</span><span class="desc" id="desc-break">10 мин</span>
+          </button>
+          <button id="btn-lunch" class="btn-lunch" onclick="triggerAction('Обед')" disabled>
+            <span>Обед</span><span class="desc" id="desc-lunch">40 мин</span>
+          </button>
+          <button id="btn-snack" class="btn-snack" onclick="triggerAction('Полдник')" disabled>
+            <span>Полдник</span><span class="desc" id="desc-snack">30 мин</span>
+          </button>
+        </div>
+
+        <div id="return-button-container" class="hidden">
+          <button id="btn-return" class="btn-return" onclick="triggerReturn()">
+            <span id="return-text">Вернуться</span>
+          </button>
+        </div>
+
+        <div id="active-outs-container" class="active-outs-box hidden inner-block" style="background:var(--card-bg);">
+          <div class="active-outs-title">Коллеги в отсутствии:</div>
+          <div id="active-outs-list"></div>
+        </div>
+      </div>
+
+      <div id="content-create" class="hidden">
+        <div id="menu-list">
+          <button onclick="openForm('sc')">Продажа СЦ / Фокус</button>
+          <button onclick="openForm('tradein')">Продажа Trade-In</button>
+          <button onclick="openForm('points')">Баллы мотивации</button>
+          <button onclick="openForm('swap')" class="btn-orange">Обмен сменами</button>
+          
+          <div class="card" style="margin-top: 15px;">
+            <h3 style="margin-bottom: 10px;">Горячий чек</h3>
+            <div style="margin-bottom: 5px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px;">
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
+            </div>
+            <div style="margin-bottom: 5px; font-size:12px; font-weight:bold; color:gray;">Аксессуары</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="form-sc" class="card form-dark hidden">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+             <div style="display:flex; align-items:center; gap:8px;">
+                <h3 style="margin:0;">Продажа СЦ/Фокус</h3>
+                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:22px; opacity:0.3; transition:0.3s; cursor:pointer;">📄</div>
+             </div>
+             <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:5px;">
+          </div>
+          <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
+          <div class="sc-list-container" id="sc-list"></div>
+          <div class="grid-btns">
+            <button class="btn-gray" onclick="closeForm()">Отмена</button>
+            <button onclick="submitScForm()">Отправить</button>
+          </div>
+        </div>
+
+        <div id="form-tradein" class="card form-dark hidden">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+             <h3 style="margin:0;">Продажа Trade-In</h3>
+             <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:5px;">
+          </div>
+          <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
+          <div class="grid-btns" style="margin-top: 15px;">
+            <button class="btn-gray" onclick="closeForm()">Отмена</button>
+            <button onclick="submitTradeIn()">Отправить</button>
+          </div>
+        </div>
+
+        <div id="form-points" class="card form-dark hidden">
+          <h3>Баллы мотивации</h3>
+          <div id="fp-balance-notice"></div>
+          
+          <select id="fp-action">
+            <option value="Придти позже">Придти позже</option>
+            <option value="Уйти раньше">Уйти раньше</option>
+          </select>
+          <select id="fp-time">
+            <option value="30 мин">30 мин</option>
+            <option value="1 час">1 час</option>
+            <option value="2 часа">2 часа</option>
+            <option value="3 часа">3 часа</option>
+          </select>
+          <p id="fp-date-label" style="margin: 10px 0 5px; font-size: 13px; color:gray;">Укажите дату:</p>
+          <input type="text" id="fp-date" class="smart-date" data-realdate="">
+          <div class="grid-btns" style="margin-top: 15px;">
+            <button class="btn-gray" onclick="closeForm()">Отмена</button>
+            <button id="fp-submit-btn" onclick="submitPoints()">Отправить</button>
+          </div>
+        </div>
+
+        <div id="form-swap" class="card form-dark hidden">
+          <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:20px;">
+             <h3 style="margin-top:0;">Исправить смену за сегодня</h3>
+             <select id="fs-fix-shift">
+               <option value="" disabled selected>Выберите правильную смену</option>
+               <option value="09:00 - 19:00">09:00 - 19:00</option>
+               <option value="12:00 - 22:00">12:00 - 22:00</option>
+             </select>
+             <button class="btn-green" onclick="submitFixShift()" style="margin-top:10px;">Отправить исправление</button>
+          </div>
+
+          <h3 style="padding-top:10px; border-top:1px solid var(--border-color);">Обмен сменами</h3>
+          <select id="fs-target" onchange="checkSwapFields()"></select>
+          <div id="fs-extra" class="hidden">
+            <p style="margin: 10px 0 5px; font-size: 14px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
+            <input type="text" id="fs-date" class="smart-date" data-realdate="">
+            <select id="fs-shift">
+              <option value="09:00 - 19:00">09:00 - 19:00</option>
+              <option value="12:00 - 22:00">12:00 - 22:00</option>
+            </select>
+          </div>
+          <div class="grid-btns" style="margin-top: 15px;">
+            <button class="btn-gray" onclick="closeForm()">Отмена</button>
+            <button onclick="submitSwap()">Запросить обмен</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="content-inbox" class="hidden">
+        <h3 style="margin-top:0; color:var(--btn-color);">Запросы на обмен</h3>
+        <div id="inbox-list" class="req-list"></div>
+      </div>
+
+      <div id="content-admin" class="hidden">
+        <div style="display:flex; gap:5px; margin-bottom:15px; flex-wrap: wrap;">
+          <button id="btn-adm-plan" onclick="toggleAdminView('plan')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">План</button>
+          <button id="btn-adm-sc" onclick="toggleAdminView('sc')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">СЦ Товары</button>
+          <button id="btn-adm-emp" onclick="toggleAdminView('emps')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 30%;">Сотрудники</button>
+          <button id="btn-adm-pend" onclick="toggleAdminView('pending')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; position:relative; min-width: 30%;">
+             Запросы <span id="admin-badge" class="badge hidden"></span>
+          </button>
+          <button id="btn-adm-hist" onclick="toggleAdminView('history')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 30%;">История</button>
+        </div>
+        
+        <div id="admin-plan-list" class="hidden" style="font-size:14px; line-height: 1.5;"></div>
+        
+        <div id="admin-sc-list" class="hidden">
+           <div style="display:flex; gap:5px; margin-bottom:10px;">
+               <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('Цифра')">Цифра</button>
+               <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('МБТ')">МБТ</button>
+               <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('КБТ')">КБТ</button>
+               <button style="padding:8px; font-size:12px; margin:0; background:#e74c3c;" onclick="renderAdminScItems('Фокус')">Фокус</button>
+           </div>
+           <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin-bottom:10px; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept)">
+           <div id="admin-sc-container" class="card" style="padding:5px;"></div>
+        </div>
+
+        <div id="admin-emp-list" class="req-list"></div>
+        <div id="admin-list" class="req-list hidden"></div>
+        <div id="admin-history-list" class="req-list hidden"></div>
+      </div>
+
+      <div id="content-details" class="hidden">
+        <div style="display:flex; align-items:center; margin-bottom:15px; justify-content: space-between; width: 100%;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button id="btn-details-back" onclick="closeDetails()" style="width:auto; padding:10px 15px; margin:0; background:#95a5a6;">🔙 Назад</button>
+            <h3 id="details-title" style="margin:0; color:var(--btn-color);">Детали</h3>
+          </div>
+          <div id="details-kpi-circle-container"></div>
+        </div>
+        <div id="details-list" style="padding:0; overflow:hidden;"></div>
+      </div>
+
+    </div> </div>
+
+  <script>
+    // === ВАЖНО: ТВОЙ URL РАЗВЕРТЫВАНИЯ ===
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwbxkG4t-70Eoz9Hes44DP5C82F_lWHnBmrzoD_UIKCYVAP54hesdgz6CHVj4_CCzR6pw/exec";
+
+    // PWA Service Worker (для работы оффлайн и кэширования)
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log('SW registered');
+            }).catch(err => console.log('SW error', err));
+        });
+    }
+
+    // Универсальная функция для отправки запросов на твой бэкенд
+    async function callBackend(actionName, payloadData = {}) {
+      try {
+        const response = await fetch(GAS_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+          body: JSON.stringify({ action: actionName, payload: payloadData })
+        });
+        const result = await response.json();
+        return result;
+      } catch (error) {
+        console.error("Ошибка соединения:", error);
+        return { success: false, error: "Нет связи с сервером. Проверьте интернет." };
+      }
+    }
+
+    let tgUserId = null; // Телеграм отключен
+    
+    // Заменяем вибрацию Телеграма на нативную браузерную
+    function vibrate(ms = 50) {
+      if (navigator.vibrate) navigator.vibrate(ms);
+    }
+
+    let autoScrollAnimation = true; 
+    let activeOutsTimer = null;
+    let autoReturnTimer = null;
+    let globalActiveOuts = [];
+    let isUserPromoter = false;
+    let currentAdminScDept = 'Цифра';
+
+    function saveMemory(key, value) {
+      try { localStorage.setItem(key, value); } catch(e){}
+      document.cookie = key + "=" + encodeURIComponent(value || "") + "; max-age=31536000; path=/";
+    }
+
+    function getMemory(key) {
+      let val = null;
+      try { val = localStorage.getItem(key); } catch(e){}
+      if (!val) {
+        let match = document.cookie.match(new RegExp('(^| )' + key + '=([^;]+)'));
+        if (match) val = decodeURIComponent(match[2]);
+      }
+      return val;
+    }
+
+    function clearMemory() {
+      try { localStorage.clear(); } catch(e){}
+      let cookies = document.cookie.split("; ");
+      for (let c of cookies) {
+        document.cookie = c.split("=")[0] + "=; max-age=0; path=/";
+      }
+    }
+
+    let appState = { 
+      token: getMemory("userToken"), 
+      iin: getMemory("userIIN"), 
+      firstName: getMemory("userName") || "", 
+      currentAction: getMemory("currentAction") 
+    };
+
+    let globalSellers = [];
+    let globalScItems = [];
+    let adminScItemsGlobal = [];
+    let selectedScItem = null;
+    let myReports = [];
+    let myPointsHistory = []; 
+    let myDisplayPointsHistory = []; 
+    let myScHistory = []; 
+    let myKpiDetails = [];
+    let allEmployeesData = []; 
+
+    function checkDarkTheme() {
+        let hour = new Date().getHours();
+        if (hour >= 19 || hour < 6) document.body.classList.add('dark-mode');
+        else document.body.classList.remove('dark-mode');
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      checkDarkTheme();
+      setInterval(checkDarkTheme, 60000); 
+
+      initAutoScroll(); 
+      initSmartDates(); 
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlIin = urlParams.get('iin');
+
+      if (urlIin && urlIin.length === 12) {
+        document.getElementById("iin-input").value = urlIin;
+        await manualLogin(document.getElementById("iin-input"));
+      } else if (appState.iin && appState.token) {
+        document.getElementById("auth-screen").classList.add("hidden");
+        document.getElementById("main-screen").classList.remove("hidden");
+        if (appState.firstName) document.getElementById("user-greeting").innerText = appState.firstName;
+        loadDashboard(true);
+      } else {
+        document.getElementById("loader-screen").classList.add("hidden");
+        document.getElementById("auth-screen").classList.remove("hidden");
+      }
+    });
+
+    async function manualLogin(el) {
+      if (el && el.value && el.value.length === 12) {
+        document.getElementById("iin-input").disabled = true;
+        showToast("Авторизация...", false, 9999);
+        
+        let res = await callBackend('loginByIIN', { iin: el.value });
+        
+        if (res.success) {
+            appState.iin = res.iin;
+            appState.token = res.token;
+            appState.firstName = res.firstName;
+            appState.currentAction = null;
+            isUserPromoter = res.isPromoter;
+
+            saveMemory("userIIN", appState.iin);
+            saveMemory("userToken", appState.token);
+            saveMemory("userName", appState.firstName);
+            saveMemory("currentAction", "");
+
+            document.getElementById("toast").classList.add("hidden");
+            document.getElementById("auth-screen").classList.add("hidden");
+            document.getElementById("main-screen").classList.remove("hidden");
+            document.getElementById("user-greeting").innerText = appState.firstName;
+            
+            loadDashboard(true);
+        } else {
+            document.getElementById("iin-input").disabled = false;
+            document.getElementById("login-error").innerText = res.error;
+            document.getElementById("toast").classList.add("hidden");
+        }
+      }
+    }
+
+    function setKpiColor(val, elCircle, elText) {
+       let color = "#27ae60"; 
+       if (val < 70) color = "#e74c3c";
+       else if (val < 90) color = "#f39c12";
+
+       if(elCircle) {
+           let trackColor = document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+           elCircle.style.background = `conic-gradient(${color} ${val > 100 ? 100 : val}%, ${trackColor} 0)`;
+       }
+       if(elText) elText.style.color = color;
+       return color;
+    }
+
+    function switchTab(tab) {
+      document.getElementById("loader-screen").classList.add("hidden");
+      document.getElementById("content-time").classList.add("hidden");
+      document.getElementById("content-create").classList.add("hidden");
+      document.getElementById("content-inbox").classList.add("hidden");
+      document.getElementById("content-admin").classList.add("hidden");
+      document.getElementById("content-details").classList.add("hidden");
+      
+      if (!isUserPromoter && (tab === 'time' || tab === 'create')) {
+         document.getElementById("info-dashboard").classList.remove("hidden");
+      } else {
+         document.getElementById("info-dashboard").classList.add("hidden");
+      }
+      
+      if(tab === 'time') document.getElementById("content-time").classList.remove("hidden");
+      else if(tab === 'create') document.getElementById("content-create").classList.remove("hidden");
+      else if(tab === 'inbox') document.getElementById("content-inbox").classList.remove("hidden");
+      else if(tab === 'admin') document.getElementById("content-admin").classList.remove("hidden");
+      else if(tab === 'details') document.getElementById("content-details").classList.remove("hidden");
+      
+      document.getElementById("scrollable-body").scrollTop = 0;
+    }
+
+    function applyLimits(state) {
+      if (!appState.currentAction) {
+        document.getElementById("btn-break").disabled = !state.canBreak;
+        document.getElementById("btn-lunch").disabled = !state.canLunch;
+        document.getElementById("btn-snack").disabled = !state.canSnack;
+        document.getElementById("action-hint").innerText = "Выберите действие:";
+      }
+      
+      if (state.activeOuts) {
+         globalActiveOuts = state.activeOuts;
+         renderActiveOuts();
+         if(!isUserPromoter) checkAutoReturn(state.activeOuts);
+      }
+    }
+
+    function checkAutoReturn(activeOuts) {
+       if (!appState.currentAction) return;
+       let myOut = activeOuts.find(o => String(o.iin) === String(appState.iin));
+       if (myOut) {
+           let elapsed = Date.now() - myOut.leftAt;
+           let limitMs = myOut.limit * 60000;
+           let rem = limitMs - elapsed;
+           if (autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
+           
+           if (rem <= 0) triggerReturn(true); 
+           else autoReturnTimer = setTimeout(() => triggerReturn(true), rem);
+       }
+    }
+    
+    function renderActiveOuts() {
+       const container = document.getElementById("active-outs-container");
+       const list = document.getElementById("active-outs-list");
+       
+       if (!globalActiveOuts || globalActiveOuts.length === 0) {
+           container.classList.add("hidden");
+           if (activeOutsTimer) clearInterval(activeOutsTimer);
+           return;
+       }
+       
+       container.classList.remove("hidden");
+       
+       function updateTimers() {
+           const now = Date.now();
+           list.innerHTML = globalActiveOuts.map(out => {
+               let elapsedMin = Math.floor((now - out.leftAt) / 60000);
+               let diffMin = out.limit - elapsedMin;
+               
+               let timeClass = "";
+               let timeText = "";
+               if (diffMin > 0) {
+                   timeText = `Осталось ${diffMin} мин`;
+               } else {
+                   timeClass = "late";
+                   timeText = `Опаздывает на ${Math.abs(diffMin)} мин!`;
+               }
+               
+               let actionTitle = out.action;
+               if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв";
+               let roleLabel = out.role.toLowerCase().includes('промоутер') ? `<div style="margin-top:2px; margin-left:15px; font-size:13px; color:var(--text-color);">${out.role}</div>` : '';
+               
+               return `<div class="active-out-item" style="align-items: center;">
+                  <div>
+                     <span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px;">(${actionTitle})</span>
+                     ${roleLabel}
+                  </div>
+                  <span class="active-out-time ${timeClass}">${timeText}</span>
+               </div>`;
+           }).join("");
+       }
+       
+       updateTimers();
+       if (activeOutsTimer) clearInterval(activeOutsTimer);
+       activeOutsTimer = setInterval(updateTimers, 10000); 
+    }
+
+    async function triggerAction(actionType) {
+      vibrate(50);
+      document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = true);
+
+      appState.currentAction = actionType;
+      saveMemory("currentAction", actionType);
+      renderTimeUI();
+
+      let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionType, isReturn: false, isSilentAutoReturn: false });
+
+      if (res.success && res.savedAction) {
+        appState.currentAction = res.savedAction;
+        saveMemory("currentAction", res.savedAction);
+        renderTimeUI();
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
+        applyLimits(state);
+      } else {
+        appState.currentAction = null;
+        saveMemory("currentAction", "");
+        renderTimeUI();
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
+        applyLimits(state);
+        alert("Ошибка: " + res.error);
+      }
+    }
+
+    async function triggerReturn(isSilentAuto = false) {
+      if (!isSilentAuto) vibrate(50);
+      const actionToReturnFrom = appState.currentAction;
+
+      appState.currentAction = null;
+      saveMemory("currentAction", "");
+      renderTimeUI();
+      if(autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
+
+      document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = true);
+      document.getElementById("action-hint").innerText = isSilentAuto ? "Лимит исчерпан. Готов к новой записи..." : "Фиксируем возвращение...";
+
+      let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionToReturnFrom, isReturn: true, isSilentAutoReturn: isSilentAuto });
+      
+      if (res.success) {
+        document.getElementById("action-hint").innerText = "Обновление лимитов...";
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
+        document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = false);
+        document.getElementById("action-hint").innerText = "Выберите действие:";
+        applyLimits(state);
+      } else {
+        if (!isSilentAuto) alert("Ошибка возврата: " + res.error);
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
+        applyLimits(state);
+      }
+    }
+
+    function getDeclension(action) {
+      if (!action) return "";
+      if (action.startsWith("Перерыв")) return "Перерыва";
+      if (action === "Обед") return "Обеда";
+      if (action === "Полдник") return "Полдника";
+      return action.toLowerCase();
+    }
+
+    function renderTimeUI() {
+      const standardBtns = document.getElementById("standard-buttons");
+      const returnContainer = document.getElementById("return-button-container");
+
+      if (appState.currentAction) {
+        document.getElementById("btn-return").disabled = false;
+        standardBtns.classList.add("hidden");
+        returnContainer.classList.remove("hidden");
+
+        const declension = getDeclension(appState.currentAction);
+        document.getElementById("return-text").innerText = "Вернуться с " + declension;
+        document.getElementById("action-hint").innerText = "Ожидаем вашего возвращения:";
+      } else {
+        standardBtns.classList.remove("hidden");
+        returnContainer.classList.add("hidden");
+      }
+    }
+
+    function formatPointsNoun(num) {
+      let n = Math.abs(parseFloat(String(num).replace(',','.')));
+      if (isNaN(n)) return "баллов";
+      if (n % 1 !== 0) return "балла";
+      n = Math.floor(n) % 100;
+      let n10 = n % 10;
+      if (n >= 11 && n <= 19) return "баллов";
+      if (n10 === 1) return "балл";
+      if (n10 >= 2 && n10 <= 4) return "балла";
+      return "баллов";
+    }
+
+    function getSourceColor(src) {
+      let s = String(src).toLowerCase();
+      if(s.includes('сц')) return '#e67e22'; 
+      if(s.includes('фокус')) return '#e74c3c'; 
+      if(s.includes('trade-in')) return '#8e44ad'; 
+      if(s.includes('горячий')) return '#e84393'; 
+      return '#7f8c8d'; 
+    }
+
+    function initSmartDates() {
+      const today = new Date().toISOString().split('T')[0];
+      document.querySelectorAll('.smart-date').forEach(el => {
+         el.dataset.realdate = today;
+         el.value = "Сегодня";
+         el.addEventListener('focus', function() { this.type = 'date'; this.value = this.dataset.realdate; if(this.showPicker) this.showPicker(); });
+         el.addEventListener('blur', function() {
+             if(!this.value) this.value = today;
+             this.dataset.realdate = this.value;
+             if (this.value === today) { this.type = 'text'; this.value = "Сегодня"; } 
+             else { this.type = 'text'; const d = new Date(this.value); this.value = ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); }
+         });
+         el.addEventListener('change', function() { this.blur(); });
+      });
+    }
+
+    function initAutoScroll() {
+      const scroller = document.getElementById("scroll-container");
+      let scrollDir = 1;
+      let scrollTimer = setInterval(() => {
+        if (!autoScrollAnimation || !scroller || scroller.closest('.hidden')) return;
+        scroller.scrollLeft += 1 * scrollDir;
+        if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1;
+        else if (scroller.scrollLeft <= 0) scrollDir = 1;
+      }, 40);
+      scroller.addEventListener('touchstart', () => autoScrollAnimation = false);
+      scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); });
+    }
+
+    async function loadDashboard(isSilent = false) {
+      document.getElementById("loader-screen").classList.remove("hidden");
+      let data = await callBackend('getDashboardData', { token: appState.token });
+      document.getElementById("loader-screen").classList.add("hidden");
+        
+      if (!data || !data.authorized) { clearMemory(); location.reload(); return; }
+
+      isUserPromoter = data.isPromoter;
+
+      if (isUserPromoter) {
+          document.getElementById("info-dashboard").classList.add("hidden");
+          document.getElementById("nav-create-icon").classList.add("hidden");
+          document.getElementById("inbox-icon").classList.add("hidden");
+          document.getElementById("desc-break").innerText = "";
+          document.getElementById("desc-lunch").innerText = "";
+          document.getElementById("desc-snack").innerText = "";
+      } else {
+          document.getElementById("desc-break").innerText = "10 мин";
+          document.getElementById("desc-lunch").innerText = "40 мин (12:00-17:00)";
+          document.getElementById("desc-snack").innerText = "30 мин (16:00-20:00)";
+      }
+
+      if (data.errorMsg && !isSilent) showToast("Данные загружены частично", false, 2000);
+
+      document.getElementById("info-sc-val").innerText = `${data.info?.scSales ?? '-'} | ${data.info?.breezySales ?? '-'}`;
+      document.getElementById("pt-acc").innerText = data.info?.ptsAccrued ?? '-';
+      document.getElementById("pt-use").innerText = data.info?.ptsUsed ?? '-';
+        
+      const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0;
+      const ptRemEl = document.getElementById("pt-rem");
+      ptRemEl.innerText = data.info?.ptsLeft ?? '-';
+      ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
+        
+      document.getElementById("pt-fin").innerText = data.info?.ptsFine ?? '-';
+        
+      let kpiValue = data.info?.kpiValue ?? 90;
+      document.getElementById("kpi-val").innerText = kpiValue + '%';
+      setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val"));
+        
+      myKpiDetails = data.info?.kpiDetails || [];
+
+      document.getElementById("info-tabel").innerHTML = `
+          <div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div>
+          <div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div>
+          <div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div>
+          <div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div>
+          <div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>
+      `;
+
+      myReports = data.info?.reports || [];
+      myPointsHistory = data.info?.myPtsHistory || [];
+      myDisplayPointsHistory = myPointsHistory.filter(p => p.type !== "KPI"); 
+      myScHistory = myPointsHistory.filter(p => p.type === "Начисление");
+      allEmployeesData = data.adminEmployees || [];
+
+      const uBadge = document.getElementById("user-badge");
+      const aBadge = document.getElementById("admin-badge");
+      const aDot = document.getElementById("admin-dot");
+
+      if (data.role && data.role.toLowerCase() === "директор") {
+          document.getElementById("nav-time-icon").classList.add("hidden");
+          document.getElementById("nav-create-icon").classList.add("hidden");
+          document.getElementById("inbox-icon").classList.add("hidden");
+          document.getElementById("info-dashboard").classList.add("hidden"); 
+          document.getElementById("nav-admin").classList.remove("hidden");
+          
+          if (data.adminInbox && data.adminInbox.length > 0) { 
+             aBadge.innerText = data.adminInbox.length; 
+             aBadge.classList.remove("hidden"); 
+             aDot.classList.remove("hidden");
+          } else {
+             aBadge.classList.add("hidden");
+             aDot.classList.add("hidden");
+          }
+
+          document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>";
+          adminScItemsGlobal = data.adminScItems || [];
+          
+          document.getElementById("admin-emp-list").innerHTML = allEmployeesData.map(e => `
+            <div class="req-item" style="border-left-color: var(--btn-color); padding: 10px 15px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                 <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center;">
+                    <span>${e.name}</span> <span style="font-size:11px; font-weight:normal; color:gray;">${e.dept}</span>
+                 </div>
+              </div>
+              <div class="inner-block" style="font-size:12px; margin-top:5px; color:var(--text-color); text-align:center;">
+                 ${e.tabelStr}
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:12px;">
+                <span>Ошибок: <b>${e.reportErrors}</b></span>
+                <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
+              </div>
+            </div>
+          `).join("") || "<p style='color:gray'>Сотрудников нет</p>";
+          
+          switchTab('admin');
+          toggleAdminView('plan'); 
+      } 
+      else {
+          if (!isUserPromoter) {
+            document.getElementById("nav-time-icon").classList.remove("hidden");
+            document.getElementById("nav-create-icon").classList.remove("hidden");
+            document.getElementById("inbox-icon").classList.remove("hidden");
+          }
+          document.getElementById("nav-admin").classList.add("hidden");
+          
+          if (data.userInbox && data.userInbox.length > 0) { uBadge.innerText = data.userInbox.length; uBadge.classList.remove("hidden"); } 
+          else uBadge.classList.add("hidden");
+          
+          switchTab('time');
+          
+          let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
+          appState.currentAction = state.myActiveAction || null;
+          saveMemory("currentAction", appState.currentAction);
+          renderTimeUI();
+          applyLimits(state);
+      }
+        
+      let uInbox = data.userInbox || [];
+      document.getElementById("inbox-list").innerHTML = uInbox.map(r => `
+          <div class="req-item">
+            <div class="req-title">Обмен сменами</div>
+            <div class="req-desc">${r.authorName} просит поменяться.<br><b>${r.details}</b></div>
+            <div class="grid-btns">
+              <button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button>
+              <button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button>
+            </div>
+          </div>
+      `).join("") || "<p style='color:gray;'>Запросов нет</p>";
+
+      let aInbox = data.adminInbox || [];
+      document.getElementById("admin-list").innerHTML = aInbox.map(r => {
+          let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены";
+          let btns = isViewOnly 
+            ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>`
+            : `<div class="grid-btns">
+                 <button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button>
+                 <button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button>
+               </div>`;
+          let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
+          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
+      }).join("") || "<p style='color:gray;'>Все заявки обработаны</p>";
+
+      let aHist = data.adminHistory || [];
+      document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
+          let stColor = r.status === "approved" ? "#27ae60" : (r.status === "rejected" || r.status === "rejected_by_user" ? "#e74c3c" : "#95a5a6");
+          let stText = r.status === "approved" ? "Одобрен" : (r.status.includes("rejected") ? "Отклонен" : "Просмотрен");
+          if(r.status === "rejected_by_user") stText = "Отклонен сменщиком";
+          let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
+          
+          return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;">
+            <div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
+            <div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div>
+          </div>`
+      }).join("") || "<p style='color:gray;'>История пуста</p>";
+
+      globalSellers = data.sellers || [];
+      globalScItems = data.scItems || [];
+    }
+
+    function generateHorizontalGrid(dataObj) {
+      if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:15px;text-align:center;color:gray'>Нет данных</div>";
+      let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
+      
+      let html = `<div class="grid-details-container inner-block" style="padding: 8px; margin-bottom:8px;">`;
+      html += `<div class="grid-details-title" style="margin-bottom: 5px; font-size:13px;">${dataObj.title}</div>`;
+      html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
+      
+      dataObj.headers.forEach(h => { html += `<div class="grid-details-header" style="font-size:9px; margin-bottom:2px;">${h || '-'}</div>`; });
+      dataObj.values.forEach(v => {
+        let displayVal = '-';
+        if (v === '✔') displayVal = '✅';
+        else if (v === '✖') displayVal = '❌';
+        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:4px; padding:4px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
+      });
+      html += `</div></div>`;
+      return html;
+    }
+
+    function renderHistoryItem(i, isCompact = false) {
+      let valStr = String(i.val).replace('.', ',');
+      let col = String(i.type).toLowerCase().includes('начисл') || valStr.includes('+') ? 'detail-plus' : 'detail-minus';
+      if(String(i.type).toLowerCase().includes('штраф')) col = 'detail-fine';
+      
+      let typeColor = "#95a5a6";
+      let typeDisplay = i.type;
+      let srcColor = getSourceColor(i.source);
+      
+      if (String(i.type).toLowerCase() === "начисление") typeColor = "#27ae60";
+      else if (String(i.type).toLowerCase().includes('использ')) typeColor = "#f39c12";
+      else if (String(i.type).toLowerCase().includes('штраф')) typeColor = "#e74c3c";
+
+      let inner = `
+          <div>
+              <b style="font-size:13px; color:${typeColor}; display:inline-block; margin-bottom:2px;">${typeDisplay}</b><br>
+              <span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:2px;">${i.reason}</span><br>
+              <b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span>
+          </div>
+          <span class="${col}">${valStr}</span>
+      `;
+      
+      if (isCompact) {
+          return `<div style="border-left: 3px solid ${typeColor}; padding: 6px 0 6px 10px; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">${inner}</div>`;
+      }
+      return `<div class="detail-item">${inner}</div>`;
+    }
+
+    function openDetails(type) {
+      switchTab('details');
+      document.getElementById("btn-details-back").onclick = () => switchTab('create');
+      document.getElementById("details-kpi-circle-container").innerHTML = ""; 
+      
+      let listHtml = "";
+      
+      if (type === 'sc') {
+        document.getElementById("details-title").innerText = "Детали СЦ | BRZY";
+        listHtml = "<div class='card' style='padding:0;'>";
+        if (myScHistory.length > 0) {
+           listHtml += myScHistory.map((i, idx) => {
+              let srcColor = getSourceColor(i.source);
+              return `<div class="detail-item"><div><span style="color:var(--text-color)">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span></div></div>`;
+           }).join("");
+        } else {
+           listHtml += "<div style='padding:20px;text-align:center;color:gray'>История пуста</div>";
+        }
+        listHtml += "</div>";
+      } 
+      else if (type === 'points') {
+        document.getElementById("details-title").innerText = "История Баллов";
+        listHtml = "<div class='card' style='padding:0;'>";
+        if (myDisplayPointsHistory.length > 0) {
+           listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join("");
+        } else {
+           listHtml += "<div style='padding:20px;text-align:center;color:gray'>История пуста</div>";
+        }
+        listHtml += "</div>";
+      } 
+      else if (type === 'kpi') {
+        document.getElementById("details-title").innerText = "Детали КФ. ЭФФ.";
+        listHtml = "<div class='card' style='padding:0;'>";
+        myKpiDetails.forEach(k => {
+           let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val');
+           let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`;
+           let srcColor = getSourceColor(k.source);
+           
+           let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim();
+           if (!dispName) dispName = k.name;
+           if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
+           if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
+           let dateStr = k.date ? `<span style="color:gray;font-size:11px;"> • ${k.date}</span>` : "";
+           
+           listHtml += `<div class="detail-item">
+              <div><span style="color:var(--text-color); font-size:13px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
+              <span class="${col}">${valStr}</span>
+           </div>`;
+        });
+        listHtml += "</div>";
+      }
+      else if (type === 'report') {
+        document.getElementById("details-title").innerText = "Мои отчеты";
+        listHtml = "<div class='card' style='padding:0; box-shadow:none; background:transparent;'>";
+        listHtml += myReports.map(generateHorizontalGrid).join('');
+        listHtml += "</div>";
+      }
+      document.getElementById("details-list").innerHTML = listHtml;
+    }
+
+    function openEmpKpiDetails(iin) {
+      const emp = allEmployeesData.find(e => String(e.iin) === String(iin));
+      if(!emp) return;
+
+      document.getElementById("details-title").innerText = "КФ. ЭФФ: " + emp.name;
+      document.getElementById("details-kpi-circle-container").innerHTML = ""; 
+      document.getElementById("btn-details-back").onclick = () => openEmpDetails(iin); 
+
+      let listHtml = "<div class='card' style='padding:0;'>";
+      emp.kpiDetails.forEach(k => {
+         let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val');
+         let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`;
+         let srcColor = getSourceColor(k.source);
+
+         let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim();
+         if (!dispName) dispName = k.name;
+         if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
+         if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
+         let dateStr = k.date ? `<span style="color:gray;font-size:11px;"> • ${k.date}</span>` : "";
+
+         listHtml += `<div class="detail-item">
+            <div><span style="color:var(--text-color); font-size:13px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
+            <span class="${col}">${valStr}</span>
+         </div>`;
+      });
+      listHtml += "</div>";
+
+      document.getElementById("details-list").innerHTML = listHtml;
+    }
+
+    function adjFine(iin, delta) {
+       let el = document.getElementById(`fine-amount-${iin}`);
+       let val = parseFloat(el.value) || 0;
+       val += delta;
+       if (val > 0) val = 0; 
+       el.value = val;
+    }
+
+    function openEmpDetails(iin) {
+      const emp = allEmployeesData.find(e => String(e.iin) === String(iin));
+      if(!emp) return;
+      
+      switchTab('details');
+      document.getElementById("btn-details-back").onclick = () => switchTab('admin');
+      document.getElementById("details-title").innerText = emp.name;
+      
+      document.getElementById("details-kpi-circle-container").innerHTML = `
+        <div class="circle-box" style="transform: scale(0.65); margin: -20px 0; cursor: pointer;" onclick="openEmpKpiDetails('${emp.iin}')">
+          <div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);">
+            <div class="kpi-inner" style="width: 70%; height: 70%;">
+              <span style="font-size:20px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)};">${emp.kpi}%</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      let listHtml = "<div class='card' style='padding:0; overflow:hidden; background:var(--bg-color); box-shadow:none;'>";
+      listHtml += emp.reports.map(generateHorizontalGrid).join('');
+      listHtml += `<div style="height:10px;"></div>`;
+
+      listHtml += `
+        <div class="grid-details-container inner-block" style="padding: 10px;">
+            <div class="grid-details-title" style="margin-bottom: 5px;">Баллы сотрудника</div>
+            <div style="display:flex; justify-content:space-around; text-align:center;">
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Начислено</div><b style="font-size:16px;">${emp.pts.acc}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Использ.</div><b style="font-size:16px;">${emp.pts.use}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Остаток</div><b style="font-size:16px; color:#27ae60;">${emp.pts.rem}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Штраф</div><b style="font-size:16px; color:#e74c3c;">${emp.pts.fin}</b></div>
+            </div>
+        </div>
+      `;
+      listHtml += `<div style="height:8px;"></div>`;
+
+      listHtml += `
+        <div class="grid-details-container inner-block" style="padding: 10px;">
+          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:10px; font-size:13px; width:100%; margin:0;">Выписать штраф</button>
+          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:10px; background:rgba(231, 76, 60, 0.1); color:var(--text-color);">
+             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:34px; margin-top:0; margin-bottom:8px; font-size:14px; background:var(--card-bg);">
+             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; justify-content:center;">
+                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:45px; height:34px; padding:0; font-size:18px;">-</button>
+                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:34px; margin:0; text-align:center; width: 70px; font-size:16px; background:var(--card-bg);">
+                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:45px; height:34px; padding:0; font-size:18px;">+</button>
+             </div>
+             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:14px; margin:0;">Подтвердить</button>
+          </div>
+        </div>
+      `;
+      listHtml += `<div style="height:8px;"></div>`;
+
+      let empDisplayHistory = emp.ptsHistory.filter(p => p.type !== "KPI");
+      listHtml += `<div class="grid-details-container inner-block" style="padding: 10px; overflow:hidden;">`;
+      listHtml += `<div class="grid-details-title" style="padding-top:5px; margin-bottom: 8px;">История баллов</div>`;
+      if(empDisplayHistory.length > 0) {
+         listHtml += empDisplayHistory.map(h => renderHistoryItem(h, true)).join("");
+      } else {
+         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:13px;">История пуста</div>`;
+      }
+      listHtml += `</div>`;
+      listHtml += "</div>";
+      document.getElementById("details-list").innerHTML = listHtml;
+      
+      document.getElementById("scrollable-body").scrollTop = 0;
+    }
+
+    async function executeFine(iin, name) {
+       let reason = document.getElementById(`fine-reason-${iin}`).value;
+       let amount = document.getElementById(`fine-amount-${iin}`).value;
+       if (!reason || !amount || amount >= 0) return showToast("Укажите причину и отрицательную сумму!", true);
+       
+       vibrate(50);
+       showToast("Отправка...", false, 9999);
+       
+       let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount });
+       
+       if (res.success) { showToast("Штраф выписан!"); loadDashboard(true); closeDetails(); }
+       else showToast(res.error, true);
+    }
+
+    function closeDetails() {
+      switchTab('admin'); 
+    }
+
+    function toggleAdminView(view) {
+      document.getElementById("admin-list").classList.add("hidden");
+      document.getElementById("admin-history-list").classList.add("hidden");
+      document.getElementById("admin-emp-list").classList.add("hidden");
+      document.getElementById("admin-plan-list").classList.add("hidden");
+      document.getElementById("admin-sc-list").classList.add("hidden");
+      
+      document.getElementById("btn-adm-pend").style.background = "#95a5a6";
+      document.getElementById("btn-adm-hist").style.background = "#95a5a6";
+      document.getElementById("btn-adm-emp").style.background = "#95a5a6";
+      document.getElementById("btn-adm-plan").style.background = "#95a5a6";
+      document.getElementById("btn-adm-sc").style.background = "#95a5a6";
+
+      if(view === 'pending') {
+        document.getElementById("admin-list").classList.remove("hidden");
+        document.getElementById("btn-adm-pend").style.background = "var(--btn-color)";
+      } else if(view === 'history') {
+        document.getElementById("admin-history-list").classList.remove("hidden");
+        document.getElementById("btn-adm-hist").style.background = "var(--btn-color)";
+      } else if(view === 'plan') {
+        document.getElementById("admin-plan-list").classList.remove("hidden");
+        document.getElementById("btn-adm-plan").style.background = "var(--btn-color)";
+      } else if(view === 'sc') {
+        document.getElementById("admin-sc-list").classList.remove("hidden");
+        document.getElementById("btn-adm-sc").style.background = "var(--btn-color)";
+        renderAdminScItems('Цифра'); 
+      } else {
+        document.getElementById("admin-emp-list").classList.remove("hidden");
+        document.getElementById("btn-adm-emp").style.background = "var(--btn-color)";
+      }
+      document.getElementById("scrollable-body").scrollTop = 0;
+    }
+
+    function renderAdminScItems(dept) {
+       currentAdminScDept = dept;
+       let container = document.getElementById("admin-sc-container");
+       let searchQ = document.getElementById("admin-sc-search").value.toLowerCase();
+       container.innerHTML = "";
+       
+       let filtered = adminScItemsGlobal.filter(i => (dept === "Фокус" ? i.type === "Фокус" : (i.dept === dept && i.type === "СЦ")));
+       if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
+       
+       if (filtered.length === 0) {
+           container.innerHTML = "<p style='text-align:center; color:gray; padding:10px;'>Пусто</p>";
+           return;
+       }
+
+       if (dept === "Фокус") {
+           let groups = {"Цифра": [], "МБТ": [], "КБТ": []};
+           filtered.forEach(i => { if(groups[i.dept]) groups[i.dept].push(i); });
+           
+           for (const [dName, items] of Object.entries(groups)) {
+               if (items.length === 0) continue;
+               let headerText = items[0].focusHeader || `${dName} Фокус`;
+               let html = `<div class="inner-block" style="margin-bottom:10px;"><div style="font-size:14px; font-weight:bold; color:#555; margin-bottom:8px;">${headerText}</div>`;
+               
+               items.forEach((i, idx) => {
+                  html += `
+                    <div style="padding:8px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                       <div>
+                         <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
+                         <div style="font-size:11px; color:#e74c3c; font-weight:bold;">Фокус — ${i.pts} баллов</div>
+                       </div>
+                    </div>`;
+               });
+               html += `</div>`;
+               container.innerHTML += html;
+           }
+       } else {
+           filtered.forEach((i, idx) => {
+               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:22px; padding:5px; border-radius:5px; display:inline-block;">📄</a>` : '';
+               let div = document.createElement("div");
+               div.style = "padding:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
+               div.innerHTML = `
+                  <div>
+                     <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
+                     <div style="font-size:11px; color:#e67e22; font-weight:bold;">
+                        СЦ
+                        ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
+                     </div>
+                  </div>
+                  <div>${docBtn}</div>
+               `;
+               container.appendChild(div);
+           });
+       }
+    }
+
+    function openForm(type) {
+      document.getElementById("menu-list").classList.add("hidden");
+      
+      if(type === 'sc') {
+        selectedScItem = null;
+        document.getElementById("sc-search").value = "";
+        document.getElementById("btn-act-doc").style.opacity = "0.3"; 
+        renderScItems();
+        document.getElementById("form-sc").classList.remove("hidden");
+      }
+      if(type === 'tradein') {
+        document.getElementById("ft-input").value = "";
+        document.getElementById("form-tradein").classList.remove("hidden");
+      }
+      if(type === 'points') {
+        let remVal = parseFloat(document.getElementById("pt-rem").innerText.replace(',','.'));
+        let isZero = isNaN(remVal) || remVal <= 0;
+        
+        let noticeBox = document.getElementById("fp-balance-notice");
+        if (isZero) {
+          noticeBox.innerHTML = "<b>У вас нет оставшихся баллов</b>";
+          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 15px; border-radius: 10px; font-size: 14px; text-align: center; margin-bottom: 15px; border: 1px dashed #e74c3c; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
+          
+          document.getElementById("fp-action").classList.add("hidden");
+          document.getElementById("fp-time").classList.add("hidden");
+          document.getElementById("fp-date").classList.add("hidden");
+          document.getElementById("fp-date-label").classList.add("hidden");
+          document.getElementById("fp-submit-btn").disabled = true;
+          document.getElementById("fp-submit-btn").style.background = "#95a5a6";
+        } else {
+          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:18px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
+          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 15px; border-radius: 10px; font-size: 14px; text-align: center; margin-bottom: 15px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
+          
+          document.getElementById("fp-action").classList.remove("hidden");
+          document.getElementById("fp-time").classList.remove("hidden");
+          document.getElementById("fp-date").classList.remove("hidden");
+          document.getElementById("fp-date-label").classList.remove("hidden");
+          document.getElementById("fp-submit-btn").disabled = false;
+          document.getElementById("fp-submit-btn").style.background = "var(--btn-color)";
+        }
+        document.getElementById("form-points").classList.remove("hidden");
+      }
+      if(type === 'swap') {
+        const select = document.getElementById("fs-target");
+        select.innerHTML = '<option value="" disabled selected>Выберите сменщика</option>' + 
+          globalSellers.map(s => `<option value="${s.iin}">${s.name}</option>`).join("");
+        document.getElementById("fs-extra").classList.add("hidden");
+        document.getElementById("form-swap").classList.remove("hidden");
+      }
+      document.getElementById("scrollable-body").scrollTop = 0;
+    }
+
+    function closeForm() {
+      document.getElementById("form-sc").classList.add("hidden");
+      document.getElementById("form-tradein").classList.add("hidden");
+      document.getElementById("form-points").classList.add("hidden");
+      document.getElementById("form-swap").classList.add("hidden");
+      document.getElementById("menu-list").classList.remove("hidden");
+      document.getElementById("scrollable-body").scrollTop = 0;
+    }
+
+    function checkSwapFields() {
+      const target = document.getElementById("fs-target").value;
+      if (target) document.getElementById("fs-extra").classList.remove("hidden");
+    }
+
+    function renderScItems() {
+      const q = document.getElementById("sc-search").value.toLowerCase();
+      const list = document.getElementById("sc-list");
+      list.innerHTML = "";
+      
+      let scList = globalScItems.filter(i => i.name.toLowerCase().includes(q) && i.type === 'СЦ');
+      let focusList = globalScItems.filter(i => i.name.toLowerCase().includes(q) && i.type === 'Фокус');
+      let sortedFiltered = [...scList, ...focusList];
+
+      if (sortedFiltered.length === 0) list.innerHTML = "<p style='padding:10px; color:gray; font-size:13px; text-align:center;'>Ничего не найдено</p>";
+
+      sortedFiltered.forEach(i => {
+        let div = document.createElement("div");
+        let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type);
+        div.className = "sc-item" + (isSelected ? " selected" : "");
+        let typeCol = i.type === 'СЦ' ? '#e67e22' : '#e74c3c'; 
+        let ptNoun = formatPointsNoun(i.pts);
+        let ptsText = i.type === 'СЦ' ? '2 балла' : `${String(i.pts).replace('.', ',')} ${ptNoun}`; 
+        
+        div.innerHTML = `
+          <div>
+             <div style="margin-bottom:4px;">${i.name}</div>
+             <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="type-label" style="font-size:11px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
+                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:12px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
+             </div>
+          </div>`;
+          
+        div.onclick = () => { 
+            selectedScItem = i; 
+            document.getElementById("btn-act-doc").style.opacity = i.docUrl ? "1" : "0.3";
+            renderScItems(); 
+        };
+        list.appendChild(div);
+      });
+    }
+
+    function openScDoc() {
+       if (selectedScItem && selectedScItem.docUrl) {
+           window.open(selectedScItem.docUrl, '_blank');
+       }
+    }
+
+    function showToast(msg, isError = false, duration = 3000) {
+      const t = document.getElementById("toast");
+      t.innerText = msg;
+      t.style.background = isError ? "#e74c3c" : "#34495e";
+      t.classList.remove("hidden");
+      if (duration !== 9999) setTimeout(() => t.classList.add("hidden"), duration);
+    }
+
+    async function executeSubmit(type, details, targetIin = null, meta = "", customMsg = null) {
+      vibrate(50);
+      showToast("Отправка...", false, 9999);
+      
+      let res = await callBackend('submitRequest', { token: appState.token, type: type, details: details, targetIin: targetIin, metadata: meta });
+      
+      if(res.success) {
+        showToast(customMsg || "Запрос успешно отправлен!");
+        closeForm();
+        loadDashboard(true);
+      } else showToast("Ошибка: " + res.error, true);
+    }
+
+    function getFormattedDate(dateStr) {
+      const today = new Date().toISOString().split('T')[0];
+      if (!dateStr || dateStr === today) return "Сегодня";
+      const d = new Date(dateStr);
+      return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear();
+    }
+
+    function submitScForm() {
+      if(!selectedScItem) return showToast("Выберите товар из списка", true);
+      let scDateVal = document.getElementById("sc-date").dataset.realdate;
+      selectedScItem.date = getFormattedDate(scDateVal);
+      executeSubmit("Продажа СЦ/Фокус", selectedScItem.name, null, JSON.stringify(selectedScItem));
+    }
+
+    function submitTradeIn() {
+      const text = document.getElementById("ft-input").value;
+      const dateVal = document.getElementById("ft-date").dataset.realdate;
+      if(!text) return showToast("Заполните поле!", true);
+      let meta = JSON.stringify({ date: getFormattedDate(dateVal), text: text });
+      executeSubmit("Продажа Trade-In", text, null, meta);
+    }
+
+    function submitPoints() {
+      const act = document.getElementById("fp-action").value;
+      const time = document.getElementById("fp-time").value;
+      const dateVal = document.getElementById("fp-date").dataset.realdate;
+      let meta = JSON.stringify({ date: getFormattedDate(dateVal) });
+      executeSubmit("Баллы мотивации", `${act} на ${time}`, null, meta);
+    }
+
+    function submitFixShift() {
+      const shiftStr = document.getElementById("fs-fix-shift").value;
+      if (!shiftStr) return showToast("Выберите новую смену", true);
+      const dateVal = new Date().toISOString().split('T')[0];
+      executeSubmit("Исправление смены", shiftStr, null, getFormattedDate(dateVal), "Запрос на исправление отправлен");
+    }
+
+    function submitSwap() {
+      const select = document.getElementById("fs-target");
+      const targetIin = select.value;
+      if(!targetIin) return showToast("Выберите сменщика", true);
+      
+      const dateVal = document.getElementById("fs-date").dataset.realdate;
+      const shiftStr = document.getElementById("fs-shift").value;
+      const targetName = select.options[select.selectedIndex].text;
+      
+      const details = `Дата: ${getFormattedDate(dateVal)}, Смена: ${shiftStr}`;
+      executeSubmit("Обмен сменами", details, targetIin, "", "Запрос отправлен: " + targetName);
+    }
+
+    function submitHotCheck(typeText) {
+      let promptMsg = `Вы подтверждаете продажу: ${typeText}?`;
+      let dateVal = new Date().toISOString().split('T')[0]; 
+      
+      if (confirm(promptMsg)) {
+          executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal));
+      }
+    }
+
+    async function processReq(id, action) {
+      vibrate(50);
+      showToast("Обработка...", false, 9999);
+      
+      let res = await callBackend('processRequest', { token: appState.token, reqId: id, reqAction: action });
+      
+      if(res.success) { showToast(res.msg); loadDashboard(true); } 
+      else showToast(res.error, true);
+    }
+  </script>
+</body>
+</html>
