@@ -38,6 +38,11 @@
         --form-title-color: #ffffff;
         --form-input-color: #e0e0e0;
       }
+      .glass { 
+        background: rgba(45, 45, 45, 0.85) !important; 
+        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+      }
     }
     
     html, body { height: 100%; overflow: hidden; margin: 0; padding: 0; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; -webkit-tap-highlight-color: transparent; }
@@ -49,6 +54,7 @@
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(150, 150, 150, 0.1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
     
     .fade-in {
@@ -64,14 +70,15 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      padding-top: 10px;
-      padding-bottom: 10px;
-      margin-top: -10px;
+      padding: 12px 15px;
+      margin: 5px 15px 15px 15px;
+      border-radius: 16px;
     }
+    
+    .fixed-header { padding: env(safe-area-inset-top, 35px) 15px 0 15px; flex-shrink: 0; z-index: 100; border-radius: 0 0 20px 20px; margin-bottom: 10px; }
 
     .hidden { display: none !important; }
     
-    .fixed-header { padding: env(safe-area-inset-top, 15px) 15px 0 15px; flex-shrink: 0; z-index: 100; }
     .scrollable-content { flex-grow: 1; overflow-y: auto; padding: 10px 15px calc(20px + env(safe-area-inset-bottom)) 15px; }
 
     input, select { user-select: text; -webkit-user-select: text; transition: 0.3s; }
@@ -163,7 +170,7 @@
     .sc-item.selected .type-label { color: #fff !important; }
     .sc-list-container { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; background: var(--card-bg); transition: 0.3s; }
 
-    .grid-details-container { padding: 10px; background: var(--card-bg); border-radius: 12px; transition: 0.3s;}
+    .grid-details-container { padding: 10px; background: var(--card-bg); border-radius: 12px; transition: 0.3s; margin: 0 15px 15px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
     .grid-details-title { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-color); }
     .grid-details-box { display: grid; gap: 2px; text-align: center; align-items: center; justify-content: center; }
     .grid-details-header { font-size: 10px; color: gray; font-weight: bold; margin-bottom: 2px;}
@@ -266,7 +273,7 @@
       </div>
     </div> 
     
-    <div class="scrollable-content" id="scrollable-body">
+    <div class="scrollable-content" id="scrollable-body" style="padding-top: 0;">
       
       <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="hidden fade-in">
         <p id="action-hint" style="margin-bottom: 15px; font-weight:bold; padding-top: 5px;">Загрузка лимитов...</p>
@@ -321,19 +328,21 @@
           </div>
         </div>
 
-        <div id="form-sc" class="card form-dark hidden fade-in">
-          <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div id="form-sc" class="card form-dark hidden fade-in" style="padding: 0; background: transparent; border: none; box-shadow: none;">
+          <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center;">
              <div style="display:flex; align-items:center; gap:8px;">
                 <h3 style="margin:0;">Продажа СЦ/Фокус</h3>
                 <div id="btn-act-doc" onclick="openScDoc()" style="font-size:22px; opacity:0.3; transition:0.3s; cursor:pointer;">📄</div>
              </div>
              <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:5px;">
           </div>
-          <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
-          <div class="sc-list-container" id="sc-list"></div>
-          <div class="grid-btns">
-            <button class="btn-gray" onclick="closeForm()">Отмена</button>
-            <button onclick="submitScForm()">Отправить</button>
+          <div class="card">
+              <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
+              <div class="sc-list-container" id="sc-list"></div>
+              <div class="grid-btns">
+                <button class="btn-gray" onclick="closeForm()">Отмена</button>
+                <button onclick="submitScForm()">Отправить</button>
+              </div>
           </div>
         </div>
 
@@ -400,12 +409,14 @@
       </div>
 
       <div id="content-inbox" class="hidden fade-in">
-        <h3 class="sticky-header glass" style="margin-top:0; margin-bottom: 10px; color:var(--btn-color);">Запросы на обмен</h3>
+        <div class="sticky-header glass" style="margin-top:5px; margin-bottom: 15px;">
+            <h3 style="margin:0; color:var(--btn-color); text-align:center;">Запросы на обмен</h3>
+        </div>
         <div id="inbox-list" class="req-list"></div>
       </div>
 
       <div id="content-admin" class="hidden fade-in">
-        <div class="sticky-header glass" style="display:flex; gap:5px; margin-bottom:15px; flex-wrap: wrap;">
+        <div class="sticky-header glass" style="display:flex; gap:5px; margin-top:5px; margin-bottom:15px; flex-wrap: wrap; justify-content:center;">
           <button id="btn-adm-plan" onclick="toggleAdminView('plan')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">План</button>
           <button id="btn-adm-sc" onclick="toggleAdminView('sc')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">СЦ Товары</button>
           <button id="btn-adm-emp" onclick="toggleAdminView('emps')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 30%;">Сотрудники</button>
@@ -418,13 +429,15 @@
         <div id="admin-plan-list" class="hidden" style="font-size:14px; line-height: 1.5;"></div>
         
         <div id="admin-sc-list" class="hidden">
-           <div style="display:flex; gap:5px; margin-bottom:10px;">
-               <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('Цифра')">Цифра</button>
-               <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('МБТ')">МБТ</button>
-               <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('КБТ')">КБТ</button>
-               <button style="padding:8px; font-size:12px; margin:0; background:#e74c3c;" onclick="renderAdminScItems('Фокус')">Фокус</button>
+           <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
+               <div style="display:flex; gap:5px;">
+                   <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('Цифра')">Цифра</button>
+                   <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('МБТ')">МБТ</button>
+                   <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('КБТ')">КБТ</button>
+                   <button style="padding:8px; font-size:12px; margin:0; background:#e74c3c;" onclick="renderAdminScItems('Фокус')">Фокус</button>
+               </div>
+               <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept)">
            </div>
-           <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin-bottom:10px; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept)">
            <div id="admin-sc-container" class="card" style="padding:5px;"></div>
         </div>
 
@@ -434,9 +447,9 @@
       </div>
 
       <div id="content-details" class="hidden fade-in">
-        <div class="sticky-header glass" style="display:flex; align-items:center; margin-bottom:15px; justify-content: space-between; width: 100%;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <button id="btn-details-back" onclick="closeDetails()" style="width:auto; padding:10px 15px; margin:0; background:#95a5a6;">🔙 Назад</button>
+        <div class="sticky-header glass" style="display:flex; align-items:center; margin-bottom:15px; justify-content: space-between;">
+          <div style="display:flex; align-items:center; gap:15px;">
+            <button id="btn-details-back" onclick="closeDetails()" style="width:auto; padding:8px 15px; margin:0; background:#95a5a6; border-radius:10px; font-size:20px;">🔙</button>
             <h3 id="details-title" style="margin:0; color:var(--btn-color);">Детали</h3>
           </div>
           <div id="details-kpi-circle-container"></div>
@@ -449,7 +462,6 @@
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwbxkG4t-70Eoz9Hes44DP5C82F_lWHnBmrzoD_UIKCYVAP54hesdgz6CHVj4_CCzR6pw/exec";
 
-    // Инициализация Service Worker (Offline & Push)
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').then(reg => {
@@ -458,7 +470,6 @@
         });
     }
 
-    // Запрос разрешений на Web Notifications (Пуш)
     function requestNotificationPermission() {
         if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
             Notification.requestPermission();
@@ -492,8 +503,6 @@
     let globalActiveOuts = [];
     let isUserPromoter = false;
     let currentAdminScDept = 'Цифра';
-    
-    // Переменная для таймера Поллинга (фоновых обновлений)
     let pollingTimer = null;
 
     function saveMemory(key, value) {
@@ -524,7 +533,7 @@
       iin: getMemory("userIIN"), 
       firstName: getMemory("userName") || "", 
       currentAction: getMemory("currentAction"),
-      lastInboxCount: 0 // для пуш уведомлений
+      lastInboxCount: 0 
     };
 
     let globalSellers = [];
@@ -538,9 +547,8 @@
     let myKpiDetails = [];
     let allEmployeesData = []; 
 
-    // Запуск приложения
     document.addEventListener("DOMContentLoaded", async () => {
-      requestNotificationPermission(); // Запрашиваем пуши
+      requestNotificationPermission(); 
       initAutoScroll(); 
       initSmartDates(); 
       
@@ -555,31 +563,31 @@
         document.getElementById("main-screen").classList.remove("hidden");
         if (appState.firstName) document.getElementById("user-greeting").innerText = appState.firstName;
         
-        loadDashboard(false); // Грузим UI (мгновенно из кэша, потом фетч)
-        startPolling(); // Включаем фоновые обновления
+        loadDashboard(false); 
+        startPolling(); 
       } else {
         document.getElementById("loader-screen").classList.add("hidden");
         document.getElementById("auth-screen").classList.remove("hidden");
       }
     });
 
-    // ПОЛЛИНГ (Тихие обновления каждые 5 сек)
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
             if(appState.token && !document.hidden) {
                 let data = await callBackend('getDashboardData', { token: appState.token });
-                if(data && data.authorized) renderDashboardData(data, true);
+                if (!data || data.error === "Оффлайн режим") return;
+                if (data.authorized === false) { clearMemory(); location.reload(); return; }
+                renderDashboardData(data, true);
                 
                 if(!isUserPromoter) {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-                    if(state) applyLimits(state);
+                    if(state && state.authorized !== false) applyLimits(state);
                 }
             }
         }, 5000);
     }
 
-    // Обновляем сразу при возврате на вкладку
     document.addEventListener('visibilitychange', () => {
        if (!document.hidden && appState.token) loadDashboard(true);
     });
@@ -632,7 +640,6 @@
     }
 
     function switchTab(tab) {
-      // Обновляем данные при переходе (тихо)
       if(appState.token) loadDashboard(true);
         
       document.getElementById("content-time").classList.add("hidden");
@@ -641,7 +648,6 @@
       document.getElementById("content-admin").classList.add("hidden");
       document.getElementById("content-details").classList.add("hidden");
       
-      // Сброс анимаций для повторного проигрывания
       let sections = document.querySelectorAll('.fade-in');
       sections.forEach(s => { s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
 
@@ -735,10 +741,12 @@
        activeOutsTimer = setInterval(updateTimers, 10000); 
     }
 
+    // Мгновенный отклик кнопок выхода
     async function triggerAction(actionType) {
       vibrate(50);
-      document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = true);
-
+      let prevAction = appState.currentAction;
+      
+      // Сразу меняем UI (мгновенно)
       appState.currentAction = actionType;
       saveMemory("currentAction", actionType);
       renderTimeUI();
@@ -752,8 +760,9 @@
         let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
         applyLimits(state);
       } else {
-        appState.currentAction = null;
-        saveMemory("currentAction", "");
+        // Если ошибка или лимит — откатываем UI
+        appState.currentAction = prevAction;
+        saveMemory("currentAction", prevAction || "");
         renderTimeUI();
         let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
         applyLimits(state);
@@ -765,6 +774,7 @@
       if (!isSilentAuto) vibrate(50);
       const actionToReturnFrom = appState.currentAction;
 
+      // Сразу меняем UI (мгновенно)
       appState.currentAction = null;
       saveMemory("currentAction", "");
       renderTimeUI();
@@ -782,6 +792,10 @@
         document.getElementById("action-hint").innerText = "Выберите действие:";
         applyLimits(state);
       } else {
+        // Если ошибка — откатываем
+        appState.currentAction = actionToReturnFrom;
+        saveMemory("currentAction", actionToReturnFrom);
+        renderTimeUI();
         if (!isSilentAuto) showToast("Ошибка возврата: " + res.error, true);
         let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
         applyLimits(state);
@@ -864,10 +878,8 @@
       scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); });
     }
 
-    // INSTANT UI + FETCH
     async function loadDashboard(isSilent = false) {
       if (!isSilent) {
-          // Мгновенный показ из кэша LocalStorage
           let cachedData = localStorage.getItem("dashData_" + appState.iin);
           if (cachedData) {
               renderDashboardData(JSON.parse(cachedData), true);
@@ -876,26 +888,26 @@
           }
       }
 
-      // Фоновый запрос на сервер
       let data = await callBackend('getDashboardData', { token: appState.token });
       document.getElementById("loader-screen").classList.add("hidden");
         
-      if (!data || !data.authorized) { clearMemory(); location.reload(); return; }
+      if (!data || data.error === "Оффлайн режим") return; 
+      if (data.authorized === false) { clearMemory(); location.reload(); return; }
       
-      // Сохраняем свежие данные и рендерим
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
       
       if (!isUserPromoter) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-          appState.currentAction = state.myActiveAction || null;
-          saveMemory("currentAction", appState.currentAction);
-          renderTimeUI();
-          applyLimits(state);
+          if(state && state.authorized !== false) {
+             appState.currentAction = state.myActiveAction || null;
+             saveMemory("currentAction", appState.currentAction);
+             renderTimeUI();
+             applyLimits(state);
+          }
       }
     }
 
-    // РАЗДЕЛЕННАЯ ФУНКЦИЯ РЕНДЕРИНГА
     function renderDashboardData(data, isSilent = false) {
       isUserPromoter = data.isPromoter;
 
@@ -958,7 +970,6 @@
              aBadge.classList.remove("hidden"); 
              aDot.classList.remove("hidden");
              
-             // PUSH уведомление если заявок стало больше
              if (data.adminInbox.length > appState.lastInboxCount) {
                  showPushNotification("Новая заявка!", "Появилась заявка в админке");
              }
@@ -1029,7 +1040,7 @@
               <button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button>
             </div>
           </div>
-      `).join("") || "<p style='color:gray;'>Запросов нет</p>";
+      `).join("") || "<p style='color:gray;text-align:center;'>Запросов нет</p>";
 
       let aInbox = data.adminInbox || [];
       document.getElementById("admin-list").innerHTML = aInbox.map(r => {
@@ -1042,7 +1053,7 @@
                </div>`;
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
           return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
-      }).join("") || "<p style='color:gray;'>Все заявки обработаны</p>";
+      }).join("") || "<p style='color:gray;text-align:center;'>Все заявки обработаны</p>";
 
       let aHist = data.adminHistory || [];
       document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
@@ -1055,7 +1066,7 @@
             <div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
             <div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div>
           </div>`
-      }).join("") || "<p style='color:gray;'>История пуста</p>";
+      }).join("") || "<p style='color:gray;text-align:center;'>История пуста</p>";
 
       globalSellers = data.sellers || [];
       globalScItems = data.scItems || [];
@@ -1065,7 +1076,7 @@
       if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:15px;text-align:center;color:gray'>Нет данных</div>";
       let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
       
-      let html = `<div class="grid-details-container inner-block" style="padding: 8px; margin-bottom:8px;">`;
+      let html = `<div class="grid-details-container inner-block" style="padding: 10px;">`;
       html += `<div class="grid-details-title" style="margin-bottom: 5px; font-size:13px;">${dataObj.title}</div>`;
       html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
       
@@ -1161,7 +1172,7 @@
       }
       else if (type === 'report') {
         document.getElementById("details-title").innerText = "Мои отчеты";
-        listHtml = "<div class='card' style='padding:0; box-shadow:none; background:transparent;'>";
+        listHtml = "<div style='padding-top:10px;'>";
         listHtml += myReports.map(generateHorizontalGrid).join('');
         listHtml += "</div>";
       }
@@ -1215,7 +1226,7 @@
       document.getElementById("details-title").innerText = emp.name;
       
       document.getElementById("details-kpi-circle-container").innerHTML = `
-        <div class="circle-box" style="transform: scale(0.65); margin: -20px 0; cursor: pointer;" onclick="openEmpKpiDetails('${emp.iin}')">
+        <div class="circle-box" style="transform: scale(0.65); margin: -20px -10px; cursor: pointer;" onclick="openEmpKpiDetails('${emp.iin}')">
           <div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);">
             <div class="kpi-inner" style="width: 70%; height: 70%;">
               <span style="font-size:20px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)};">${emp.kpi}%</span>
@@ -1224,13 +1235,12 @@
         </div>
       `;
 
-      let listHtml = "<div class='card' style='padding:0; overflow:hidden; background:var(--bg-color); box-shadow:none;'>";
+      let listHtml = "<div style='padding-top:10px;'>";
       listHtml += emp.reports.map(generateHorizontalGrid).join('');
-      listHtml += `<div style="height:10px;"></div>`;
 
       listHtml += `
-        <div class="grid-details-container inner-block" style="padding: 10px;">
-            <div class="grid-details-title" style="margin-bottom: 5px;">Баллы сотрудника</div>
+        <div class="grid-details-container inner-block" style="padding: 15px;">
+            <div class="grid-details-title" style="margin-bottom: 10px;">Баллы сотрудника</div>
             <div style="display:flex; justify-content:space-around; text-align:center;">
                <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Начислено</div><b style="font-size:16px;">${emp.pts.acc}</b></div>
                <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Использ.</div><b style="font-size:16px;">${emp.pts.use}</b></div>
@@ -1239,27 +1249,25 @@
             </div>
         </div>
       `;
-      listHtml += `<div style="height:8px;"></div>`;
 
       listHtml += `
-        <div class="grid-details-container inner-block" style="padding: 10px;">
+        <div class="grid-details-container inner-block" style="padding: 15px;">
           <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:10px; font-size:13px; width:100%; margin:0;">Выписать штраф</button>
-          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:10px; background:rgba(231, 76, 60, 0.1); color:var(--text-color);">
-             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:34px; margin-top:0; margin-bottom:8px; font-size:14px; background:var(--card-bg);">
-             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; justify-content:center;">
-                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:45px; height:34px; padding:0; font-size:18px;">-</button>
-                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:34px; margin:0; text-align:center; width: 70px; font-size:16px; background:var(--card-bg);">
-                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:45px; height:34px; padding:0; font-size:18px;">+</button>
+          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:10px; padding:15px; border:1px solid #e74c3c; border-radius:10px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
+             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:40px; margin-top:0; margin-bottom:10px; font-size:14px; background:var(--card-bg);">
+             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; justify-content:center;">
+                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:45px; height:40px; padding:0; font-size:20px;">-</button>
+                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:40px; margin:0; text-align:center; width: 80px; font-size:18px; background:var(--card-bg);">
+                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:45px; height:40px; padding:0; font-size:20px;">+</button>
              </div>
-             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:14px; margin:0;">Подтвердить</button>
+             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:10px; font-size:14px; margin:0;">Подтвердить</button>
           </div>
         </div>
       `;
-      listHtml += `<div style="height:8px;"></div>`;
 
       let empDisplayHistory = emp.ptsHistory.filter(p => p.type !== "KPI");
-      listHtml += `<div class="grid-details-container inner-block" style="padding: 10px; overflow:hidden;">`;
-      listHtml += `<div class="grid-details-title" style="padding-top:5px; margin-bottom: 8px;">История баллов</div>`;
+      listHtml += `<div class="grid-details-container inner-block" style="padding: 15px; overflow:hidden;">`;
+      listHtml += `<div class="grid-details-title" style="margin-bottom: 10px;">История баллов</div>`;
       if(empDisplayHistory.length > 0) {
          listHtml += empDisplayHistory.map(h => renderHistoryItem(h, true)).join("");
       } else {
