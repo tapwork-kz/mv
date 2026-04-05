@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <title>TapWork App</title>
+  <title>TapWork</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
   <link rel="manifest" href="manifest.json">
@@ -25,7 +25,7 @@
       --inner-bg: rgba(100, 100, 100, 0.05);
       --form-title-color: #000000;
       --form-input-color: #4d4d4d;
-      --banner-bg: rgba(0, 0, 0, 0.04);
+      --banner-bg: rgba(0, 0, 0, 0.03);
     }
     
     @media (prefers-color-scheme: dark) {
@@ -38,12 +38,12 @@
         --inner-bg: rgba(255, 255, 255, 0.06);
         --form-title-color: #ffffff;
         --form-input-color: #e0e0e0;
-        --banner-bg: rgba(255, 255, 255, 0.05);
+        --banner-bg: rgba(255, 255, 255, 0.04);
       }
       .glass { 
         background: rgba(35, 35, 35, 0.85) !important; 
         border: 1px solid rgba(255,255,255,0.08) !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
       }
     }
     
@@ -56,8 +56,8 @@
       backdrop-filter: blur(15px);
       -webkit-backdrop-filter: blur(15px);
       border: 1px solid rgba(150, 150, 150, 0.15);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-radius: 24px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-radius: 20px;
     }
     
     .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
@@ -65,46 +65,46 @@
     .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
     @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(15px) scale(0.98); }
+      0% { opacity: 0; transform: translateY(10px) scale(0.99); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
     @keyframes slideInRight {
-      0% { opacity: 0; transform: translateX(30px); }
+      0% { opacity: 0; transform: translateX(20px); }
       100% { opacity: 1; transform: translateX(0); }
     }
     @keyframes slideInLeft {
-      0% { opacity: 0; transform: translateX(-30px); }
+      0% { opacity: 0; transform: translateX(-20px); }
       100% { opacity: 1; transform: translateX(0); }
     }
 
     /* Шапки */
     .sticky-header {
       position: sticky;
-      top: 10px;
+      top: 5px;
       z-index: 20;
-      padding: 12px 18px;
-      margin: 10px 15px 15px 15px;
+      padding: 10px 12px;
+      margin: 0 0 10px 0;
+      border-radius: 16px;
     }
     
-    /* Спуск верхней шапки */
     .fixed-header { 
-      padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 15px 20px; 
+      padding: calc(env(safe-area-inset-top, 45px) + 15px) 12px 12px 12px; 
       flex-shrink: 0; 
       z-index: 100; 
-      border-radius: 0 0 30px 30px; 
-      margin-bottom: 15px; 
+      border-radius: 0 0 24px 24px; 
+      margin-bottom: 12px; 
       border-top: none;
     }
 
     .hidden { display: none !important; }
     
-    .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 15px calc(30px + env(safe-area-inset-bottom)) 15px; }
+    .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 12px calc(30px + env(safe-area-inset-bottom)) 12px; }
 
     /* Элементы форм */
     input, select { user-select: text; -webkit-user-select: text; transition: 0.3s; }
     input[type="text"], input[type="number"], input[type="date"], select { 
-      display: block; width: 100%; height: 50px; padding: 0 16px; margin: 10px 0; border: 1px solid var(--border-color); 
-      border-radius: 14px; font-size: 16px; box-sizing: border-box; 
+      display: block; width: 100%; height: 46px; padding: 0 14px; margin: 8px 0; border: 1px solid var(--border-color); 
+      border-radius: 12px; font-size: 15px; box-sizing: border-box; 
       -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color);
     }
     input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; }
@@ -115,7 +115,7 @@
 
     .smart-date { color: var(--btn-color); font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
     
-    button { width: 100%; padding: 15px; margin: 6px 0; border: none; border-radius: 14px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; background: var(--btn-color); transition: transform 0.1s, background-color 0.2s, opacity 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; background: var(--btn-color); transition: transform 0.1s, background-color 0.2s, opacity 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     button:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(100%); }
     button:active:not(:disabled) { transform: scale(0.96); opacity: 0.9; }
     
@@ -124,10 +124,10 @@
     .btn-lunch { background-color: #27ae60; color: #fff; }
     .btn-snack { background-color: #8e44ad; color: #fff; }
     .btn-return { background-color: #e74c3c; color: #fff; }
-    .desc { font-size: 13px; opacity: 0.9; font-weight: normal; margin-top: 4px; }
+    .desc { font-size: 12px; opacity: 0.9; font-weight: normal; margin-top: 2px; }
     
-    .card { background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; border: 1px solid var(--border-color); }
-    .card h3 { margin: 0 0 12px 0; font-size: 16px; color: var(--btn-color); }
+    .card { background: var(--card-bg); padding: 14px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.3s; border: 1px solid var(--border-color); }
+    .card h3 { margin: 0 0 10px 0; font-size: 15px; color: var(--btn-color); }
     
     @media (prefers-color-scheme: dark) {
       .card { box-shadow: none; }
@@ -139,83 +139,80 @@
 
     .btn-green { background: #27ae60; } .btn-orange { background: #f39c12; } .btn-gray { background: #95a5a6; } .btn-red { background: #e74c3c; }
     
-    .nav-bar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; position: relative; }
-    .badge { position: absolute; top: -6px; right: -6px; background: #e74c3c; color: white; border-radius: 50%; padding: 3px 7px; font-size: 11px; font-weight: bold; border: 2px solid var(--bg-color); transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
+    .nav-bar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; position: relative; }
+    .badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; border: 2px solid var(--bg-color); transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
     
-    .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; }
-    .top-icons { display: flex; gap: 8px; align-items: center; background: rgba(150,150,150,0.1); padding: 5px; border-radius: 20px;}
+    .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; }
+    .top-icons { display: flex; gap: 6px; align-items: center; background: rgba(150,150,150,0.1); padding: 4px; border-radius: 16px;}
     
-    /* Активные вкладки навигации */
-    .icon-btn { font-size: 22px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.3s; padding: 8px 12px; border-radius: 15px; opacity: 0.6; filter: grayscale(100%); }
+    .icon-btn { font-size: 20px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.3s; padding: 6px 10px; border-radius: 12px; opacity: 0.6; filter: grayscale(100%); }
     .icon-btn:active { transform: scale(0.85); }
     .icon-btn.active-tab { opacity: 1; filter: grayscale(0%); background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     @media (prefers-color-scheme: dark) { .icon-btn.active-tab { box-shadow: 0 2px 8px rgba(0,0,0,0.3); } }
 
-    /* Дорожка (Баннер) */
-    .banner-wrapper { background: var(--banner-bg); border-radius: 20px; padding: 12px; margin-bottom: 10px; border: 1px solid rgba(150,150,150,0.05); }
-    .info-wrapper { display: flex; gap: 8px; align-items: stretch; }
-    .scrollable-blocks { display: flex; gap: 8px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 5px; flex: 1; scroll-snap-type: x mandatory; }
+    .banner-wrapper { background: var(--banner-bg); border-radius: 16px; padding: 8px; margin-bottom: 10px; border: 1px solid rgba(150,150,150,0.05); }
+    .info-wrapper { display: flex; gap: 6px; align-items: stretch; }
+    .scrollable-blocks { display: flex; gap: 6px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 2px; flex: 1; scroll-snap-type: x mandatory; }
     .scrollable-blocks::-webkit-scrollbar { display: none; }
     
-    .info-box { background: var(--card-bg); padding: 10px 8px; border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; flex-shrink: 0; min-width: 80px; scroll-snap-align: start; border: 1px solid rgba(150,150,150,0.05);}
-    .info-box.pts-box { width: 100%; max-width: 180px; padding-left: 8px; padding-right: 8px; }
+    .info-box { background: var(--card-bg); padding: 8px 6px; border-radius: 12px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; flex-shrink: 0; min-width: 65px; scroll-snap-align: start; border: 1px solid rgba(150,150,150,0.05);}
+    .info-box.pts-box { width: 100%; max-width: 150px; padding-left: 6px; padding-right: 6px; }
     .info-box:active { transform: scale(0.95); }
-    .info-box.tabel-box { min-width: 140px; } 
+    .info-box.tabel-box { min-width: 120px; } 
     
-    .circle-box { width: 75px; min-width: 75px; height: 75px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); background: none; border:none;}
+    .circle-box { width: 62px; min-width: 62px; height: 62px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); background: none; border:none;}
     .kpi-container { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.5s ease; }
-    .kpi-inner { width: 86%; height: 86%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .kpi-inner { width: 84%; height: 84%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     
-    .info-box-title { font-size: 10px; color: gray; text-transform: uppercase; font-weight: bold; white-space: nowrap; margin-bottom: 6px; letter-spacing: 0.5px;}
-    .info-box-value { font-size: 17px; font-weight: bold; color: var(--btn-color); transition: 0.3s;}
+    .info-box-title { font-size: 9px; color: gray; text-transform: uppercase; font-weight: bold; white-space: nowrap; margin-bottom: 4px; letter-spacing: 0.3px;}
+    .info-box-value { font-size: 15px; font-weight: bold; color: var(--btn-color); transition: 0.3s;}
 
-    .tabel-grid { display: flex; gap: 10px; font-size: 12px; font-weight: bold; color: var(--text-color); justify-content: center; }
+    .tabel-grid { display: flex; gap: 6px; font-size: 10px; font-weight: bold; color: var(--text-color); justify-content: center; }
     .tabel-item { display: flex; flex-direction: column; align-items: center; }
-    .tabel-lbl { color: gray; font-size: 9px; margin-bottom: 3px;}
+    .tabel-lbl { color: gray; font-size: 8px; margin-bottom: 2px;}
 
-    .inner-block { background: var(--inner-bg); border-radius: 14px; padding: 12px; transition: 0.3s; }
+    .inner-block { background: var(--inner-bg); border-radius: 12px; padding: 10px; transition: 0.3s; margin-bottom: 10px; }
 
-    .req-list { display: flex; flex-direction: column; gap: 12px; }
-    .req-item { padding: 16px; border-radius: 16px; background: var(--card-bg); border-left: 5px solid var(--btn-color); box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.3s; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
+    .req-list { display: flex; flex-direction: column; gap: 10px; }
+    .req-item { padding: 12px; border-radius: 14px; background: var(--card-bg); border-left: 4px solid var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.3s; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
     .req-item.admin { border-left-color: #3498db; }
-    .req-title { font-weight: bold; margin-bottom: 6px; font-size: 16px; }
-    .req-desc { font-size: 14px; color: gray; margin-bottom: 12px; line-height: 1.4;}
-    .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .grid-btns button { padding: 14px; margin: 0; font-size: 15px; display:block; }
+    .req-title { font-weight: bold; margin-bottom: 4px; font-size: 14px; }
+    .req-desc { font-size: 13px; color: gray; margin-bottom: 10px; line-height: 1.3;}
+    .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .grid-btns button { padding: 12px; margin: 0; font-size: 13px; display:block; }
 
-    .detail-item { padding: 14px 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
+    .detail-item { padding: 12px 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
     .detail-item:last-child { border-bottom: none; }
-    .detail-plus { color: #27ae60; font-weight: bold; font-size: 16px;}
-    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 16px;}
-    .detail-fine { color: #c0392b; font-weight: bold; font-size: 16px;}
-    .detail-val { font-weight: bold; font-size: 15px; color: var(--btn-color); }
+    .detail-plus { color: #27ae60; font-weight: bold; font-size: 14px;}
+    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 14px;}
+    .detail-fine { color: #c0392b; font-weight: bold; font-size: 14px;}
+    .detail-val { font-weight: bold; font-size: 14px; color: var(--btn-color); }
 
-    .sc-item { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 15px; cursor: pointer; transition: 0.2s; border-radius: 10px; }
+    .sc-item { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; cursor: pointer; transition: 0.2s; border-radius: 10px; }
     .sc-item:active { background: var(--inner-bg); }
     .sc-item.selected { background: var(--btn-color); font-weight: bold; color: #fff; border-color: transparent;}
     .sc-item.selected .type-label { color: #fff !important; }
-    .sc-list-container { max-height: 280px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 14px; margin-bottom: 12px; background: var(--card-bg); transition: 0.3s; }
+    .sc-list-container { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; background: var(--card-bg); transition: 0.3s; }
 
-    .grid-details-container { padding: 12px; background: var(--card-bg); border-radius: 16px; transition: 0.3s; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color);}
-    .grid-details-title { text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--text-color); }
-    .grid-details-box { display: grid; gap: 3px; text-align: center; align-items: center; justify-content: center; }
-    .grid-details-header { font-size: 10px; color: gray; font-weight: bold; margin-bottom: 3px; text-transform: uppercase;}
-    .grid-details-value { font-size: 15px; margin-top: 0; }
+    .grid-details-container { padding: 10px; background: var(--card-bg); border-radius: 14px; transition: 0.3s; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid var(--border-color);}
+    .grid-details-title { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-color); }
+    .grid-details-box { display: grid; gap: 2px; text-align: center; align-items: center; justify-content: center; }
+    .grid-details-header { font-size: 9px; color: gray; font-weight: bold; margin-bottom: 2px; text-transform: uppercase;}
+    .grid-details-value { font-size: 13px; margin-top: 0; }
 
-    .active-outs-box { border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); text-align: left; margin-top: 25px; transition: 0.3s;}
-    .active-outs-title { font-weight: bold; font-size: 15px; margin-bottom: 12px; color: var(--text-color); }
-    .active-out-item { display: flex; justify-content: space-between; font-size: 14px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
+    .active-outs-box { border-radius: 14px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); text-align: left; margin-top: 15px; transition: 0.3s;}
+    .active-outs-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--text-color); }
+    .active-out-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
     .active-out-item:last-child { border-bottom: none; }
     .active-out-name { font-weight: bold; color: var(--text-color); }
     .active-out-time { color: var(--btn-color); font-weight: bold; }
     .active-out-time.late { color: #e74c3c; }
 
-    /* Активные фильтры админки */
-    .admin-flt { padding:10px 8px; font-size:13px; margin:0; flex:1; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 10px; transition: 0.3s; }
+    .admin-flt { padding: 8px 6px; font-size: 12px; margin:0; flex:1; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; transition: 0.3s; }
     .admin-flt.active-flt { background: var(--btn-color); color: #fff; border-color: var(--btn-color); }
     .admin-flt.focus-flt.active-flt { background: #e74c3c; border-color: #e74c3c; }
 
-    #toast { position: fixed; bottom: env(safe-area-inset-bottom, 30px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 14px 28px; border-radius: 25px; font-size: 15px; font-weight: bold; z-index: 1000; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 8px 20px rgba(0,0,0,0.3); opacity: 0; }
+    #toast { position: fixed; bottom: env(safe-area-inset-bottom, 30px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 6px 15px rgba(0,0,0,0.3); opacity: 0; }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(-15px); }
     #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; transition: 0.3s; }
   </style>
@@ -236,7 +233,7 @@
     
     <div class="fixed-header glass">
       <div class="header-container">
-        <h2 id="user-greeting" style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;"></h2>
+        <h2 id="user-greeting" style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;"></h2>
         <div class="top-icons" id="main-tabs">
           <div id="nav-time-icon" class="icon-btn active-tab hidden" onclick="switchTab('time');">⏱️</div>
           <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');">📤</div>
@@ -247,9 +244,9 @@
       </div>
       
       <div class="nav-bar" id="nav-container">
-        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 14px; position: relative; border-radius: 16px;">
+        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 12px; position: relative; border-radius: 14px;">
           Админ-панель 
-          <span id="admin-dot" class="badge hidden" style="padding:5px; top:-2px; right:-2px;"></span>
+          <span id="admin-dot" class="badge hidden" style="padding:4px; top:-2px; right:-2px;"></span>
         </button>
       </div>
 
@@ -263,29 +260,29 @@
 
             <div class="info-box pts-box" onclick="openDetails('points')">
               <div class="info-box-title">Мои баллы</div>
-              <div class="pts-grid" style="display:flex; gap:4px; margin-top:5px; width:100%; justify-content:space-between;">
-                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1;">
-                   <div style="font-size:9px; color:gray;">Нач.</div>
-                   <div style="font-size:13px; font-weight:bold; color:var(--text-color);" id="pt-acc">-</div>
+              <div class="pts-grid" style="display:flex; gap:3px; margin-top:4px; width:100%; justify-content:space-between;">
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;">
+                   <div style="font-size:8px; color:gray;">Нач.</div>
+                   <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-acc">-</div>
                 </div>
-                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1;">
-                   <div style="font-size:9px; color:gray;">Исп.</div>
-                   <div style="font-size:13px; font-weight:bold; color:var(--text-color);" id="pt-use">-</div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;">
+                   <div style="font-size:8px; color:gray;">Исп.</div>
+                   <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-use">-</div>
                 </div>
-                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1; background:rgba(41, 128, 185, 0.1);">
-                   <div style="font-size:9px; color:gray;">Ост.</div>
-                   <div style="font-size:13px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(41, 128, 185, 0.1);">
+                   <div style="font-size:8px; color:gray;">Ост.</div>
+                   <div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div>
                 </div>
-                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1; background:rgba(231, 76, 60, 0.1);">
-                   <div style="font-size:9px; color:gray;">Штрф.</div>
-                   <div style="font-size:13px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(231, 76, 60, 0.1);">
+                   <div style="font-size:8px; color:gray;">Штрф.</div>
+                   <div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div>
                 </div>
               </div>
             </div>
 
             <div class="info-box" onclick="openDetails('report')">
               <div class="info-box-title">Мои отчеты</div>
-              <div class="info-box-value" style="font-size:13px; line-height: 28px;">См. детали</div>
+              <div class="info-box-value" style="font-size:12px; line-height: 24px;">См. детали</div>
             </div>
 
             <div class="info-box tabel-box">
@@ -297,8 +294,8 @@
           <div class="info-box circle-box" onclick="openDetails('kpi')">
             <div class="kpi-container" id="kpi-circle">
               <div class="kpi-inner">
-                 <span id="kpi-val" style="font-size:15px; font-weight:bold;">90%</span>
-                 <span style="font-size:8px; color:gray; line-height:1; margin-top: 2px;">КФ. ЭФФ.</span>
+                 <span id="kpi-val" style="font-size:13px; font-weight:bold;">90%</span>
+                 <span style="font-size:7px; color:gray; line-height:1; margin-top: 1px;">КФ. ЭФФ.</span>
               </div>
             </div>
           </div>
@@ -309,7 +306,7 @@
     <div class="scrollable-content" id="scrollable-body" style="padding-top: 5px;">
       
       <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="fade-in">
-        <p id="action-hint" style="margin-bottom: 18px; font-weight:bold; padding-top: 5px; font-size:16px;">Загрузка лимитов...</p>
+        <p id="action-hint" style="margin-bottom: 12px; font-weight:bold; padding-top: 5px; font-size:15px;">Загрузка лимитов...</p>
         
         <div id="standard-buttons">
           <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')" disabled>
@@ -342,34 +339,34 @@
           <button onclick="openForm('points')">Баллы мотивации</button>
           <button onclick="openForm('swap')" class="btn-orange">Обмен сменами</button>
           
-          <div class="card" style="margin-top: 20px;">
-            <h3 style="margin-bottom: 12px;">Горячий чек</h3>
-            <div style="margin-bottom: 8px; font-size:13px; font-weight:bold; color:gray;">Услуги</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px;">
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
+          <div class="card" style="margin-top: 15px;">
+            <h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>
+            <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
             </div>
-            <div style="margin-bottom: 8px; font-size:13px; font-weight:bold; color:gray;">Аксессуары</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
-              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
+            <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Аксессуары</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
             </div>
           </div>
         </div>
 
         <div id="form-sc" class="card form-dark hidden" style="padding: 0; background: transparent; border: none; box-shadow: none;">
           <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
-             <div style="display:flex; align-items:center; gap:10px;">
-                <h3 style="margin:0; font-size: 18px;">Продажа СЦ/Фокус</h3>
-                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:24px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
+             <div style="display:flex; align-items:center;">
+                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:18px; padding:6px; margin-right:12px; line-height:1; background:rgba(150,150,150,0.1); border-radius:8px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
+                <h3 style="margin:0; font-size: 15px;">Продажа СЦ/Фокус</h3>
              </div>
-             <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:34px; width:110px; margin:0; font-size:14px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
+             <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
-          <div class="card" style="margin-top: 10px;">
+          <div class="card" style="margin-top: 5px;">
               <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
               <div class="sc-list-container" id="sc-list"></div>
               <div class="grid-btns">
@@ -380,19 +377,19 @@
         </div>
 
         <div id="form-tradein" class="card form-dark hidden">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-             <h3 style="margin:0; font-size:18px;">Продажа Trade-In</h3>
-             <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:34px; width:110px; margin:0; font-size:14px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+             <h3 style="margin:0; font-size:15px;">Продажа Trade-In</h3>
+             <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
           <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
-          <div class="grid-btns" style="margin-top: 20px;">
+          <div class="grid-btns" style="margin-top: 15px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button onclick="submitTradeIn()">Отправить</button>
           </div>
         </div>
 
         <div id="form-points" class="card form-dark hidden">
-          <h3 style="font-size:18px;">Баллы мотивации</h3>
+          <h3 style="font-size:15px;">Баллы мотивации</h3>
           <div id="fp-balance-notice"></div>
           
           <select id="fp-action">
@@ -405,36 +402,36 @@
             <option value="2 часа">2 часа</option>
             <option value="3 часа">3 часа</option>
           </select>
-          <p id="fp-date-label" style="margin: 15px 0 8px; font-size: 14px; color:gray;">Укажите дату:</p>
+          <p id="fp-date-label" style="margin: 12px 0 6px; font-size: 13px; color:gray;">Укажите дату:</p>
           <input type="text" id="fp-date" class="smart-date" data-realdate="">
-          <div class="grid-btns" style="margin-top: 20px;">
+          <div class="grid-btns" style="margin-top: 15px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button id="fp-submit-btn" onclick="submitPoints()">Отправить</button>
           </div>
         </div>
 
         <div id="form-swap" class="card form-dark hidden">
-          <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:25px;">
-             <h3 style="margin-top:0; font-size:16px;">Исправить смену за сегодня</h3>
+          <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:15px;">
+             <h3 style="margin-top:0; font-size:14px;">Исправить смену за сегодня</h3>
              <select id="fs-fix-shift">
                <option value="" disabled selected>Выберите правильную смену</option>
                <option value="09:00 - 19:00">09:00 - 19:00</option>
                <option value="12:00 - 22:00">12:00 - 22:00</option>
              </select>
-             <button class="btn-green" onclick="submitFixShift()" style="margin-top:15px;">Отправить исправление</button>
+             <button class="btn-green" onclick="submitFixShift()" style="margin-top:10px; font-size:13px; padding:10px;">Отправить исправление</button>
           </div>
 
-          <h3 style="padding-top:15px; border-top:1px solid var(--border-color); font-size:18px;">Обмен сменами</h3>
+          <h3 style="padding-top:10px; border-top:1px solid var(--border-color); font-size:15px;">Обмен сменами</h3>
           <select id="fs-target" onchange="checkSwapFields()"></select>
           <div id="fs-extra" class="hidden">
-            <p style="margin: 15px 0 8px; font-size: 15px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
+            <p style="margin: 10px 0 6px; font-size: 13px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
             <input type="text" id="fs-date" class="smart-date" data-realdate="">
             <select id="fs-shift">
               <option value="09:00 - 19:00">09:00 - 19:00</option>
               <option value="12:00 - 22:00">12:00 - 22:00</option>
             </select>
           </div>
-          <div class="grid-btns" style="margin-top: 20px;">
+          <div class="grid-btns" style="margin-top: 15px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button onclick="submitSwap()">Запросить обмен</button>
           </div>
@@ -442,14 +439,14 @@
       </div>
 
       <div id="content-inbox" class="hidden">
-        <div class="sticky-header glass" style="margin-top:5px; margin-bottom: 20px;">
-            <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 18px;">Запросы на обмен</h3>
+        <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;">
+            <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы на обмен</h3>
         </div>
         <div id="inbox-list" class="req-list"></div>
       </div>
 
       <div id="content-admin" class="hidden">
-        <div class="sticky-header glass" style="display:flex; gap:6px; margin-top:5px; margin-bottom:20px; flex-wrap: wrap; justify-content:center;">
+        <div class="sticky-header glass" style="display:flex; gap:6px; margin-top:0; margin-bottom:12px; flex-wrap: wrap; justify-content:center;">
           <button id="btn-adm-plan" onclick="toggleAdminView('plan')" class="admin-flt active-flt" style="min-width: 45%;">План</button>
           <button id="btn-adm-sc" onclick="toggleAdminView('sc')" class="admin-flt" style="min-width: 45%;">СЦ Товары</button>
           <button id="btn-adm-emp" onclick="toggleAdminView('emps')" class="admin-flt" style="min-width: 30%;">Сотрудники</button>
@@ -459,19 +456,19 @@
           <button id="btn-adm-hist" onclick="toggleAdminView('history')" class="admin-flt" style="min-width: 30%;">История</button>
         </div>
         
-        <div id="admin-plan-list" class="hidden" style="font-size:14px; line-height: 1.5;"></div>
+        <div id="admin-plan-list" class="hidden" style="font-size:13px; line-height: 1.4;"></div>
         
         <div id="admin-sc-list" class="hidden">
-           <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px; margin-top:0;">
+           <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px; margin-top:0;">
                <div style="display:flex; gap:6px;">
                    <button id="flt-cifra" class="admin-flt active-flt" onclick="renderAdminScItems('Цифра', this)">Цифра</button>
                    <button id="flt-mbt" class="admin-flt" onclick="renderAdminScItems('МБТ', this)">МБТ</button>
                    <button id="flt-kbt" class="admin-flt" onclick="renderAdminScItems('КБТ', this)">КБТ</button>
                    <button id="flt-focus" class="admin-flt focus-flt" onclick="renderAdminScItems('Фокус', this)">Фокус</button>
                </div>
-               <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:44px; font-size:15px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept, null)">
+               <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept, null)">
            </div>
-           <div id="admin-sc-container" class="card" style="padding:8px;"></div>
+           <div id="admin-sc-container" class="card" style="padding:6px;"></div>
         </div>
 
         <div id="admin-emp-list" class="req-list"></div>
@@ -480,10 +477,10 @@
       </div>
 
       <div id="content-details" class="hidden">
-        <div class="sticky-header glass" style="display:flex; align-items:center; margin-top:5px; margin-bottom:20px; justify-content: space-between;">
-          <div style="display:flex; align-items:center; gap:15px;">
-            <div id="btn-details-back" onclick="closeDetails()" style="cursor:pointer; padding:8px 12px; background:var(--inner-bg); border-radius:12px; font-size:22px; transition:0.2s;">🔙</div>
-            <h3 id="details-title" style="margin:0; color:var(--btn-color); font-size:18px;">Детали</h3>
+        <div class="sticky-header glass" style="display:flex; align-items:center; margin-top:0; margin-bottom:12px; justify-content: space-between;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div id="btn-details-back" onclick="closeDetails()" style="cursor:pointer; padding:6px 10px; background:var(--inner-bg); border-radius:10px; font-size:18px; transition:0.2s;">🔙</div>
+            <h3 id="details-title" style="margin:0; color:var(--btn-color); font-size:15px;">Детали</h3>
           </div>
           <div id="details-kpi-circle-container"></div>
         </div>
@@ -605,7 +602,6 @@
       }
     });
 
-    // --- SWIPE LOGIC ---
     function initSwipe() {
         let startX = 0, startY = 0;
         const scrollArea = document.getElementById('scrollable-body');
@@ -621,7 +617,6 @@
             let diffX = endX - startX;
             let diffY = Math.abs(endY - startY);
 
-            // Если свайп горизонтальный и длинный
             if (diffY < 60 && Math.abs(diffX) > 80) {
                 if (isUserPromoter || document.getElementById('nav-time-icon').classList.contains('hidden')) return;
                 
@@ -632,8 +627,8 @@
                 else if (!document.getElementById('content-inbox').classList.contains('hidden')) currentIdx = 2;
 
                 if (currentIdx !== -1) {
-                    if (diffX < 0 && currentIdx < 2) switchTab(tabs[currentIdx + 1], 'right'); // свайп влево -> идем вправо
-                    else if (diffX > 0 && currentIdx > 0) switchTab(tabs[currentIdx - 1], 'left'); // свайп вправо -> идем влево
+                    if (diffX < 0 && currentIdx < 2) switchTab(tabs[currentIdx + 1], 'right'); 
+                    else if (diffX > 0 && currentIdx > 0) switchTab(tabs[currentIdx - 1], 'left'); 
                 }
             }
         }, {passive: true});
@@ -710,7 +705,6 @@
     function switchTab(tab, direction = null) {
       if(appState.token) loadDashboard(true);
       
-      // Обновляем подсветку активной вкладки
       document.querySelectorAll('#main-tabs .icon-btn').forEach(btn => btn.classList.remove('active-tab'));
       if(tab === 'time') document.getElementById('nav-time-icon').classList.add('active-tab');
       if(tab === 'create') document.getElementById('nav-create-icon').classList.add('active-tab');
@@ -722,7 +716,6 @@
       document.getElementById("content-admin").classList.add("hidden");
       document.getElementById("content-details").classList.add("hidden");
       
-      // Сброс и выбор анимации
       let sections = document.querySelectorAll('#scrollable-body > div');
       let animClass = 'fade-in';
       if (direction === 'right') animClass = 'slide-in-right';
@@ -812,11 +805,11 @@
                
                let actionTitle = out.action;
                if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв";
-               let roleLabel = out.role.toLowerCase().includes('промоутер') ? `<div style="margin-top:4px; margin-left:0px; font-size:12px; color:var(--text-color); opacity: 0.8;">${out.role}</div>` : '';
+               let roleLabel = out.role.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${out.role}</div>` : '';
                
                return `<div class="active-out-item" style="align-items: center;">
                   <div>
-                     <span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:12px; margin-left: 5px;">(${actionTitle})</span>
+                     <span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px; margin-left: 5px;">(${actionTitle})</span>
                      ${roleLabel}
                   </div>
                   <span class="active-out-time ${timeClass}">${timeText}</span>
@@ -904,7 +897,7 @@
 
         const declension = getDeclension(appState.currentAction);
         document.getElementById("return-text").innerText = "Вернуться с " + declension;
-        document.getElementById("action-hint").innerText = "Ожидаем вашего возвращения:";
+        document.getElementById("action-hint").innerText = "Ожидаем возвращения:";
       } else {
         standardBtns.classList.remove("hidden");
         returnContainer.classList.add("hidden");
@@ -975,7 +968,7 @@
       document.getElementById("loader-screen").classList.add("hidden");
         
       if (!data || data.error === "Оффлайн режим") return; 
-      if (data.authorized === false) { return; } // Не делаем location.reload мгновенно, ждем след попытки
+      if (data.authorized === false) { return; } 
       
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
@@ -1068,16 +1061,16 @@
           adminScItemsGlobal = data.adminScItems || [];
           
           document.getElementById("admin-emp-list").innerHTML = allEmployeesData.map(e => `
-            <div class="req-item" style="border-left-color: var(--btn-color); padding: 15px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div class="req-item" style="border-left-color: var(--btn-color); padding: 12px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                  <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center;">
-                    <span>${e.name}</span> <span style="font-size:12px; font-weight:normal; color:gray;">${e.dept}</span>
+                    <span>${e.name}</span> <span style="font-size:11px; font-weight:normal; color:gray;">${e.dept}</span>
                  </div>
               </div>
-              <div class="inner-block" style="font-size:13px; margin-top:5px; color:var(--text-color); text-align:center;">
+              <div class="inner-block" style="font-size:13px; margin-top:4px; margin-bottom:6px; color:var(--text-color); text-align:center; padding: 6px;">
                  ${e.tabelStr}
               </div>
-              <div style="display:flex; justify-content:space-between; font-size:13px; margin-top:12px;">
+              <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
                 <span>Ошибок: <b>${e.reportErrors}</b></span>
                 <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
               </div>
@@ -1123,7 +1116,7 @@
               <button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button>
             </div>
           </div>
-      `).join("") || "<p style='color:gray;text-align:center;'>Запросов нет</p>";
+      `).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
 
       let aInbox = data.adminInbox || [];
       document.getElementById("admin-list").innerHTML = aInbox.map(r => {
@@ -1135,8 +1128,8 @@
                  <button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button>
                </div>`;
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
-          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:13px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
-      }).join("") || "<p style='color:gray;text-align:center;'>Все заявки обработаны</p>";
+          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
+      }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Все заявки обработаны</p>";
 
       let aHist = data.adminHistory || [];
       document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
@@ -1146,29 +1139,29 @@
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
           
           return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;">
-            <div class="req-title">${r.type} <span style="font-size:13px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
+            <div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
             <div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div>
           </div>`
-      }).join("") || "<p style='color:gray;text-align:center;'>История пуста</p>";
+      }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
 
       globalSellers = data.sellers || [];
       globalScItems = data.scItems || [];
     }
 
     function generateHorizontalGrid(dataObj) {
-      if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:15px;text-align:center;color:gray'>Нет данных</div>";
+      if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:10px;text-align:center;color:gray;font-size:13px;'>Нет данных</div>";
       let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
       
       let html = `<div class="grid-details-container inner-block">`;
-      html += `<div class="grid-details-title" style="margin-bottom: 8px;">${dataObj.title}</div>`;
-      html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:4px;">`;
+      html += `<div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div>`;
+      html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
       
       dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; });
       dataObj.values.forEach(v => {
         let displayVal = '-';
         if (v === '✔') displayVal = '✅';
         else if (v === '✖') displayVal = '❌';
-        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:6px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
+        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
       });
       html += `</div></div>`;
       return html;
@@ -1189,15 +1182,15 @@
 
       let inner = `
           <div>
-              <b style="font-size:13px; color:${typeColor}; display:inline-block; margin-bottom:4px;">${typeDisplay}</b><br>
-              <span style="color:var(--text-color); font-size:15px; display:inline-block; margin-bottom:4px;">${i.reason}</span><br>
-              <b style="color:${srcColor}; font-size:12px;">${i.source}</b> <span style="color:gray;font-size:12px;"> • ${i.date}</span>
+              <b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br>
+              <span style="color:var(--text-color); font-size:13px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
+              <b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span>
           </div>
           <span class="${col}">${valStr}</span>
       `;
       
       if (isCompact) {
-          return `<div style="border-left: 4px solid ${typeColor}; padding: 10px 0 10px 12px; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 15px; background: transparent;">${inner}</div>`;
+          return `<div style="border-left: 3px solid ${typeColor}; padding: 8px 0 8px 10px; margin-bottom: 6px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">${inner}</div>`;
       }
       return `<div class="detail-item">${inner}</div>`;
     }
@@ -1215,10 +1208,10 @@
         if (myScHistory.length > 0) {
            listHtml += myScHistory.map((i, idx) => {
               let srcColor = getSourceColor(i.source);
-              return `<div class="detail-item"><div><span style="color:var(--text-color)">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:12px; display:inline-block; margin-top:4px;">${i.source}</b> <span style="color:gray;font-size:12px;"> • ${i.date}</span></div></div>`;
+              return `<div class="detail-item"><div><span style="color:var(--text-color); font-size:13px;">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:11px; display:inline-block; margin-top:3px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span></div></div>`;
            }).join("");
         } else {
-           listHtml += "<div style='padding:20px;text-align:center;color:gray'>История пуста</div>";
+           listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
         }
         listHtml += "</div>";
       } 
@@ -1228,7 +1221,7 @@
         if (myDisplayPointsHistory.length > 0) {
            listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join("");
         } else {
-           listHtml += "<div style='padding:20px;text-align:center;color:gray'>История пуста</div>";
+           listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
         }
         listHtml += "</div>";
       } 
@@ -1244,10 +1237,10 @@
            if (!dispName) dispName = k.name;
            if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
            if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
-           let dateStr = k.date ? `<span style="color:gray;font-size:12px; margin-left:5px;"> • ${k.date}</span>` : "";
+           let dateStr = k.date ? `<span style="color:gray;font-size:11px; margin-left:5px;"> • ${k.date}</span>` : "";
            
            listHtml += `<div class="detail-item">
-              <div><span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:4px;">${dispName}</span><br><b style="color:${srcColor}; font-size:12px;">${k.source}</b>${dateStr}</div>
+              <div><span style="color:var(--text-color); font-size:13px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
               <span class="${col}">${valStr}</span>
            </div>`;
         });
@@ -1280,10 +1273,10 @@
          if (!dispName) dispName = k.name;
          if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
          if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
-         let dateStr = k.date ? `<span style="color:gray;font-size:12px; margin-left:5px;"> • ${k.date}</span>` : "";
+         let dateStr = k.date ? `<span style="color:gray;font-size:11px; margin-left:5px;"> • ${k.date}</span>` : "";
 
          listHtml += `<div class="detail-item">
-            <div><span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:4px;">${dispName}</span><br><b style="color:${srcColor}; font-size:12px;">${k.source}</b>${dateStr}</div>
+            <div><span style="color:var(--text-color); font-size:13px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
             <span class="${col}">${valStr}</span>
          </div>`;
       });
@@ -1325,25 +1318,25 @@
         <div class="grid-details-container inner-block">
             <div class="grid-details-title">Баллы сотрудника</div>
             <div style="display:flex; justify-content:space-around; text-align:center;">
-               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Начислено</div><b style="font-size:18px;">${emp.pts.acc}</b></div>
-               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Использ.</div><b style="font-size:18px;">${emp.pts.use}</b></div>
-               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Остаток</div><b style="font-size:18px; color:#27ae60;">${emp.pts.rem}</b></div>
-               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Штраф</div><b style="font-size:18px; color:#e74c3c;">${emp.pts.fin}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Начислено</div><b style="font-size:16px;">${emp.pts.acc}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Использ.</div><b style="font-size:16px;">${emp.pts.use}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Остаток</div><b style="font-size:16px; color:#27ae60;">${emp.pts.rem}</b></div>
+               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Штраф</div><b style="font-size:16px; color:#e74c3c;">${emp.pts.fin}</b></div>
             </div>
         </div>
       `;
 
       listHtml += `
         <div class="grid-details-container inner-block">
-          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:12px; font-size:14px; width:100%; margin:0;">Выписать штраф</button>
-          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:12px; padding:15px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
-             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:44px; margin-top:0; margin-bottom:12px; font-size:15px; background:var(--card-bg);">
-             <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; justify-content:center;">
-                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:50px; height:44px; padding:0; font-size:22px;">-</button>
-                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:44px; margin:0; text-align:center; width: 90px; font-size:18px; background:var(--card-bg);">
-                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:50px; height:44px; padding:0; font-size:22px;">+</button>
+          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:10px; font-size:13px; width:100%; margin:0;">Выписать штраф</button>
+          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:10px; padding:12px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
+             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:40px; margin-top:0; margin-bottom:10px; font-size:14px; background:var(--card-bg);">
+             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; justify-content:center;">
+                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:45px; height:40px; padding:0; font-size:20px;">-</button>
+                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:40px; margin:0; text-align:center; width: 80px; font-size:16px; background:var(--card-bg);">
+                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:45px; height:40px; padding:0; font-size:20px;">+</button>
              </div>
-             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:12px; font-size:15px; margin:0;">Подтвердить</button>
+             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:10px; font-size:13px; margin:0;">Подтвердить</button>
           </div>
         </div>
       `;
@@ -1354,7 +1347,7 @@
       if(empDisplayHistory.length > 0) {
          listHtml += empDisplayHistory.map(h => renderHistoryItem(h, true)).join("");
       } else {
-         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:14px;">История пуста</div>`;
+         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:13px;">История пуста</div>`;
       }
       listHtml += `</div>`;
       listHtml += "</div>";
@@ -1429,7 +1422,7 @@
        if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
        
        if (filtered.length === 0) {
-           container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:14px;'>Пусто</p>";
+           container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:13px;'>Пусто</p>";
            return;
        }
 
@@ -1440,14 +1433,14 @@
            for (const [dName, items] of Object.entries(groups)) {
                if (items.length === 0) continue;
                let headerText = items[0].focusHeader || `${dName} Фокус`;
-               let html = `<div class="inner-block" style="margin-bottom:12px;"><div style="font-size:15px; font-weight:bold; color:var(--text-color); margin-bottom:10px;">${headerText}</div>`;
+               let html = `<div class="inner-block" style="margin-bottom:10px;"><div style="font-size:14px; font-weight:bold; color:var(--text-color); margin-bottom:8px;">${headerText}</div>`;
                
                items.forEach((i, idx) => {
                   html += `
-                    <div style="padding:10px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                    <div style="padding:8px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
                        <div>
-                         <div style="font-size:14px; margin-bottom:6px;"><b>${idx+1}.</b> ${i.name}</div>
-                         <div style="font-size:12px; color:#e74c3c; font-weight:bold;">Фокус — ${i.pts} баллов</div>
+                         <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
+                         <div style="font-size:11px; color:#e74c3c; font-weight:bold;">Фокус — ${i.pts} баллов</div>
                        </div>
                     </div>`;
                });
@@ -1456,15 +1449,15 @@
            }
        } else {
            filtered.forEach((i, idx) => {
-               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:24px; padding:6px; border-radius:10px; display:inline-block; transition:0.2s;">📄</a>` : '';
+               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:20px; padding:4px 8px; border-radius:8px; display:inline-block; transition:0.2s;">📄</a>` : '';
                let div = document.createElement("div");
-               div.style = "padding:12px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
+               div.style = "padding:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
                div.innerHTML = `
                   <div>
-                     <div style="font-size:14px; margin-bottom:6px;"><b>${idx+1}.</b> ${i.name}</div>
-                     <div style="font-size:12px; color:#e67e22; font-weight:bold;">
+                     <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
+                     <div style="font-size:11px; color:#e67e22; font-weight:bold;">
                         СЦ
-                        ${i.discount ? `<span style="color:#e74c3c; margin-left:12px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
+                        ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
                      </div>
                   </div>
                   <div>${docBtn}</div>
@@ -1498,7 +1491,7 @@
         let noticeBox = document.getElementById("fp-balance-notice");
         if (isZero) {
           noticeBox.innerHTML = "<b>У вас нет оставшихся баллов</b>";
-          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 15px; border-radius: 12px; font-size: 15px; text-align: center; margin-bottom: 15px; border: 1px dashed #e74c3c; box-shadow: 0 4px 10px rgba(0,0,0,0.03);";
+          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 12px; border-radius: 12px; font-size: 14px; text-align: center; margin-bottom: 12px; border: 1px dashed #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
           
           document.getElementById("fp-action").classList.add("hidden");
           document.getElementById("fp-time").classList.add("hidden");
@@ -1507,8 +1500,8 @@
           document.getElementById("fp-submit-btn").disabled = true;
           document.getElementById("fp-submit-btn").style.background = "#95a5a6";
         } else {
-          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:20px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
-          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 15px; border-radius: 12px; font-size: 15px; text-align: center; margin-bottom: 15px; border: 1px dashed var(--btn-color); box-shadow: 0 4px 10px rgba(0,0,0,0.03);";
+          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:18px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
+          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 12px; border-radius: 12px; font-size: 14px; text-align: center; margin-bottom: 12px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
           
           document.getElementById("fp-action").classList.remove("hidden");
           document.getElementById("fp-time").classList.remove("hidden");
@@ -1532,7 +1525,6 @@
     }
 
     function closeForm() {
-      // Снимаем анимации и прячем
       ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => {
           let el = document.getElementById(id);
           el.classList.add("hidden");
@@ -1540,7 +1532,6 @@
       });
       let menu = document.getElementById("menu-list");
       menu.classList.remove("hidden");
-      // Возвращаем меню с анимацией появления
       menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
       menu.classList.add("fade-in");
       
@@ -1561,7 +1552,7 @@
       let focusList = globalScItems.filter(i => i.name.toLowerCase().includes(q) && i.type === 'Фокус');
       let sortedFiltered = [...scList, ...focusList];
 
-      if (sortedFiltered.length === 0) list.innerHTML = "<p style='padding:15px; color:gray; font-size:14px; text-align:center;'>Ничего не найдено</p>";
+      if (sortedFiltered.length === 0) list.innerHTML = "<p style='padding:12px; color:gray; font-size:13px; text-align:center;'>Ничего не найдено</p>";
 
       sortedFiltered.forEach(i => {
         let div = document.createElement("div");
@@ -1573,10 +1564,10 @@
         
         div.innerHTML = `
           <div>
-             <div style="margin-bottom:6px;">${i.name}</div>
+             <div style="margin-bottom:4px;">${i.name}</div>
              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="type-label" style="font-size:12px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
-                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:13px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
+                <div class="type-label" style="font-size:11px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
+                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:12px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
              </div>
           </div>`;
           
