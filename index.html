@@ -50,7 +50,6 @@
     html, body { height: 100%; overflow: hidden; margin: 0; padding: 0; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); user-select: none; -webkit-user-select: none; transition: background-color 0.3s ease, color 0.3s ease; padding-env(safe-area-inset-top); }
     
-    /* Анимации и Жидкое стекло */
     .glass {
       background: rgba(var(--card-bg-rgb), 0.75) !important;
       backdrop-filter: blur(15px);
@@ -77,7 +76,6 @@
       100% { opacity: 1; transform: translateX(0); }
     }
 
-    /* Шапки */
     .sticky-header {
       position: sticky;
       top: 5px;
@@ -100,7 +98,6 @@
     
     .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 12px calc(30px + env(safe-area-inset-bottom)) 12px; }
 
-    /* Элементы форм */
     input, select { user-select: text; -webkit-user-select: text; transition: 0.3s; }
     input[type="text"], input[type="number"], input[type="date"], select { 
       display: block; width: 100%; height: 46px; padding: 0 14px; margin: 8px 0; border: 1px solid var(--border-color); 
@@ -214,7 +211,7 @@
 
     #toast { position: fixed; bottom: env(safe-area-inset-bottom, 30px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 6px 15px rgba(0,0,0,0.3); opacity: 0; }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(-15px); }
-    #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; transition: 0.3s; }
+    #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; transition: opacity 0.3s; }
   </style>
 </head>
 <body style="display: flex; flex-direction: column;">
@@ -222,14 +219,14 @@
   <div id="toast">Уведомление</div>
   <div id="loader-screen"><p style="color: gray; font-style: italic;">Идентификация...</p></div>
 
-  <div id="auth-screen" class="hidden scrollable-content fade-in" style="max-width: 400px; margin: 0 auto; text-align:center;">
+  <div id="auth-screen" class="hidden scrollable-content fade-in" style="max-width: 400px; margin: 0 auto; text-align:center; transition: opacity 0.3s ease;">
     <h2 style="margin-top:20px;">Вход в систему</h2>
     <p style="color:gray; font-size:14px;">Введите ваш ИИН (вход произойдет автоматически)</p>
     <input type="number" id="iin-input" placeholder="Введите 12 цифр" inputmode="numeric" oninput="manualLogin(this)">
     <div id="login-error" style="color: #e74c3c; text-align:center; margin-top: 10px;"></div>
   </div>
 
-  <div id="main-screen" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+  <div id="main-screen" class="hidden" style="display:flex; flex-direction:column; height:100%; transition: opacity 0.3s ease;">
     
     <div class="fixed-header glass">
       <div class="header-container">
@@ -361,8 +358,8 @@
         <div id="form-sc" class="card form-dark hidden" style="padding: 0; background: transparent; border: none; box-shadow: none;">
           <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
              <div style="display:flex; align-items:center;">
-                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:18px; padding:6px; margin-right:12px; line-height:1; background:rgba(150,150,150,0.1); border-radius:8px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
                 <h3 style="margin:0; font-size: 15px;">Продажа СЦ/Фокус</h3>
+                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:18px; padding:6px; margin-left:8px; line-height:1; background:rgba(150,150,150,0.1); border-radius:8px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
              </div>
              <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
@@ -618,7 +615,7 @@
             let diffY = Math.abs(endY - startY);
 
             if (diffY < 60 && Math.abs(diffX) > 80) {
-                if (isUserPromoter || document.getElementById('nav-time-icon').classList.contains('hidden')) return;
+                if (document.getElementById('nav-time-icon').classList.contains('hidden')) return;
                 
                 let tabs = ['time', 'create', 'inbox'];
                 let currentIdx = -1;
@@ -675,12 +672,18 @@
             saveMemory("currentAction", "");
 
             document.getElementById("toast").classList.remove("show");
-            document.getElementById("auth-screen").classList.add("hidden");
-            document.getElementById("main-screen").classList.remove("hidden");
-            document.getElementById("user-greeting").innerText = appState.firstName;
             
-            loadDashboard(false);
-            startPolling();
+            // Плавный переход
+            document.getElementById("auth-screen").style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById("auth-screen").classList.add("hidden");
+                document.getElementById("main-screen").classList.remove("hidden");
+                document.getElementById("main-screen").classList.add("fade-in");
+                document.getElementById("user-greeting").innerText = appState.firstName;
+                loadDashboard(false);
+                startPolling();
+            }, 300);
+
         } else {
             document.getElementById("iin-input").disabled = false;
             document.getElementById("login-error").innerText = res.error;
@@ -726,7 +729,7 @@
           s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
       });
 
-      if (!isUserPromoter && (tab === 'time' || tab === 'create')) {
+      if (tab === 'time' || tab === 'create') {
          document.getElementById("info-dashboard").classList.remove("hidden");
       } else {
          document.getElementById("info-dashboard").classList.add("hidden");
@@ -973,7 +976,8 @@
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
       
-      if (!isUserPromoter) {
+      // Вызываем всегда (и для продавцов, и для промоутеров), чтобы лимиты корректно снялись с паузы
+      if (data.role && data.role.toLowerCase() !== "директор") {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
              appState.currentAction = state.myActiveAction || null;
@@ -988,16 +992,19 @@
       isUserPromoter = data.isPromoter;
 
       if (isUserPromoter) {
-          document.getElementById("info-dashboard").classList.add("hidden");
           document.getElementById("nav-create-icon").classList.add("hidden");
           document.getElementById("inbox-icon").classList.add("hidden");
           document.getElementById("desc-break").innerText = "";
           document.getElementById("desc-lunch").innerText = "";
           document.getElementById("desc-snack").innerText = "";
+          document.getElementById("info-dashboard").classList.add("hidden");
       } else {
           document.getElementById("desc-break").innerText = "10 мин";
           document.getElementById("desc-lunch").innerText = "40 мин (12:00-17:00)";
           document.getElementById("desc-snack").innerText = "30 мин (16:00-20:00)";
+          if (document.querySelectorAll("#content-admin:not(.hidden)").length === 0) {
+              document.getElementById("info-dashboard").classList.remove("hidden");
+          }
       }
 
       document.getElementById("info-sc-val").innerText = `${data.info?.scSales ?? '-'} | ${data.info?.breezySales ?? '-'}`;
@@ -1037,6 +1044,7 @@
 
       if (data.role && data.role.toLowerCase() === "директор") {
           document.getElementById("nav-time-icon").classList.add("hidden");
+          document.getElementById("content-time").classList.add("hidden");
           document.getElementById("nav-create-icon").classList.add("hidden");
           document.getElementById("inbox-icon").classList.add("hidden");
           document.getElementById("nav-admin").classList.remove("hidden");
@@ -1304,8 +1312,8 @@
       document.getElementById("details-kpi-circle-container").innerHTML = `
         <div class="circle-box" style="transform: scale(0.65); margin: -20px -10px; cursor: pointer;" onclick="openEmpKpiDetails('${emp.iin}')">
           <div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);">
-            <div class="kpi-inner" style="width: 70%; height: 70%;">
-              <span style="font-size:20px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)};">${emp.kpi}%</span>
+            <div class="kpi-inner" style="width: 88%; height: 88%;">
+              <span style="font-size:20px; font-weight:normal; color:${setKpiColor(emp.kpi, null, null)};">${emp.kpi}%</span>
             </div>
           </div>
         </div>
