@@ -3,14 +3,14 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <title>Мотивация App</title>
+  <title>TapWork App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#f4f4f5">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Мотивация">
+  <meta name="apple-mobile-web-app-title" content="TapWork">
   <link rel="apple-touch-icon" href="icon.png">
 
   <style>
@@ -25,6 +25,7 @@
       --inner-bg: rgba(100, 100, 100, 0.05);
       --form-title-color: #000000;
       --form-input-color: #4d4d4d;
+      --banner-bg: rgba(0, 0, 0, 0.04);
     }
     
     @media (prefers-color-scheme: dark) {
@@ -37,11 +38,12 @@
         --inner-bg: rgba(255, 255, 255, 0.06);
         --form-title-color: #ffffff;
         --form-input-color: #e0e0e0;
+        --banner-bg: rgba(255, 255, 255, 0.05);
       }
       .glass { 
-        background: rgba(45, 45, 45, 0.85) !important; 
-        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+        background: rgba(35, 35, 35, 0.85) !important; 
+        border: 1px solid rgba(255,255,255,0.08) !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
       }
     }
     
@@ -51,40 +53,58 @@
     /* Анимации и Жидкое стекло */
     .glass {
       background: rgba(var(--card-bg-rgb), 0.75) !important;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(150, 150, 150, 0.1);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(150, 150, 150, 0.15);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-radius: 24px;
     }
     
-    .fade-in {
-      animation: fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    }
+    .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
     @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(10px) scale(0.99); }
+      0% { opacity: 0; transform: translateY(15px) scale(0.98); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
+    @keyframes slideInRight {
+      0% { opacity: 0; transform: translateX(30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideInLeft {
+      0% { opacity: 0; transform: translateX(-30px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
 
+    /* Шапки */
     .sticky-header {
       position: sticky;
-      top: 0;
-      z-index: 10;
-      padding: 12px 15px;
-      margin: 5px 15px 15px 15px;
-      border-radius: 16px;
+      top: 10px;
+      z-index: 20;
+      padding: 12px 18px;
+      margin: 10px 15px 15px 15px;
     }
     
-    .fixed-header { padding: env(safe-area-inset-top, 35px) 15px 0 15px; flex-shrink: 0; z-index: 100; border-radius: 0 0 20px 20px; margin-bottom: 10px; }
+    /* Спуск верхней шапки */
+    .fixed-header { 
+      padding: calc(env(safe-area-inset-top, 45px) + 20px) 20px 15px 20px; 
+      flex-shrink: 0; 
+      z-index: 100; 
+      border-radius: 0 0 30px 30px; 
+      margin-bottom: 15px; 
+      border-top: none;
+    }
 
     .hidden { display: none !important; }
     
-    .scrollable-content { flex-grow: 1; overflow-y: auto; padding: 10px 15px calc(20px + env(safe-area-inset-bottom)) 15px; }
+    .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 15px calc(30px + env(safe-area-inset-bottom)) 15px; }
 
+    /* Элементы форм */
     input, select { user-select: text; -webkit-user-select: text; transition: 0.3s; }
     input[type="text"], input[type="number"], input[type="date"], select { 
-      display: block; width: 100%; height: 50px; padding: 0 14px; margin: 10px 0; border: 1px solid #ccc; 
-      border-radius: 10px; font-size: 16px; box-sizing: border-box; 
+      display: block; width: 100%; height: 50px; padding: 0 16px; margin: 10px 0; border: 1px solid var(--border-color); 
+      border-radius: 14px; font-size: 16px; box-sizing: border-box; 
       -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color);
     }
     input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; }
@@ -93,11 +113,11 @@
       input, select { border: 1px solid #444; }
     }
 
-    .smart-date { color: var(--btn-color); font-weight: normal; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
+    .smart-date { color: var(--btn-color); font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
     
-    button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; background: var(--btn-color); transition: transform 0.1s, background-color 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    button:disabled { cursor: not-allowed; opacity: 0.8; filter: grayscale(100%); }
-    button:active:not(:disabled) { transform: scale(0.96); }
+    button { width: 100%; padding: 15px; margin: 6px 0; border: none; border-radius: 14px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; background: var(--btn-color); transition: transform 0.1s, background-color 0.2s, opacity 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    button:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(100%); }
+    button:active:not(:disabled) { transform: scale(0.96); opacity: 0.9; }
     
     .btn-login { background-color: var(--btn-color); color: var(--btn-text); }
     .btn-break { background-color: #f39c12; color: #fff; }
@@ -106,11 +126,11 @@
     .btn-return { background-color: #e74c3c; color: #fff; }
     .desc { font-size: 13px; opacity: 0.9; font-weight: normal; margin-top: 4px; }
     
-    .card { background: var(--card-bg); padding: 15px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; border: 1px solid transparent; }
-    .card h3 { margin: 0 0 10px 0; font-size: 16px; color: var(--btn-color); }
+    .card { background: var(--card-bg); padding: 18px; border-radius: 16px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s; border: 1px solid var(--border-color); }
+    .card h3 { margin: 0 0 12px 0; font-size: 16px; color: var(--btn-color); }
     
     @media (prefers-color-scheme: dark) {
-      .card { border-color: var(--border-color); box-shadow: none; }
+      .card { box-shadow: none; }
       .req-item { background: var(--card-bg); border: 1px solid var(--border-color); }
     }
 
@@ -120,72 +140,83 @@
     .btn-green { background: #27ae60; } .btn-orange { background: #f39c12; } .btn-gray { background: #95a5a6; } .btn-red { background: #e74c3c; }
     
     .nav-bar { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; position: relative; }
-    .badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; font-weight: bold; border: 2px solid var(--bg-color); transition: 0.3s; }
+    .badge { position: absolute; top: -6px; right: -6px; background: #e74c3c; color: white; border-radius: 50%; padding: 3px 7px; font-size: 11px; font-weight: bold; border: 2px solid var(--bg-color); transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
     
     .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; }
-    .top-icons { display: flex; gap: 15px; align-items: center; }
-    .icon-btn { font-size: 26px; cursor: pointer; position: relative; display: flex; align-items: center; transition: 0.2s; }
-    .icon-btn:active { transform: scale(0.85); }
+    .top-icons { display: flex; gap: 8px; align-items: center; background: rgba(150,150,150,0.1); padding: 5px; border-radius: 20px;}
     
-    .info-wrapper { display: flex; gap: 5px; margin-bottom: 15px; align-items: stretch; }
-    .scrollable-blocks { display: flex; gap: 5px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 5px; flex: 1; }
+    /* Активные вкладки навигации */
+    .icon-btn { font-size: 22px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.3s; padding: 8px 12px; border-radius: 15px; opacity: 0.6; filter: grayscale(100%); }
+    .icon-btn:active { transform: scale(0.85); }
+    .icon-btn.active-tab { opacity: 1; filter: grayscale(0%); background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    @media (prefers-color-scheme: dark) { .icon-btn.active-tab { box-shadow: 0 2px 8px rgba(0,0,0,0.3); } }
+
+    /* Дорожка (Баннер) */
+    .banner-wrapper { background: var(--banner-bg); border-radius: 20px; padding: 12px; margin-bottom: 10px; border: 1px solid rgba(150,150,150,0.05); }
+    .info-wrapper { display: flex; gap: 8px; align-items: stretch; }
+    .scrollable-blocks { display: flex; gap: 8px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 5px; flex: 1; scroll-snap-type: x mandatory; }
     .scrollable-blocks::-webkit-scrollbar { display: none; }
     
-    .info-box { background: var(--card-bg); padding: 8px 4px; border-radius: 12px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; transition: 0.15s; display: flex; flex-direction: column; justify-content: center; flex-shrink: 0; min-width: 70px; }
-    .info-box.pts-box { width: 100%; max-width: 170px; padding-left: 6px; padding-right: 6px; }
+    .info-box { background: var(--card-bg); padding: 10px 8px; border-radius: 16px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; justify-content: center; flex-shrink: 0; min-width: 80px; scroll-snap-align: start; border: 1px solid rgba(150,150,150,0.05);}
+    .info-box.pts-box { width: 100%; max-width: 180px; padding-left: 8px; padding-right: 8px; }
     .info-box:active { transform: scale(0.95); }
-    .info-box.tabel-box { min-width: 130px; } 
+    .info-box.tabel-box { min-width: 140px; } 
     
-    .circle-box { width: 68px; min-width: 68px; height: 68px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: none; }
+    .circle-box { width: 75px; min-width: 75px; height: 75px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); background: none; border:none;}
     .kpi-container { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.5s ease; }
-    .kpi-inner { width: 88%; height: 88%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .kpi-inner { width: 86%; height: 86%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     
-    .info-box-title { font-size: 9px; color: gray; text-transform: uppercase; font-weight: bold; white-space: nowrap; margin-bottom: 5px; }
-    .info-box-value { font-size: 16px; font-weight: bold; color: var(--btn-color); transition: 0.3s;}
+    .info-box-title { font-size: 10px; color: gray; text-transform: uppercase; font-weight: bold; white-space: nowrap; margin-bottom: 6px; letter-spacing: 0.5px;}
+    .info-box-value { font-size: 17px; font-weight: bold; color: var(--btn-color); transition: 0.3s;}
 
-    .tabel-grid { display: flex; gap: 10px; font-size: 11px; font-weight: bold; color: var(--text-color); justify-content: center; }
+    .tabel-grid { display: flex; gap: 10px; font-size: 12px; font-weight: bold; color: var(--text-color); justify-content: center; }
     .tabel-item { display: flex; flex-direction: column; align-items: center; }
-    .tabel-lbl { color: gray; font-size: 8px; margin-bottom: 2px;}
+    .tabel-lbl { color: gray; font-size: 9px; margin-bottom: 3px;}
 
-    .inner-block { background: var(--inner-bg); border-radius: 10px; padding: 10px; transition: 0.3s; }
+    .inner-block { background: var(--inner-bg); border-radius: 14px; padding: 12px; transition: 0.3s; }
 
-    .req-list { display: flex; flex-direction: column; gap: 10px; }
-    .req-item { padding: 15px; border-radius: 10px; background: var(--card-bg); border-left: 4px solid var(--btn-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); transition: 0.3s; }
+    .req-list { display: flex; flex-direction: column; gap: 12px; }
+    .req-item { padding: 16px; border-radius: 16px; background: var(--card-bg); border-left: 5px solid var(--btn-color); box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: 0.3s; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
     .req-item.admin { border-left-color: #3498db; }
-    .req-title { font-weight: bold; margin-bottom: 5px; font-size: 15px; }
-    .req-desc { font-size: 13px; color: gray; margin-bottom: 10px; }
-    .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .grid-btns button { padding: 12px; margin: 0; font-size: 14px; display:block; }
+    .req-title { font-weight: bold; margin-bottom: 6px; font-size: 16px; }
+    .req-desc { font-size: 14px; color: gray; margin-bottom: 12px; line-height: 1.4;}
+    .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-btns button { padding: 14px; margin: 0; font-size: 15px; display:block; }
 
-    .detail-item { padding: 12px 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .detail-item { padding: 14px 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 15px; }
     .detail-item:last-child { border-bottom: none; }
-    .detail-plus { color: #27ae60; font-weight: bold; font-size: 15px;}
-    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 15px;}
-    .detail-fine { color: #c0392b; font-weight: bold; font-size: 15px;}
-    .detail-val { font-weight: bold; font-size: 14px; color: var(--btn-color); }
+    .detail-plus { color: #27ae60; font-weight: bold; font-size: 16px;}
+    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 16px;}
+    .detail-fine { color: #c0392b; font-weight: bold; font-size: 16px;}
+    .detail-val { font-weight: bold; font-size: 15px; color: var(--btn-color); }
 
-    .sc-item { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; cursor: pointer; transition: 0.2s; border-radius: 5px; }
+    .sc-item { padding: 12px; border-bottom: 1px solid var(--border-color); font-size: 15px; cursor: pointer; transition: 0.2s; border-radius: 10px; }
     .sc-item:active { background: var(--inner-bg); }
     .sc-item.selected { background: var(--btn-color); font-weight: bold; color: #fff; border-color: transparent;}
     .sc-item.selected .type-label { color: #fff !important; }
-    .sc-list-container { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 10px; background: var(--card-bg); transition: 0.3s; }
+    .sc-list-container { max-height: 280px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 14px; margin-bottom: 12px; background: var(--card-bg); transition: 0.3s; }
 
-    .grid-details-container { padding: 10px; background: var(--card-bg); border-radius: 12px; transition: 0.3s; margin: 0 15px 15px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03);}
-    .grid-details-title { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-color); }
-    .grid-details-box { display: grid; gap: 2px; text-align: center; align-items: center; justify-content: center; }
-    .grid-details-header { font-size: 10px; color: gray; font-weight: bold; margin-bottom: 2px;}
-    .grid-details-value { font-size: 14px; margin-top: 0; }
+    .grid-details-container { padding: 12px; background: var(--card-bg); border-radius: 16px; transition: 0.3s; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--border-color);}
+    .grid-details-title { text-align: center; font-size: 15px; font-weight: bold; margin-bottom: 10px; color: var(--text-color); }
+    .grid-details-box { display: grid; gap: 3px; text-align: center; align-items: center; justify-content: center; }
+    .grid-details-header { font-size: 10px; color: gray; font-weight: bold; margin-bottom: 3px; text-transform: uppercase;}
+    .grid-details-value { font-size: 15px; margin-top: 0; }
 
-    .active-outs-box { border-radius: 12px; padding: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: left; margin-top: 20px; transition: 0.3s;}
-    .active-outs-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--text-color); }
-    .active-out-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border-color); }
+    .active-outs-box { border-radius: 16px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.04); text-align: left; margin-top: 25px; transition: 0.3s;}
+    .active-outs-title { font-weight: bold; font-size: 15px; margin-bottom: 12px; color: var(--text-color); }
+    .active-out-item { display: flex; justify-content: space-between; font-size: 14px; padding: 10px 0; border-bottom: 1px solid var(--border-color); }
     .active-out-item:last-child { border-bottom: none; }
     .active-out-name { font-weight: bold; color: var(--text-color); }
     .active-out-time { color: var(--btn-color); font-weight: bold; }
     .active-out-time.late { color: #e74c3c; }
 
-    #toast { position: fixed; bottom: env(safe-area-inset-bottom, 20px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.3); opacity: 0; }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(-10px); }
+    /* Активные фильтры админки */
+    .admin-flt { padding:10px 8px; font-size:13px; margin:0; flex:1; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 10px; transition: 0.3s; }
+    .admin-flt.active-flt { background: var(--btn-color); color: #fff; border-color: var(--btn-color); }
+    .admin-flt.focus-flt.active-flt { background: #e74c3c; border-color: #e74c3c; }
+
+    #toast { position: fixed; bottom: env(safe-area-inset-bottom, 30px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 14px 28px; border-radius: 25px; font-size: 15px; font-weight: bold; z-index: 1000; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 8px 20px rgba(0,0,0,0.3); opacity: 0; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(-15px); }
     #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; transition: 0.3s; }
   </style>
 </head>
@@ -205,9 +236,9 @@
     
     <div class="fixed-header glass">
       <div class="header-container">
-        <h2 id="user-greeting" style="margin: 0; font-size: 22px;"></h2>
-        <div class="top-icons">
-          <div id="nav-time-icon" class="icon-btn hidden" onclick="switchTab('time');">⏱️</div>
+        <h2 id="user-greeting" style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;"></h2>
+        <div class="top-icons" id="main-tabs">
+          <div id="nav-time-icon" class="icon-btn active-tab hidden" onclick="switchTab('time');">⏱️</div>
           <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');">📤</div>
           <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">
             📩<span id="user-badge" class="badge hidden"></span>
@@ -216,67 +247,69 @@
       </div>
       
       <div class="nav-bar" id="nav-container">
-        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 12px; position: relative;">
+        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 14px; position: relative; border-radius: 16px;">
           Админ-панель 
-          <span id="admin-dot" class="badge hidden" style="padding:4px; top:0; right:0;"></span>
+          <span id="admin-dot" class="badge hidden" style="padding:5px; top:-2px; right:-2px;"></span>
         </button>
       </div>
 
-      <div class="info-wrapper hidden fade-in" id="info-dashboard">
-        <div class="scrollable-blocks" id="scroll-container">
-          <div class="info-box" onclick="openDetails('sc')">
-            <div class="info-box-title">СЦ | Brzy</div>
-            <div class="info-box-value" id="info-sc-val">- | -</div>
-          </div>
+      <div class="banner-wrapper hidden fade-in" id="info-dashboard">
+        <div class="info-wrapper">
+          <div class="scrollable-blocks" id="scroll-container">
+            <div class="info-box" onclick="openDetails('sc')">
+              <div class="info-box-title">СЦ | Brzy</div>
+              <div class="info-box-value" id="info-sc-val">- | -</div>
+            </div>
 
-          <div class="info-box pts-box" onclick="openDetails('points')">
-            <div class="info-box-title">Мои баллы</div>
-            <div class="pts-grid" style="display:flex; gap:3px; margin-top:5px; width:100%; justify-content:space-between;">
-              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1;">
-                 <div style="font-size:8px; color:gray;">Нач.</div>
-                 <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-acc">-</div>
+            <div class="info-box pts-box" onclick="openDetails('points')">
+              <div class="info-box-title">Мои баллы</div>
+              <div class="pts-grid" style="display:flex; gap:4px; margin-top:5px; width:100%; justify-content:space-between;">
+                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1;">
+                   <div style="font-size:9px; color:gray;">Нач.</div>
+                   <div style="font-size:13px; font-weight:bold; color:var(--text-color);" id="pt-acc">-</div>
+                </div>
+                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1;">
+                   <div style="font-size:9px; color:gray;">Исп.</div>
+                   <div style="font-size:13px; font-weight:bold; color:var(--text-color);" id="pt-use">-</div>
+                </div>
+                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1; background:rgba(41, 128, 185, 0.1);">
+                   <div style="font-size:9px; color:gray;">Ост.</div>
+                   <div style="font-size:13px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div>
+                </div>
+                <div class="inner-block" style="border-radius:8px; padding:6px 3px; flex:1; background:rgba(231, 76, 60, 0.1);">
+                   <div style="font-size:9px; color:gray;">Штрф.</div>
+                   <div style="font-size:13px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div>
+                </div>
               </div>
-              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1;">
-                 <div style="font-size:8px; color:gray;">Исп.</div>
-                 <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-use">-</div>
-              </div>
-              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1; background:rgba(41, 128, 185, 0.1);">
-                 <div style="font-size:8px; color:gray;">Ост.</div>
-                 <div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div>
-              </div>
-              <div class="inner-block" style="border-radius:6px; padding:4px 2px; flex:1; background:rgba(231, 76, 60, 0.1);">
-                 <div style="font-size:8px; color:gray;">Штрф.</div>
-                 <div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div>
-              </div>
+            </div>
+
+            <div class="info-box" onclick="openDetails('report')">
+              <div class="info-box-title">Мои отчеты</div>
+              <div class="info-box-value" style="font-size:13px; line-height: 28px;">См. детали</div>
+            </div>
+
+            <div class="info-box tabel-box">
+              <div class="info-box-title">Табель</div>
+              <div class="tabel-grid" id="info-tabel"></div>
             </div>
           </div>
 
-          <div class="info-box" onclick="openDetails('report')">
-            <div class="info-box-title">Мои отчеты</div>
-            <div class="info-box-value" style="font-size:12px; line-height: 25px;">См. детали</div>
-          </div>
-
-          <div class="info-box tabel-box">
-            <div class="info-box-title">Табель</div>
-            <div class="tabel-grid" id="info-tabel"></div>
-          </div>
-        </div>
-
-        <div class="info-box circle-box" style="width:68px; min-width:68px; height:68px;" onclick="openDetails('kpi')">
-          <div class="kpi-container" id="kpi-circle">
-            <div class="kpi-inner">
-               <span id="kpi-val" style="font-size:14px; font-weight:bold;">90%</span>
-               <span style="font-size:7px; color:gray; line-height:1; margin-top: 1px;">КФ. ЭФФ.</span>
+          <div class="info-box circle-box" onclick="openDetails('kpi')">
+            <div class="kpi-container" id="kpi-circle">
+              <div class="kpi-inner">
+                 <span id="kpi-val" style="font-size:15px; font-weight:bold;">90%</span>
+                 <span style="font-size:8px; color:gray; line-height:1; margin-top: 2px;">КФ. ЭФФ.</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div> 
     
-    <div class="scrollable-content" id="scrollable-body" style="padding-top: 0;">
+    <div class="scrollable-content" id="scrollable-body" style="padding-top: 5px;">
       
-      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="hidden fade-in">
-        <p id="action-hint" style="margin-bottom: 15px; font-weight:bold; padding-top: 5px;">Загрузка лимитов...</p>
+      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="fade-in">
+        <p id="action-hint" style="margin-bottom: 18px; font-weight:bold; padding-top: 5px; font-size:16px;">Загрузка лимитов...</p>
         
         <div id="standard-buttons">
           <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')" disabled>
@@ -302,41 +335,41 @@
         </div>
       </div>
 
-      <div id="content-create" class="hidden fade-in">
+      <div id="content-create" class="hidden">
         <div id="menu-list">
           <button onclick="openForm('sc')">Продажа СЦ / Фокус</button>
           <button onclick="openForm('tradein')">Продажа Trade-In</button>
           <button onclick="openForm('points')">Баллы мотивации</button>
           <button onclick="openForm('swap')" class="btn-orange">Обмен сменами</button>
           
-          <div class="card" style="margin-top: 15px;">
-            <h3 style="margin-bottom: 10px;">Горячий чек</h3>
-            <div style="margin-bottom: 5px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px;">
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
+          <div class="card" style="margin-top: 20px;">
+            <h3 style="margin-bottom: 12px;">Горячий чек</h3>
+            <div style="margin-bottom: 8px; font-size:13px; font-weight:bold; color:gray;">Услуги</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px;">
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
             </div>
-            <div style="margin-bottom: 5px; font-size:12px; font-weight:bold; color:gray;">Аксессуары</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
+            <div style="margin-bottom: 8px; font-size:13px; font-weight:bold; color:gray;">Аксессуары</div>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
+              <button class="btn-green" style="padding:12px 0; font-size:13px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
             </div>
           </div>
         </div>
 
-        <div id="form-sc" class="card form-dark hidden fade-in" style="padding: 0; background: transparent; border: none; box-shadow: none;">
-          <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center;">
-             <div style="display:flex; align-items:center; gap:8px;">
-                <h3 style="margin:0;">Продажа СЦ/Фокус</h3>
-                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:22px; opacity:0.3; transition:0.3s; cursor:pointer;">📄</div>
+        <div id="form-sc" class="card form-dark hidden" style="padding: 0; background: transparent; border: none; box-shadow: none;">
+          <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
+             <div style="display:flex; align-items:center; gap:10px;">
+                <h3 style="margin:0; font-size: 18px;">Продажа СЦ/Фокус</h3>
+                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:24px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
              </div>
-             <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:5px;">
+             <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:34px; width:110px; margin:0; font-size:14px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
-          <div class="card">
+          <div class="card" style="margin-top: 10px;">
               <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
               <div class="sc-list-container" id="sc-list"></div>
               <div class="grid-btns">
@@ -346,20 +379,20 @@
           </div>
         </div>
 
-        <div id="form-tradein" class="card form-dark hidden fade-in">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-             <h3 style="margin:0;">Продажа Trade-In</h3>
-             <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:5px;">
+        <div id="form-tradein" class="card form-dark hidden">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+             <h3 style="margin:0; font-size:18px;">Продажа Trade-In</h3>
+             <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:34px; width:110px; margin:0; font-size:14px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
           <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
-          <div class="grid-btns" style="margin-top: 15px;">
+          <div class="grid-btns" style="margin-top: 20px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button onclick="submitTradeIn()">Отправить</button>
           </div>
         </div>
 
-        <div id="form-points" class="card form-dark hidden fade-in">
-          <h3>Баллы мотивации</h3>
+        <div id="form-points" class="card form-dark hidden">
+          <h3 style="font-size:18px;">Баллы мотивации</h3>
           <div id="fp-balance-notice"></div>
           
           <select id="fp-action">
@@ -372,73 +405,73 @@
             <option value="2 часа">2 часа</option>
             <option value="3 часа">3 часа</option>
           </select>
-          <p id="fp-date-label" style="margin: 10px 0 5px; font-size: 13px; color:gray;">Укажите дату:</p>
+          <p id="fp-date-label" style="margin: 15px 0 8px; font-size: 14px; color:gray;">Укажите дату:</p>
           <input type="text" id="fp-date" class="smart-date" data-realdate="">
-          <div class="grid-btns" style="margin-top: 15px;">
+          <div class="grid-btns" style="margin-top: 20px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button id="fp-submit-btn" onclick="submitPoints()">Отправить</button>
           </div>
         </div>
 
-        <div id="form-swap" class="card form-dark hidden fade-in">
-          <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:20px;">
-             <h3 style="margin-top:0;">Исправить смену за сегодня</h3>
+        <div id="form-swap" class="card form-dark hidden">
+          <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:25px;">
+             <h3 style="margin-top:0; font-size:16px;">Исправить смену за сегодня</h3>
              <select id="fs-fix-shift">
                <option value="" disabled selected>Выберите правильную смену</option>
                <option value="09:00 - 19:00">09:00 - 19:00</option>
                <option value="12:00 - 22:00">12:00 - 22:00</option>
              </select>
-             <button class="btn-green" onclick="submitFixShift()" style="margin-top:10px;">Отправить исправление</button>
+             <button class="btn-green" onclick="submitFixShift()" style="margin-top:15px;">Отправить исправление</button>
           </div>
 
-          <h3 style="padding-top:10px; border-top:1px solid var(--border-color);">Обмен сменами</h3>
+          <h3 style="padding-top:15px; border-top:1px solid var(--border-color); font-size:18px;">Обмен сменами</h3>
           <select id="fs-target" onchange="checkSwapFields()"></select>
           <div id="fs-extra" class="hidden">
-            <p style="margin: 10px 0 5px; font-size: 14px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
+            <p style="margin: 15px 0 8px; font-size: 15px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
             <input type="text" id="fs-date" class="smart-date" data-realdate="">
             <select id="fs-shift">
               <option value="09:00 - 19:00">09:00 - 19:00</option>
               <option value="12:00 - 22:00">12:00 - 22:00</option>
             </select>
           </div>
-          <div class="grid-btns" style="margin-top: 15px;">
+          <div class="grid-btns" style="margin-top: 20px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button onclick="submitSwap()">Запросить обмен</button>
           </div>
         </div>
       </div>
 
-      <div id="content-inbox" class="hidden fade-in">
-        <div class="sticky-header glass" style="margin-top:5px; margin-bottom: 15px;">
-            <h3 style="margin:0; color:var(--btn-color); text-align:center;">Запросы на обмен</h3>
+      <div id="content-inbox" class="hidden">
+        <div class="sticky-header glass" style="margin-top:5px; margin-bottom: 20px;">
+            <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 18px;">Запросы на обмен</h3>
         </div>
         <div id="inbox-list" class="req-list"></div>
       </div>
 
-      <div id="content-admin" class="hidden fade-in">
-        <div class="sticky-header glass" style="display:flex; gap:5px; margin-top:5px; margin-bottom:15px; flex-wrap: wrap; justify-content:center;">
-          <button id="btn-adm-plan" onclick="toggleAdminView('plan')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">План</button>
-          <button id="btn-adm-sc" onclick="toggleAdminView('sc')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">СЦ Товары</button>
-          <button id="btn-adm-emp" onclick="toggleAdminView('emps')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 30%;">Сотрудники</button>
-          <button id="btn-adm-pend" onclick="toggleAdminView('pending')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; position:relative; min-width: 30%;">
+      <div id="content-admin" class="hidden">
+        <div class="sticky-header glass" style="display:flex; gap:6px; margin-top:5px; margin-bottom:20px; flex-wrap: wrap; justify-content:center;">
+          <button id="btn-adm-plan" onclick="toggleAdminView('plan')" class="admin-flt active-flt" style="min-width: 45%;">План</button>
+          <button id="btn-adm-sc" onclick="toggleAdminView('sc')" class="admin-flt" style="min-width: 45%;">СЦ Товары</button>
+          <button id="btn-adm-emp" onclick="toggleAdminView('emps')" class="admin-flt" style="min-width: 30%;">Сотрудники</button>
+          <button id="btn-adm-pend" onclick="toggleAdminView('pending')" class="admin-flt" style="position:relative; min-width: 30%;">
              Запросы <span id="admin-badge" class="badge hidden"></span>
           </button>
-          <button id="btn-adm-hist" onclick="toggleAdminView('history')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 30%;">История</button>
+          <button id="btn-adm-hist" onclick="toggleAdminView('history')" class="admin-flt" style="min-width: 30%;">История</button>
         </div>
         
         <div id="admin-plan-list" class="hidden" style="font-size:14px; line-height: 1.5;"></div>
         
         <div id="admin-sc-list" class="hidden">
-           <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:15px;">
-               <div style="display:flex; gap:5px;">
-                   <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('Цифра')">Цифра</button>
-                   <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('МБТ')">МБТ</button>
-                   <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('КБТ')">КБТ</button>
-                   <button style="padding:8px; font-size:12px; margin:0; background:#e74c3c;" onclick="renderAdminScItems('Фокус')">Фокус</button>
+           <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:12px; margin-bottom:20px; margin-top:0;">
+               <div style="display:flex; gap:6px;">
+                   <button id="flt-cifra" class="admin-flt active-flt" onclick="renderAdminScItems('Цифра', this)">Цифра</button>
+                   <button id="flt-mbt" class="admin-flt" onclick="renderAdminScItems('МБТ', this)">МБТ</button>
+                   <button id="flt-kbt" class="admin-flt" onclick="renderAdminScItems('КБТ', this)">КБТ</button>
+                   <button id="flt-focus" class="admin-flt focus-flt" onclick="renderAdminScItems('Фокус', this)">Фокус</button>
                </div>
-               <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept)">
+               <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:44px; font-size:15px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept, null)">
            </div>
-           <div id="admin-sc-container" class="card" style="padding:5px;"></div>
+           <div id="admin-sc-container" class="card" style="padding:8px;"></div>
         </div>
 
         <div id="admin-emp-list" class="req-list"></div>
@@ -446,11 +479,11 @@
         <div id="admin-history-list" class="req-list hidden"></div>
       </div>
 
-      <div id="content-details" class="hidden fade-in">
-        <div class="sticky-header glass" style="display:flex; align-items:center; margin-bottom:15px; justify-content: space-between;">
+      <div id="content-details" class="hidden">
+        <div class="sticky-header glass" style="display:flex; align-items:center; margin-top:5px; margin-bottom:20px; justify-content: space-between;">
           <div style="display:flex; align-items:center; gap:15px;">
-            <button id="btn-details-back" onclick="closeDetails()" style="width:auto; padding:8px 15px; margin:0; background:#95a5a6; border-radius:10px; font-size:20px;">🔙</button>
-            <h3 id="details-title" style="margin:0; color:var(--btn-color);">Детали</h3>
+            <div id="btn-details-back" onclick="closeDetails()" style="cursor:pointer; padding:8px 12px; background:var(--inner-bg); border-radius:12px; font-size:22px; transition:0.2s;">🔙</div>
+            <h3 id="details-title" style="margin:0; color:var(--btn-color); font-size:18px;">Детали</h3>
           </div>
           <div id="details-kpi-circle-container"></div>
         </div>
@@ -551,6 +584,7 @@
       requestNotificationPermission(); 
       initAutoScroll(); 
       initSmartDates(); 
+      initSwipe();
       
       const urlParams = new URLSearchParams(window.location.search);
       const urlIin = urlParams.get('iin');
@@ -571,13 +605,47 @@
       }
     });
 
+    // --- SWIPE LOGIC ---
+    function initSwipe() {
+        let startX = 0, startY = 0;
+        const scrollArea = document.getElementById('scrollable-body');
+        
+        scrollArea.addEventListener('touchstart', e => {
+            startX = e.changedTouches[0].screenX;
+            startY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        scrollArea.addEventListener('touchend', e => {
+            let endX = e.changedTouches[0].screenX;
+            let endY = e.changedTouches[0].screenY;
+            let diffX = endX - startX;
+            let diffY = Math.abs(endY - startY);
+
+            // Если свайп горизонтальный и длинный
+            if (diffY < 60 && Math.abs(diffX) > 80) {
+                if (isUserPromoter || document.getElementById('nav-time-icon').classList.contains('hidden')) return;
+                
+                let tabs = ['time', 'create', 'inbox'];
+                let currentIdx = -1;
+                if (!document.getElementById('content-time').classList.contains('hidden')) currentIdx = 0;
+                else if (!document.getElementById('content-create').classList.contains('hidden') && document.getElementById('menu-list').classList.contains('hidden') === false) currentIdx = 1;
+                else if (!document.getElementById('content-inbox').classList.contains('hidden')) currentIdx = 2;
+
+                if (currentIdx !== -1) {
+                    if (diffX < 0 && currentIdx < 2) switchTab(tabs[currentIdx + 1], 'right'); // свайп влево -> идем вправо
+                    else if (diffX > 0 && currentIdx > 0) switchTab(tabs[currentIdx - 1], 'left'); // свайп вправо -> идем влево
+                }
+            }
+        }, {passive: true});
+    }
+
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
             if(appState.token && !document.hidden) {
                 let data = await callBackend('getDashboardData', { token: appState.token });
                 if (!data || data.error === "Оффлайн режим") return;
-                if (data.authorized === false) { clearMemory(); location.reload(); return; }
+                if (data.authorized === false) { return; } 
                 renderDashboardData(data, true);
                 
                 if(!isUserPromoter) {
@@ -639,8 +707,14 @@
        return color;
     }
 
-    function switchTab(tab) {
+    function switchTab(tab, direction = null) {
       if(appState.token) loadDashboard(true);
+      
+      // Обновляем подсветку активной вкладки
+      document.querySelectorAll('#main-tabs .icon-btn').forEach(btn => btn.classList.remove('active-tab'));
+      if(tab === 'time') document.getElementById('nav-time-icon').classList.add('active-tab');
+      if(tab === 'create') document.getElementById('nav-create-icon').classList.add('active-tab');
+      if(tab === 'inbox') document.getElementById('inbox-icon').classList.add('active-tab');
         
       document.getElementById("content-time").classList.add("hidden");
       document.getElementById("content-create").classList.add("hidden");
@@ -648,8 +722,16 @@
       document.getElementById("content-admin").classList.add("hidden");
       document.getElementById("content-details").classList.add("hidden");
       
-      let sections = document.querySelectorAll('.fade-in');
-      sections.forEach(s => { s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
+      // Сброс и выбор анимации
+      let sections = document.querySelectorAll('#scrollable-body > div');
+      let animClass = 'fade-in';
+      if (direction === 'right') animClass = 'slide-in-right';
+      else if (direction === 'left') animClass = 'slide-in-left';
+
+      sections.forEach(s => { 
+          s.classList.remove('fade-in', 'slide-in-right', 'slide-in-left'); 
+          s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
+      });
 
       if (!isUserPromoter && (tab === 'time' || tab === 'create')) {
          document.getElementById("info-dashboard").classList.remove("hidden");
@@ -657,12 +739,18 @@
          document.getElementById("info-dashboard").classList.add("hidden");
       }
       
-      if(tab === 'time') document.getElementById("content-time").classList.remove("hidden");
-      else if(tab === 'create') document.getElementById("content-create").classList.remove("hidden");
-      else if(tab === 'inbox') document.getElementById("content-inbox").classList.remove("hidden");
-      else if(tab === 'admin') document.getElementById("content-admin").classList.remove("hidden");
-      else if(tab === 'details') document.getElementById("content-details").classList.remove("hidden");
+      let targetEl = null;
+      if(tab === 'time') targetEl = document.getElementById("content-time");
+      else if(tab === 'create') targetEl = document.getElementById("content-create");
+      else if(tab === 'inbox') targetEl = document.getElementById("content-inbox");
+      else if(tab === 'admin') targetEl = document.getElementById("content-admin");
+      else if(tab === 'details') targetEl = document.getElementById("content-details");
       
+      if(targetEl) {
+          targetEl.classList.remove("hidden");
+          targetEl.classList.add(animClass);
+      }
+
       document.getElementById("scrollable-body").scrollTop = 0;
     }
 
@@ -724,11 +812,11 @@
                
                let actionTitle = out.action;
                if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв";
-               let roleLabel = out.role.toLowerCase().includes('промоутер') ? `<div style="margin-top:2px; margin-left:15px; font-size:13px; color:var(--text-color);">${out.role}</div>` : '';
+               let roleLabel = out.role.toLowerCase().includes('промоутер') ? `<div style="margin-top:4px; margin-left:0px; font-size:12px; color:var(--text-color); opacity: 0.8;">${out.role}</div>` : '';
                
                return `<div class="active-out-item" style="align-items: center;">
                   <div>
-                     <span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px;">(${actionTitle})</span>
+                     <span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:12px; margin-left: 5px;">(${actionTitle})</span>
                      ${roleLabel}
                   </div>
                   <span class="active-out-time ${timeClass}">${timeText}</span>
@@ -741,12 +829,10 @@
        activeOutsTimer = setInterval(updateTimers, 10000); 
     }
 
-    // Мгновенный отклик кнопок выхода
     async function triggerAction(actionType) {
       vibrate(50);
       let prevAction = appState.currentAction;
       
-      // Сразу меняем UI (мгновенно)
       appState.currentAction = actionType;
       saveMemory("currentAction", actionType);
       renderTimeUI();
@@ -760,7 +846,6 @@
         let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
         applyLimits(state);
       } else {
-        // Если ошибка или лимит — откатываем UI
         appState.currentAction = prevAction;
         saveMemory("currentAction", prevAction || "");
         renderTimeUI();
@@ -774,7 +859,6 @@
       if (!isSilentAuto) vibrate(50);
       const actionToReturnFrom = appState.currentAction;
 
-      // Сразу меняем UI (мгновенно)
       appState.currentAction = null;
       saveMemory("currentAction", "");
       renderTimeUI();
@@ -792,7 +876,6 @@
         document.getElementById("action-hint").innerText = "Выберите действие:";
         applyLimits(state);
       } else {
-        // Если ошибка — откатываем
         appState.currentAction = actionToReturnFrom;
         saveMemory("currentAction", actionToReturnFrom);
         renderTimeUI();
@@ -874,8 +957,8 @@
         if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1;
         else if (scroller.scrollLeft <= 0) scrollDir = 1;
       }, 40);
-      scroller.addEventListener('touchstart', () => autoScrollAnimation = false);
-      scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); });
+      scroller.addEventListener('touchstart', () => autoScrollAnimation = false, {passive: true});
+      scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); }, {passive: true});
     }
 
     async function loadDashboard(isSilent = false) {
@@ -892,7 +975,7 @@
       document.getElementById("loader-screen").classList.add("hidden");
         
       if (!data || data.error === "Оффлайн режим") return; 
-      if (data.authorized === false) { clearMemory(); location.reload(); return; }
+      if (data.authorized === false) { return; } // Не делаем location.reload мгновенно, ждем след попытки
       
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
@@ -985,16 +1068,16 @@
           adminScItemsGlobal = data.adminScItems || [];
           
           document.getElementById("admin-emp-list").innerHTML = allEmployeesData.map(e => `
-            <div class="req-item" style="border-left-color: var(--btn-color); padding: 10px 15px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+            <div class="req-item" style="border-left-color: var(--btn-color); padding: 15px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                  <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center;">
-                    <span>${e.name}</span> <span style="font-size:11px; font-weight:normal; color:gray;">${e.dept}</span>
+                    <span>${e.name}</span> <span style="font-size:12px; font-weight:normal; color:gray;">${e.dept}</span>
                  </div>
               </div>
-              <div class="inner-block" style="font-size:12px; margin-top:5px; color:var(--text-color); text-align:center;">
+              <div class="inner-block" style="font-size:13px; margin-top:5px; color:var(--text-color); text-align:center;">
                  ${e.tabelStr}
               </div>
-              <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:12px;">
+              <div style="display:flex; justify-content:space-between; font-size:13px; margin-top:12px;">
                 <span>Ошибок: <b>${e.reportErrors}</b></span>
                 <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
               </div>
@@ -1052,7 +1135,7 @@
                  <button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button>
                </div>`;
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
-          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
+          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:13px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
       }).join("") || "<p style='color:gray;text-align:center;'>Все заявки обработаны</p>";
 
       let aHist = data.adminHistory || [];
@@ -1063,7 +1146,7 @@
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
           
           return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;">
-            <div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
+            <div class="req-title">${r.type} <span style="font-size:13px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
             <div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div>
           </div>`
       }).join("") || "<p style='color:gray;text-align:center;'>История пуста</p>";
@@ -1076,16 +1159,16 @@
       if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:15px;text-align:center;color:gray'>Нет данных</div>";
       let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
       
-      let html = `<div class="grid-details-container inner-block" style="padding: 10px;">`;
-      html += `<div class="grid-details-title" style="margin-bottom: 5px; font-size:13px;">${dataObj.title}</div>`;
-      html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
+      let html = `<div class="grid-details-container inner-block">`;
+      html += `<div class="grid-details-title" style="margin-bottom: 8px;">${dataObj.title}</div>`;
+      html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:4px;">`;
       
-      dataObj.headers.forEach(h => { html += `<div class="grid-details-header" style="font-size:9px; margin-bottom:2px;">${h || '-'}</div>`; });
+      dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; });
       dataObj.values.forEach(v => {
         let displayVal = '-';
         if (v === '✔') displayVal = '✅';
         else if (v === '✖') displayVal = '❌';
-        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:4px; padding:4px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
+        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:6px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
       });
       html += `</div></div>`;
       return html;
@@ -1106,15 +1189,15 @@
 
       let inner = `
           <div>
-              <b style="font-size:13px; color:${typeColor}; display:inline-block; margin-bottom:2px;">${typeDisplay}</b><br>
-              <span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:2px;">${i.reason}</span><br>
-              <b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span>
+              <b style="font-size:13px; color:${typeColor}; display:inline-block; margin-bottom:4px;">${typeDisplay}</b><br>
+              <span style="color:var(--text-color); font-size:15px; display:inline-block; margin-bottom:4px;">${i.reason}</span><br>
+              <b style="color:${srcColor}; font-size:12px;">${i.source}</b> <span style="color:gray;font-size:12px;"> • ${i.date}</span>
           </div>
           <span class="${col}">${valStr}</span>
       `;
       
       if (isCompact) {
-          return `<div style="border-left: 3px solid ${typeColor}; padding: 6px 0 6px 10px; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">${inner}</div>`;
+          return `<div style="border-left: 4px solid ${typeColor}; padding: 10px 0 10px 12px; margin-bottom: 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 15px; background: transparent;">${inner}</div>`;
       }
       return `<div class="detail-item">${inner}</div>`;
     }
@@ -1132,7 +1215,7 @@
         if (myScHistory.length > 0) {
            listHtml += myScHistory.map((i, idx) => {
               let srcColor = getSourceColor(i.source);
-              return `<div class="detail-item"><div><span style="color:var(--text-color)">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span></div></div>`;
+              return `<div class="detail-item"><div><span style="color:var(--text-color)">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:12px; display:inline-block; margin-top:4px;">${i.source}</b> <span style="color:gray;font-size:12px;"> • ${i.date}</span></div></div>`;
            }).join("");
         } else {
            listHtml += "<div style='padding:20px;text-align:center;color:gray'>История пуста</div>";
@@ -1161,10 +1244,10 @@
            if (!dispName) dispName = k.name;
            if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
            if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
-           let dateStr = k.date ? `<span style="color:gray;font-size:11px;"> • ${k.date}</span>` : "";
+           let dateStr = k.date ? `<span style="color:gray;font-size:12px; margin-left:5px;"> • ${k.date}</span>` : "";
            
            listHtml += `<div class="detail-item">
-              <div><span style="color:var(--text-color); font-size:13px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
+              <div><span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:4px;">${dispName}</span><br><b style="color:${srcColor}; font-size:12px;">${k.source}</b>${dateStr}</div>
               <span class="${col}">${valStr}</span>
            </div>`;
         });
@@ -1172,7 +1255,7 @@
       }
       else if (type === 'report') {
         document.getElementById("details-title").innerText = "Мои отчеты";
-        listHtml = "<div style='padding-top:10px;'>";
+        listHtml = "<div style='padding-top:5px;'>";
         listHtml += myReports.map(generateHorizontalGrid).join('');
         listHtml += "</div>";
       }
@@ -1197,10 +1280,10 @@
          if (!dispName) dispName = k.name;
          if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
          if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
-         let dateStr = k.date ? `<span style="color:gray;font-size:11px;"> • ${k.date}</span>` : "";
+         let dateStr = k.date ? `<span style="color:gray;font-size:12px; margin-left:5px;"> • ${k.date}</span>` : "";
 
          listHtml += `<div class="detail-item">
-            <div><span style="color:var(--text-color); font-size:13px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
+            <div><span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:4px;">${dispName}</span><br><b style="color:${srcColor}; font-size:12px;">${k.source}</b>${dateStr}</div>
             <span class="${col}">${valStr}</span>
          </div>`;
       });
@@ -1235,43 +1318,43 @@
         </div>
       `;
 
-      let listHtml = "<div style='padding-top:10px;'>";
+      let listHtml = "<div style='padding-top:5px;'>";
       listHtml += emp.reports.map(generateHorizontalGrid).join('');
 
       listHtml += `
-        <div class="grid-details-container inner-block" style="padding: 15px;">
-            <div class="grid-details-title" style="margin-bottom: 10px;">Баллы сотрудника</div>
+        <div class="grid-details-container inner-block">
+            <div class="grid-details-title">Баллы сотрудника</div>
             <div style="display:flex; justify-content:space-around; text-align:center;">
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Начислено</div><b style="font-size:16px;">${emp.pts.acc}</b></div>
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Использ.</div><b style="font-size:16px;">${emp.pts.use}</b></div>
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Остаток</div><b style="font-size:16px; color:#27ae60;">${emp.pts.rem}</b></div>
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Штраф</div><b style="font-size:16px; color:#e74c3c;">${emp.pts.fin}</b></div>
+               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Начислено</div><b style="font-size:18px;">${emp.pts.acc}</b></div>
+               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Использ.</div><b style="font-size:18px;">${emp.pts.use}</b></div>
+               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Остаток</div><b style="font-size:18px; color:#27ae60;">${emp.pts.rem}</b></div>
+               <div><div style="color:gray; font-size:12px; margin-bottom:6px;">Штраф</div><b style="font-size:18px; color:#e74c3c;">${emp.pts.fin}</b></div>
             </div>
         </div>
       `;
 
       listHtml += `
-        <div class="grid-details-container inner-block" style="padding: 15px;">
-          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:10px; font-size:13px; width:100%; margin:0;">Выписать штраф</button>
-          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:10px; padding:15px; border:1px solid #e74c3c; border-radius:10px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
-             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:40px; margin-top:0; margin-bottom:10px; font-size:14px; background:var(--card-bg);">
-             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; justify-content:center;">
-                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:45px; height:40px; padding:0; font-size:20px;">-</button>
-                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:40px; margin:0; text-align:center; width: 80px; font-size:18px; background:var(--card-bg);">
-                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:45px; height:40px; padding:0; font-size:20px;">+</button>
+        <div class="grid-details-container inner-block">
+          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:12px; font-size:14px; width:100%; margin:0;">Выписать штраф</button>
+          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:12px; padding:15px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
+             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:44px; margin-top:0; margin-bottom:12px; font-size:15px; background:var(--card-bg);">
+             <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; justify-content:center;">
+                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:50px; height:44px; padding:0; font-size:22px;">-</button>
+                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:44px; margin:0; text-align:center; width: 90px; font-size:18px; background:var(--card-bg);">
+                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:50px; height:44px; padding:0; font-size:22px;">+</button>
              </div>
-             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:10px; font-size:14px; margin:0;">Подтвердить</button>
+             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:12px; font-size:15px; margin:0;">Подтвердить</button>
           </div>
         </div>
       `;
 
       let empDisplayHistory = emp.ptsHistory.filter(p => p.type !== "KPI");
-      listHtml += `<div class="grid-details-container inner-block" style="padding: 15px; overflow:hidden;">`;
-      listHtml += `<div class="grid-details-title" style="margin-bottom: 10px;">История баллов</div>`;
+      listHtml += `<div class="grid-details-container inner-block" style="overflow:hidden;">`;
+      listHtml += `<div class="grid-details-title">История баллов</div>`;
       if(empDisplayHistory.length > 0) {
          listHtml += empDisplayHistory.map(h => renderHistoryItem(h, true)).join("");
       } else {
-         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:13px;">История пуста</div>`;
+         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:14px;">История пуста</div>`;
       }
       listHtml += `</div>`;
       listHtml += "</div>";
@@ -1305,34 +1388,39 @@
       document.getElementById("admin-plan-list").classList.add("hidden");
       document.getElementById("admin-sc-list").classList.add("hidden");
       
-      document.getElementById("btn-adm-pend").style.background = "#95a5a6";
-      document.getElementById("btn-adm-hist").style.background = "#95a5a6";
-      document.getElementById("btn-adm-emp").style.background = "#95a5a6";
-      document.getElementById("btn-adm-plan").style.background = "#95a5a6";
-      document.getElementById("btn-adm-sc").style.background = "#95a5a6";
+      document.querySelectorAll('.admin-flt').forEach(b => b.classList.remove('active-flt'));
 
       if(view === 'pending') {
         document.getElementById("admin-list").classList.remove("hidden");
-        document.getElementById("btn-adm-pend").style.background = "var(--btn-color)";
+        document.getElementById("btn-adm-pend").classList.add("active-flt");
       } else if(view === 'history') {
         document.getElementById("admin-history-list").classList.remove("hidden");
-        document.getElementById("btn-adm-hist").style.background = "var(--btn-color)";
+        document.getElementById("btn-adm-hist").classList.add("active-flt");
       } else if(view === 'plan') {
         document.getElementById("admin-plan-list").classList.remove("hidden");
-        document.getElementById("btn-adm-plan").style.background = "var(--btn-color)";
+        document.getElementById("btn-adm-plan").classList.add("active-flt");
       } else if(view === 'sc') {
         document.getElementById("admin-sc-list").classList.remove("hidden");
-        document.getElementById("btn-adm-sc").style.background = "var(--btn-color)";
-        renderAdminScItems('Цифра'); 
+        document.getElementById("btn-adm-sc").classList.add("active-flt");
+        renderAdminScItems('Цифра', document.getElementById("flt-cifra")); 
       } else {
         document.getElementById("admin-emp-list").classList.remove("hidden");
-        document.getElementById("btn-adm-emp").style.background = "var(--btn-color)";
+        document.getElementById("btn-adm-emp").classList.add("active-flt");
       }
       document.getElementById("scrollable-body").scrollTop = 0;
     }
 
-    function renderAdminScItems(dept) {
+    function renderAdminScItems(dept, btnElement) {
        currentAdminScDept = dept;
+       
+       if (btnElement) {
+           document.getElementById('flt-cifra').classList.remove('active-flt');
+           document.getElementById('flt-mbt').classList.remove('active-flt');
+           document.getElementById('flt-kbt').classList.remove('active-flt');
+           document.getElementById('flt-focus').classList.remove('active-flt');
+           btnElement.classList.add('active-flt');
+       }
+
        let container = document.getElementById("admin-sc-container");
        let searchQ = document.getElementById("admin-sc-search").value.toLowerCase();
        container.innerHTML = "";
@@ -1341,7 +1429,7 @@
        if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
        
        if (filtered.length === 0) {
-           container.innerHTML = "<p style='text-align:center; color:gray; padding:10px;'>Пусто</p>";
+           container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:14px;'>Пусто</p>";
            return;
        }
 
@@ -1352,14 +1440,14 @@
            for (const [dName, items] of Object.entries(groups)) {
                if (items.length === 0) continue;
                let headerText = items[0].focusHeader || `${dName} Фокус`;
-               let html = `<div class="inner-block" style="margin-bottom:10px;"><div style="font-size:14px; font-weight:bold; color:#555; margin-bottom:8px;">${headerText}</div>`;
+               let html = `<div class="inner-block" style="margin-bottom:12px;"><div style="font-size:15px; font-weight:bold; color:var(--text-color); margin-bottom:10px;">${headerText}</div>`;
                
                items.forEach((i, idx) => {
                   html += `
-                    <div style="padding:8px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                    <div style="padding:10px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
                        <div>
-                         <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
-                         <div style="font-size:11px; color:#e74c3c; font-weight:bold;">Фокус — ${i.pts} баллов</div>
+                         <div style="font-size:14px; margin-bottom:6px;"><b>${idx+1}.</b> ${i.name}</div>
+                         <div style="font-size:12px; color:#e74c3c; font-weight:bold;">Фокус — ${i.pts} баллов</div>
                        </div>
                     </div>`;
                });
@@ -1368,15 +1456,15 @@
            }
        } else {
            filtered.forEach((i, idx) => {
-               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:22px; padding:5px; border-radius:5px; display:inline-block;">📄</a>` : '';
+               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:24px; padding:6px; border-radius:10px; display:inline-block; transition:0.2s;">📄</a>` : '';
                let div = document.createElement("div");
-               div.style = "padding:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
+               div.style = "padding:12px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
                div.innerHTML = `
                   <div>
-                     <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
-                     <div style="font-size:11px; color:#e67e22; font-weight:bold;">
+                     <div style="font-size:14px; margin-bottom:6px;"><b>${idx+1}.</b> ${i.name}</div>
+                     <div style="font-size:12px; color:#e67e22; font-weight:bold;">
                         СЦ
-                        ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
+                        ${i.discount ? `<span style="color:#e74c3c; margin-left:12px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
                      </div>
                   </div>
                   <div>${docBtn}</div>
@@ -1392,13 +1480,16 @@
       if(type === 'sc') {
         selectedScItem = null;
         document.getElementById("sc-search").value = "";
-        document.getElementById("btn-act-doc").style.opacity = "0.3"; 
+        document.getElementById("btn-act-doc").style.opacity = "0.3";
+        document.getElementById("btn-act-doc").style.pointerEvents = "none";
         renderScItems();
         document.getElementById("form-sc").classList.remove("hidden");
+        document.getElementById("form-sc").classList.add("fade-in");
       }
       if(type === 'tradein') {
         document.getElementById("ft-input").value = "";
         document.getElementById("form-tradein").classList.remove("hidden");
+        document.getElementById("form-tradein").classList.add("fade-in");
       }
       if(type === 'points') {
         let remVal = parseFloat(document.getElementById("pt-rem").innerText.replace(',','.'));
@@ -1407,7 +1498,7 @@
         let noticeBox = document.getElementById("fp-balance-notice");
         if (isZero) {
           noticeBox.innerHTML = "<b>У вас нет оставшихся баллов</b>";
-          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 15px; border-radius: 10px; font-size: 14px; text-align: center; margin-bottom: 15px; border: 1px dashed #e74c3c; box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
+          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 15px; border-radius: 12px; font-size: 15px; text-align: center; margin-bottom: 15px; border: 1px dashed #e74c3c; box-shadow: 0 4px 10px rgba(0,0,0,0.03);";
           
           document.getElementById("fp-action").classList.add("hidden");
           document.getElementById("fp-time").classList.add("hidden");
@@ -1416,8 +1507,8 @@
           document.getElementById("fp-submit-btn").disabled = true;
           document.getElementById("fp-submit-btn").style.background = "#95a5a6";
         } else {
-          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:18px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
-          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 15px; border-radius: 10px; font-size: 14px; text-align: center; margin-bottom: 15px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05);";
+          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:20px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
+          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 15px; border-radius: 12px; font-size: 15px; text-align: center; margin-bottom: 15px; border: 1px dashed var(--btn-color); box-shadow: 0 4px 10px rgba(0,0,0,0.03);";
           
           document.getElementById("fp-action").classList.remove("hidden");
           document.getElementById("fp-time").classList.remove("hidden");
@@ -1427,6 +1518,7 @@
           document.getElementById("fp-submit-btn").style.background = "var(--btn-color)";
         }
         document.getElementById("form-points").classList.remove("hidden");
+        document.getElementById("form-points").classList.add("fade-in");
       }
       if(type === 'swap') {
         const select = document.getElementById("fs-target");
@@ -1434,16 +1526,24 @@
           globalSellers.map(s => `<option value="${s.iin}">${s.name}</option>`).join("");
         document.getElementById("fs-extra").classList.add("hidden");
         document.getElementById("form-swap").classList.remove("hidden");
+        document.getElementById("form-swap").classList.add("fade-in");
       }
       document.getElementById("scrollable-body").scrollTop = 0;
     }
 
     function closeForm() {
-      document.getElementById("form-sc").classList.add("hidden");
-      document.getElementById("form-tradein").classList.add("hidden");
-      document.getElementById("form-points").classList.add("hidden");
-      document.getElementById("form-swap").classList.add("hidden");
-      document.getElementById("menu-list").classList.remove("hidden");
+      // Снимаем анимации и прячем
+      ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => {
+          let el = document.getElementById(id);
+          el.classList.add("hidden");
+          el.classList.remove("fade-in");
+      });
+      let menu = document.getElementById("menu-list");
+      menu.classList.remove("hidden");
+      // Возвращаем меню с анимацией появления
+      menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
+      menu.classList.add("fade-in");
+      
       document.getElementById("scrollable-body").scrollTop = 0;
     }
 
@@ -1461,7 +1561,7 @@
       let focusList = globalScItems.filter(i => i.name.toLowerCase().includes(q) && i.type === 'Фокус');
       let sortedFiltered = [...scList, ...focusList];
 
-      if (sortedFiltered.length === 0) list.innerHTML = "<p style='padding:10px; color:gray; font-size:13px; text-align:center;'>Ничего не найдено</p>";
+      if (sortedFiltered.length === 0) list.innerHTML = "<p style='padding:15px; color:gray; font-size:14px; text-align:center;'>Ничего не найдено</p>";
 
       sortedFiltered.forEach(i => {
         let div = document.createElement("div");
@@ -1473,16 +1573,23 @@
         
         div.innerHTML = `
           <div>
-             <div style="margin-bottom:4px;">${i.name}</div>
+             <div style="margin-bottom:6px;">${i.name}</div>
              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="type-label" style="font-size:11px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
-                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:12px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
+                <div class="type-label" style="font-size:12px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
+                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:13px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
              </div>
           </div>`;
           
         div.onclick = () => { 
             selectedScItem = i; 
-            document.getElementById("btn-act-doc").style.opacity = i.docUrl ? "1" : "0.3";
+            let docBtn = document.getElementById("btn-act-doc");
+            if (i.docUrl) {
+                docBtn.style.opacity = "1";
+                docBtn.style.pointerEvents = "auto";
+            } else {
+                docBtn.style.opacity = "0.3";
+                docBtn.style.pointerEvents = "none";
+            }
             renderScItems(); 
         };
         list.appendChild(div);
