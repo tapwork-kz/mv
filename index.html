@@ -60,12 +60,17 @@
     }
     
     .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .slide-up-fade { animation: slideUpFade 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
     @keyframes fadeIn {
-      0% { opacity: 0; transform: translateY(10px) scale(0.99); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% { opacity: 0; transform: scale(0.99); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes slideUpFade {
+      0% { opacity: 0; transform: translateY(25px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     @keyframes slideInRight {
       0% { opacity: 0; transform: translateX(20px); }
@@ -76,26 +81,15 @@
       100% { opacity: 1; transform: translateX(0); }
     }
 
-    .sticky-header {
-      position: sticky;
-      top: 5px;
-      z-index: 20;
-      padding: 10px 12px;
-      margin: 0 0 10px 0;
-      border-radius: 16px;
-    }
-    
-    .fixed-header { 
-      padding: calc(env(safe-area-inset-top, 45px) + 15px) 12px 12px 12px; 
-      flex-shrink: 0; 
-      z-index: 100; 
-      border-radius: 0 0 24px 24px; 
-      margin-bottom: 12px; 
-      border-top: none;
+    #loader-screen {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-color); z-index: 1000; transition: opacity 0.4s ease, visibility 0.4s;
     }
 
+    .sticky-header { position: sticky; top: 5px; z-index: 20; padding: 10px 12px; margin: 0 0 10px 0; border-radius: 16px; }
+    .fixed-header { padding: calc(env(safe-area-inset-top, 45px) + 15px) 12px 12px 12px; flex-shrink: 0; z-index: 100; border-radius: 0 0 24px 24px; margin-bottom: 12px; border-top: none; }
     .hidden { display: none !important; }
-    
     .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 12px calc(30px + env(safe-area-inset-bottom)) 12px; }
 
     input, select { user-select: text; -webkit-user-select: text; transition: 0.3s; }
@@ -105,10 +99,7 @@
       -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color);
     }
     input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; }
-    
-    @media (prefers-color-scheme: dark) {
-      input, select { border: 1px solid #444; }
-    }
+    @media (prefers-color-scheme: dark) { input, select { border: 1px solid #444; } }
 
     .smart-date { color: var(--btn-color); font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
     
@@ -116,7 +107,6 @@
     button:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(100%); }
     button:active:not(:disabled) { transform: scale(0.96); opacity: 0.9; }
     
-    .btn-login { background-color: var(--btn-color); color: var(--btn-text); }
     .btn-break { background-color: #f39c12; color: #fff; }
     .btn-lunch { background-color: #27ae60; color: #fff; }
     .btn-snack { background-color: #8e44ad; color: #fff; }
@@ -125,11 +115,7 @@
     
     .card { background: var(--card-bg); padding: 14px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.3s; border: 1px solid var(--border-color); }
     .card h3 { margin: 0 0 10px 0; font-size: 15px; color: var(--btn-color); }
-    
-    @media (prefers-color-scheme: dark) {
-      .card { box-shadow: none; }
-      .req-item { background: var(--card-bg); border: 1px solid var(--border-color); }
-    }
+    @media (prefers-color-scheme: dark) { .card { box-shadow: none; } .req-item { background: var(--card-bg); border: 1px solid var(--border-color); } }
 
     .form-dark h3 { color: var(--form-title-color) !important; }
     .form-dark input, .form-dark select { color: var(--form-input-color) !important; }
@@ -141,7 +127,6 @@
     
     .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; }
     .top-icons { display: flex; gap: 6px; align-items: center; background: rgba(150,150,150,0.1); padding: 4px; border-radius: 16px;}
-    
     .icon-btn { font-size: 20px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.3s; padding: 6px 10px; border-radius: 12px; opacity: 0.6; filter: grayscale(100%); }
     .icon-btn:active { transform: scale(0.85); }
     .icon-btn.active-tab { opacity: 1; filter: grayscale(0%); background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -170,20 +155,20 @@
 
     .inner-block { background: var(--inner-bg); border-radius: 12px; padding: 10px; transition: 0.3s; margin-bottom: 10px; }
 
-    .req-list { display: flex; flex-direction: column; gap: 10px; }
-    .req-item { padding: 12px; border-radius: 14px; background: var(--card-bg); border-left: 4px solid var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.3s; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
+    .req-list { display: flex; flex-direction: column; gap: 8px; }
+    .req-item { padding: 10px; border-radius: 12px; background: var(--card-bg); border-left: 4px solid var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.3s; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);}
     .req-item.admin { border-left-color: #3498db; }
-    .req-title { font-weight: bold; margin-bottom: 4px; font-size: 14px; }
-    .req-desc { font-size: 13px; color: gray; margin-bottom: 10px; line-height: 1.3;}
+    .req-title { font-weight: bold; margin-bottom: 4px; font-size: 13px; }
+    .req-desc { font-size: 12px; color: gray; margin-bottom: 8px; line-height: 1.3;}
     .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .grid-btns button { padding: 12px; margin: 0; font-size: 13px; display:block; }
+    .grid-btns button { padding: 10px; margin: 0; font-size: 12px; display:block; }
 
-    .detail-item { padding: 12px 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .detail-item { padding: 10px 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
     .detail-item:last-child { border-bottom: none; }
-    .detail-plus { color: #27ae60; font-weight: bold; font-size: 14px;}
-    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 14px;}
-    .detail-fine { color: #c0392b; font-weight: bold; font-size: 14px;}
-    .detail-val { font-weight: bold; font-size: 14px; color: var(--btn-color); }
+    .detail-plus { color: #27ae60; font-weight: bold; font-size: 13px;}
+    .detail-minus { color: #e74c3c; font-weight: bold; font-size: 13px;}
+    .detail-fine { color: #c0392b; font-weight: bold; font-size: 13px;}
+    .detail-val { font-weight: bold; font-size: 13px; color: var(--btn-color); }
 
     .sc-item { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; cursor: pointer; transition: 0.2s; border-radius: 10px; }
     .sc-item:active { background: var(--inner-bg); }
@@ -191,11 +176,11 @@
     .sc-item.selected .type-label { color: #fff !important; }
     .sc-list-container { max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 10px; background: var(--card-bg); transition: 0.3s; }
 
-    .grid-details-container { padding: 10px; background: var(--card-bg); border-radius: 14px; transition: 0.3s; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid var(--border-color);}
-    .grid-details-title { text-align: center; font-size: 14px; font-weight: bold; margin-bottom: 8px; color: var(--text-color); }
+    .grid-details-container { padding: 8px; background: var(--card-bg); border-radius: 12px; transition: 0.3s; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid var(--border-color);}
+    .grid-details-title { text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--text-color); }
     .grid-details-box { display: grid; gap: 2px; text-align: center; align-items: center; justify-content: center; }
     .grid-details-header { font-size: 9px; color: gray; font-weight: bold; margin-bottom: 2px; text-transform: uppercase;}
-    .grid-details-value { font-size: 13px; margin-top: 0; }
+    .grid-details-value { font-size: 12px; margin-top: 0; }
 
     .active-outs-box { border-radius: 14px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); text-align: left; margin-top: 15px; transition: 0.3s;}
     .active-outs-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--text-color); }
@@ -205,21 +190,20 @@
     .active-out-time { color: var(--btn-color); font-weight: bold; }
     .active-out-time.late { color: #e74c3c; }
 
-    .admin-flt { padding: 8px 6px; font-size: 12px; margin:0; flex:1; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; transition: 0.3s; }
-    .admin-flt.active-flt { background: var(--btn-color); color: #fff; border-color: var(--btn-color); }
+    .admin-flt { padding: 8px 4px; font-size: 11px; margin:0; flex:1; background: var(--card-bg); color: var(--text-color); border: 1px solid var(--border-color); border-radius: 8px; transition: 0.3s; text-align: center; }
+    .admin-flt.active-flt { background: var(--btn-color); color: #fff; border-color: var(--btn-color); font-weight: bold;}
     .admin-flt.focus-flt.active-flt { background: #e74c3c; border-color: #e74c3c; }
 
     #toast { position: fixed; bottom: env(safe-area-inset-bottom, 30px); left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.3s, transform 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 6px 15px rgba(0,0,0,0.3); opacity: 0; }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(-15px); }
-    #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; transition: opacity 0.3s; }
   </style>
 </head>
 <body style="display: flex; flex-direction: column;">
   
   <div id="toast">Уведомление</div>
-  <div id="loader-screen"><p style="color: gray; font-style: italic;">Идентификация...</p></div>
+  <div id="loader-screen"><p style="color: gray; font-size: 16px; font-weight: bold; font-style: italic;">Идентификация...</p></div>
 
-  <div id="auth-screen" class="hidden scrollable-content fade-in" style="max-width: 400px; margin: 0 auto; text-align:center; transition: opacity 0.3s ease;">
+  <div id="auth-screen" class="hidden scrollable-content" style="max-width: 400px; margin: 0 auto; text-align:center; transition: opacity 0.3s ease;">
     <h2 style="margin-top:20px;">Вход в систему</h2>
     <p style="color:gray; font-size:14px;">Введите ваш ИИН (вход произойдет автоматически)</p>
     <input type="number" id="iin-input" placeholder="Введите 12 цифр" inputmode="numeric" oninput="manualLogin(this)">
@@ -282,8 +266,8 @@
               <div class="info-box-value" style="font-size:12px; line-height: 24px;">См. детали</div>
             </div>
 
-            <div class="info-box tabel-box">
-              <div class="info-box-title">Табель</div>
+            <div class="info-box tabel-box" onclick="openDetails('tabel')">
+              <div class="info-box-title">Табель (Штрафы)</div>
               <div class="tabel-grid" id="info-tabel"></div>
             </div>
           </div>
@@ -300,9 +284,9 @@
       </div>
     </div> 
     
-    <div class="scrollable-content" id="scrollable-body" style="padding-top: 5px;">
+    <div class="scrollable-content slide-up-fade" id="scrollable-body" style="padding-top: 5px;">
       
-      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="fade-in">
+      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;">
         <p id="action-hint" style="margin-bottom: 12px; font-weight:bold; padding-top: 5px; font-size:15px;">Загрузка лимитов...</p>
         
         <div id="standard-buttons">
@@ -363,6 +347,13 @@
              </div>
              <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
+          
+          <div style="display:flex; gap:6px; margin-bottom:8px;" id="sc-dept-tabs">
+               <button id="sc-tab-cifra" class="admin-flt active-flt" onclick="switchScDept('Цифра')">Цифра</button>
+               <button id="sc-tab-mbt" class="admin-flt" onclick="switchScDept('МБТ')">МБТ</button>
+               <button id="sc-tab-kbt" class="admin-flt" onclick="switchScDept('КБТ')">КБТ</button>
+          </div>
+
           <div class="card" style="margin-top: 5px;">
               <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
               <div class="sc-list-container" id="sc-list"></div>
@@ -468,7 +459,15 @@
            <div id="admin-sc-container" class="card" style="padding:6px;"></div>
         </div>
 
-        <div id="admin-emp-list" class="req-list"></div>
+        <div id="admin-emp-container" class="hidden">
+           <div class="sticky-header glass" style="display:flex; gap:6px; margin-bottom:12px; margin-top:0; padding:6px;">
+               <button id="flt-emp-cifra" class="admin-flt active-flt" onclick="renderAdminEmps('Цифра', this)">Цифра</button>
+               <button id="flt-emp-mbt" class="admin-flt" onclick="renderAdminEmps('МБТ', this)">МБТ</button>
+               <button id="flt-emp-kbt" class="admin-flt" onclick="renderAdminEmps('КБТ', this)">КБТ</button>
+           </div>
+           <div id="admin-emp-list" class="req-list"></div>
+        </div>
+
         <div id="admin-list" class="req-list hidden"></div>
         <div id="admin-history-list" class="req-list hidden"></div>
       </div>
@@ -530,6 +529,8 @@
     let globalActiveOuts = [];
     let isUserPromoter = false;
     let currentAdminScDept = 'Цифра';
+    let currentEmpDept = 'Цифра';
+    let currentScTabDept = 'Цифра';
     let pollingTimer = null;
 
     function saveMemory(key, value) {
@@ -561,6 +562,7 @@
       firstName: getMemory("userName") || "", 
       currentAction: getMemory("currentAction"),
       role: getMemory("userRole") || "Продавец",
+      dept: getMemory("userDept") || "Цифра",
       lastInboxCount: 0 
     };
 
@@ -574,6 +576,7 @@
     let myScHistory = []; 
     let myKpiDetails = [];
     let allEmployeesData = []; 
+    let myMoneyFinesHistory = [];
 
     document.addEventListener("DOMContentLoaded", async () => {
       requestNotificationPermission(); 
@@ -595,7 +598,9 @@
         loadDashboard(false); 
         startPolling(); 
       } else {
-        document.getElementById("loader-screen").classList.add("hidden");
+        const loader = document.getElementById("loader-screen");
+        loader.style.opacity = '0';
+        setTimeout(() => loader.classList.add("hidden"), 400);
         document.getElementById("auth-screen").classList.remove("hidden");
       }
     });
@@ -632,6 +637,23 @@
         }, {passive: true});
     }
 
+    function forceLogout() {
+        if(pollingTimer) clearInterval(pollingTimer);
+        clearMemory();
+        appState.token = null;
+        appState.iin = null;
+        
+        document.getElementById("main-screen").style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById("main-screen").classList.add("hidden");
+            document.getElementById("auth-screen").classList.remove("hidden");
+            document.getElementById("auth-screen").style.opacity = '1';
+            document.getElementById("main-screen").style.opacity = '1'; 
+            document.getElementById("iin-input").value = '';
+            document.getElementById("iin-input").disabled = false;
+        }, 300);
+    }
+
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
@@ -640,19 +662,7 @@
                 if (!data || data.error === "Оффлайн режим") return;
                 
                 if (data.authorized === false) { 
-                    clearMemory();
-                    document.getElementById("main-screen").style.opacity = '0';
-                    setTimeout(() => {
-                        document.getElementById("main-screen").classList.add("hidden");
-                        document.getElementById("auth-screen").classList.remove("hidden");
-                        document.getElementById("auth-screen").style.opacity = '1';
-                        document.getElementById("main-screen").style.opacity = '1'; 
-                        appState.token = null;
-                        appState.iin = null;
-                        document.getElementById("iin-input").value = '';
-                        document.getElementById("iin-input").disabled = false;
-                    }, 300);
-                    if(pollingTimer) clearInterval(pollingTimer);
+                    forceLogout();
                     return; 
                 } 
                 
@@ -695,7 +705,7 @@
             setTimeout(() => {
                 document.getElementById("auth-screen").classList.add("hidden");
                 document.getElementById("main-screen").classList.remove("hidden");
-                document.getElementById("main-screen").classList.add("fade-in");
+                document.getElementById("main-screen").style.opacity = '1';
                 document.getElementById("user-greeting").innerText = appState.firstName;
                 loadDashboard(false);
                 startPolling();
@@ -711,8 +721,8 @@
 
     function setKpiColor(val, elCircle, elText) {
        let color = "#27ae60"; 
-       if (val < 70) color = "#e74c3c";
-       else if (val < 90) color = "#f39c12";
+       if (val < 80) color = "#e74c3c";
+       else if (val < 100) color = "#f39c12";
 
        if(elCircle) {
            let trackColor = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
@@ -982,29 +992,25 @@
               renderDashboardData(JSON.parse(cachedData), true);
           } else {
               document.getElementById("loader-screen").classList.remove("hidden");
+              document.getElementById("loader-screen").style.opacity = '1';
           }
       }
 
       let data = await callBackend('getDashboardData', { token: appState.token });
-      document.getElementById("loader-screen").classList.add("hidden");
         
       if (!data || data.error === "Оффлайн режим") return; 
       
       if (data.authorized === false) { 
-          clearMemory();
-          document.getElementById("main-screen").style.opacity = '0';
-          setTimeout(() => {
-              document.getElementById("main-screen").classList.add("hidden");
-              document.getElementById("auth-screen").classList.remove("hidden");
-              document.getElementById("auth-screen").style.opacity = '1';
-              document.getElementById("main-screen").style.opacity = '1'; 
-              appState.token = null;
-              appState.iin = null;
-          }, 300);
-          if(pollingTimer) clearInterval(pollingTimer);
+          forceLogout();
           return; 
       } 
       
+      if (!isSilent) {
+         const loader = document.getElementById("loader-screen");
+         loader.style.opacity = '0';
+         setTimeout(() => loader.classList.add("hidden"), 400);
+      }
+
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
       
@@ -1022,7 +1028,9 @@
     function renderDashboardData(data, isSilent = false) {
       isUserPromoter = data.isPromoter;
       appState.role = data.role || "Продавец";
+      appState.dept = data.info?.dept || "Цифра";
       saveMemory("userRole", appState.role);
+      saveMemory("userDept", appState.dept);
 
       let isSeller = !isUserPromoter && appState.role !== 'Директор';
 
@@ -1071,6 +1079,8 @@
       myPointsHistory = data.info?.myPtsHistory || [];
       myDisplayPointsHistory = myPointsHistory.filter(p => p.type !== "KPI"); 
       myScHistory = myPointsHistory.filter(p => p.type === "Начисление");
+      myMoneyFinesHistory = myPointsHistory.filter(p => p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== "");
+      
       allEmployeesData = data.adminEmployees || [];
 
       const uBadge = document.getElementById("user-badge");
@@ -1103,24 +1113,7 @@
           document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>";
           adminScItemsGlobal = data.adminScItems || [];
           
-          document.getElementById("admin-emp-list").innerHTML = allEmployeesData.map(e => `
-            <div class="req-item" style="border-left-color: var(--btn-color); padding: 12px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                 <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center;">
-                    <span>${e.name}</span> <span style="font-size:11px; font-weight:normal; color:gray;">${e.dept}</span>
-                 </div>
-              </div>
-              <div class="inner-block" style="font-size:13px; margin-top:4px; margin-bottom:6px; color:var(--text-color); text-align:center; padding: 6px;">
-                 ${e.tabelStr}
-              </div>
-              <div style="display:flex; justify-content:space-between; font-size:12px; align-items:center;">
-                <span>Ошибок: <b>${e.reportErrors}</b></span>
-                <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
-              </div>
-            </div>
-          `).join("") || "<p style='color:gray'>Сотрудников нет</p>";
-          
-          if(!document.getElementById("content-admin").classList.contains("hidden") === false && !isSilent) {
+          if(document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && !isSilent) {
               switchTab('admin');
               toggleAdminView('plan'); 
           }
@@ -1189,10 +1182,14 @@
 
       globalSellers = data.sellers || [];
       globalScItems = data.scItems || [];
+      
+      if (appState.role === "Директор") {
+          renderAdminEmps(currentEmpDept, null);
+      }
     }
 
     function generateHorizontalGrid(dataObj) {
-      if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:10px;text-align:center;color:gray;font-size:13px;'>Нет данных</div>";
+      if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:8px;text-align:center;color:gray;font-size:12px;'>Нет данных</div>";
       let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
       
       let html = `<div class="grid-details-container inner-block">`;
@@ -1226,16 +1223,28 @@
       let inner = `
           <div>
               <b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br>
-              <span style="color:var(--text-color); font-size:13px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
-              <b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span>
+              <span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
+              <b style="color:${srcColor}; font-size:10px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span>
           </div>
           <span class="${col}">${valStr}</span>
       `;
       
       if (isCompact) {
-          return `<div style="border-left: 3px solid ${typeColor}; padding: 8px 0 8px 10px; margin-bottom: 6px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">${inner}</div>`;
+          return `<div style="border-left: 3px solid ${typeColor}; padding: 6px 0 6px 8px; margin-bottom: 4px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: transparent;">${inner}</div>`;
       }
       return `<div class="detail-item">${inner}</div>`;
+    }
+
+    function renderMoneyFineItem(i) {
+      let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0";
+      return `<div style="border-left: 3px solid #95a5a6; padding: 6px 0 6px 8px; margin-bottom: 4px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: transparent;">
+          <div>
+              <b style="font-size:12px; color:#95a5a6; display:inline-block; margin-bottom:3px;">Штраф</b><br>
+              <span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
+              <span style="color:gray;font-size:10px;">${i.date}</span>
+          </div>
+          <span class="detail-fine">${moneyVal} ₸</span>
+      </div>`;
     }
 
     function openDetails(type) {
@@ -1251,7 +1260,7 @@
         if (myScHistory.length > 0) {
            listHtml += myScHistory.map((i, idx) => {
               let srcColor = getSourceColor(i.source);
-              return `<div class="detail-item"><div><span style="color:var(--text-color); font-size:13px;">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:11px; display:inline-block; margin-top:3px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span></div></div>`;
+              return `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px;">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:10px; display:inline-block; margin-top:3px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span></div></div>`;
            }).join("");
         } else {
            listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
@@ -1280,10 +1289,10 @@
            if (!dispName) dispName = k.name;
            if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
            if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
-           let dateStr = k.date ? `<span style="color:gray;font-size:11px; margin-left:5px;"> • ${k.date}</span>` : "";
+           let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : "";
            
            listHtml += `<div class="detail-item">
-              <div><span style="color:var(--text-color); font-size:13px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
+              <div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div>
               <span class="${col}">${valStr}</span>
            </div>`;
         });
@@ -1293,6 +1302,17 @@
         document.getElementById("details-title").innerText = "Мои отчеты";
         listHtml = "<div style='padding-top:5px;'>";
         listHtml += myReports.map(generateHorizontalGrid).join('');
+        listHtml += "</div>";
+      }
+      else if (type === 'tabel') {
+        document.getElementById("btn-details-back").onclick = () => switchTab('time');
+        document.getElementById("details-title").innerText = "Денежные штрафы";
+        listHtml = "<div class='card' style='padding:0;'>";
+        if (myMoneyFinesHistory.length > 0) {
+           listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join("");
+        } else {
+           listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>";
+        }
         listHtml += "</div>";
       }
       document.getElementById("details-list").innerHTML = listHtml;
@@ -1316,10 +1336,10 @@
          if (!dispName) dispName = k.name;
          if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
          if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
-         let dateStr = k.date ? `<span style="color:gray;font-size:11px; margin-left:5px;"> • ${k.date}</span>` : "";
+         let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : "";
 
          listHtml += `<div class="detail-item">
-            <div><span style="color:var(--text-color); font-size:13px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
+            <div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div>
             <span class="${col}">${valStr}</span>
          </div>`;
       });
@@ -1361,25 +1381,28 @@
         <div class="grid-details-container inner-block">
             <div class="grid-details-title">Баллы сотрудника</div>
             <div style="display:flex; justify-content:space-around; text-align:center;">
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Начислено</div><b style="font-size:16px;">${emp.pts.acc}</b></div>
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Использ.</div><b style="font-size:16px;">${emp.pts.use}</b></div>
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Остаток</div><b style="font-size:16px; color:#27ae60;">${emp.pts.rem}</b></div>
-               <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Штраф</div><b style="font-size:16px; color:#e74c3c;">${emp.pts.fin}</b></div>
+               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Начислено</div><b style="font-size:15px;">${emp.pts.acc}</b></div>
+               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Использ.</div><b style="font-size:15px;">${emp.pts.use}</b></div>
+               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Остаток</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem}</b></div>
+               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штраф</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin}</b></div>
             </div>
         </div>
       `;
 
       listHtml += `
         <div class="grid-details-container inner-block">
-          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:10px; font-size:13px; width:100%; margin:0;">Выписать штраф</button>
-          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:10px; padding:12px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
-             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:40px; margin-top:0; margin-bottom:10px; font-size:14px; background:var(--card-bg);">
-             <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px; justify-content:center;">
-                <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:45px; height:40px; padding:0; font-size:20px;">-</button>
-                <input type="number" id="fine-amount-${emp.iin}" value="-1" step="0.5" style="height:40px; margin:0; text-align:center; width: 80px; font-size:16px; background:var(--card-bg);">
-                <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:45px; height:40px; padding:0; font-size:20px;">+</button>
+          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:8px; font-size:12px; width:100%; margin:0;">Выписать штраф</button>
+          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
+             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:36px; margin-top:0; margin-bottom:8px; font-size:13px; background:var(--card-bg);">
+             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; justify-content:center;">
+                <div style="display:flex; align-items:center; background:var(--card-bg); border-radius:8px; padding:2px;">
+                   <button onclick="adjFine('${emp.iin}', 0.5)" style="background:#c0392b; width:36px; height:36px; padding:0; font-size:18px;">-</button>
+                   <input type="number" id="fine-amount-${emp.iin}" value="0" step="0.5" style="height:36px; margin:0; text-align:center; width: 60px; font-size:14px; background:transparent; border:none; color:var(--text-color);">
+                   <button onclick="adjFine('${emp.iin}', -0.5)" style="background:#27ae60; width:36px; height:36px; padding:0; font-size:18px;">+</button>
+                </div>
+                <input type="number" id="fine-money-${emp.iin}" value="" placeholder="0 (Сумма)" style="height:36px; margin:0; text-align:center; width: 80px; font-size:14px; background:var(--card-bg);">
              </div>
-             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:10px; font-size:13px; margin:0;">Подтвердить</button>
+             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Подтвердить</button>
           </div>
         </div>
       `;
@@ -1390,7 +1413,7 @@
       if(empDisplayHistory.length > 0) {
          listHtml += empDisplayHistory.map(h => renderHistoryItem(h, true)).join("");
       } else {
-         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:13px;">История пуста</div>`;
+         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:12px;">История пуста</div>`;
       }
       listHtml += `</div>`;
       listHtml += "</div>";
@@ -1401,13 +1424,16 @@
 
     async function executeFine(iin, name) {
        let reason = document.getElementById(`fine-reason-${iin}`).value;
-       let amount = document.getElementById(`fine-amount-${iin}`).value;
-       if (!reason || !amount || amount >= 0) return showToast("Укажите причину и отрицательную сумму!", true);
+       let amount = document.getElementById(`fine-amount-${iin}`).value || "0";
+       let moneyAmount = document.getElementById(`fine-money-${iin}`).value || "0";
+       
+       if (!reason) return showToast("Укажите причину штрафа!", true);
+       if (parseFloat(amount) >= 0 && parseFloat(moneyAmount) >= 0) return showToast("Укажите штраф (баллы или сумма) меньше 0!", true);
        
        vibrate(50);
        showToast("Отправка...", false, 9999);
        
-       let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount });
+       let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount, moneyAmount: moneyAmount });
        
        if (res.success) { showToast("Штраф выписан!"); loadDashboard(true); closeDetails(); }
        else showToast(res.error, true);
@@ -1420,11 +1446,15 @@
     function toggleAdminView(view) {
       document.getElementById("admin-list").classList.add("hidden");
       document.getElementById("admin-history-list").classList.add("hidden");
-      document.getElementById("admin-emp-list").classList.add("hidden");
+      document.getElementById("admin-emp-container").classList.add("hidden");
       document.getElementById("admin-plan-list").classList.add("hidden");
       document.getElementById("admin-sc-list").classList.add("hidden");
       
-      document.querySelectorAll('.admin-flt').forEach(b => b.classList.remove('active-flt'));
+      document.querySelectorAll('.admin-flt').forEach(b => {
+          if(b.id && !b.id.startsWith("sc-tab") && !b.id.startsWith("flt-emp") && !b.id.startsWith("flt-")) {
+              b.classList.remove('active-flt');
+          }
+      });
 
       if(view === 'pending') {
         document.getElementById("admin-list").classList.remove("hidden");
@@ -1438,12 +1468,43 @@
       } else if(view === 'sc') {
         document.getElementById("admin-sc-list").classList.remove("hidden");
         document.getElementById("btn-adm-sc").classList.add("active-flt");
-        renderAdminScItems('Цифра', document.getElementById("flt-cifra")); 
+        renderAdminScItems(currentAdminScDept, document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`)); 
       } else {
-        document.getElementById("admin-emp-list").classList.remove("hidden");
+        document.getElementById("admin-emp-container").classList.remove("hidden");
         document.getElementById("btn-adm-emp").classList.add("active-flt");
+        renderAdminEmps(currentEmpDept, document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`));
       }
       document.getElementById("scrollable-body").scrollTop = 0;
+    }
+
+    function renderAdminEmps(dept, btnElement) {
+       currentEmpDept = dept;
+       if (btnElement) {
+           document.getElementById('flt-emp-cifra').classList.remove('active-flt');
+           document.getElementById('flt-emp-mbt').classList.remove('active-flt');
+           document.getElementById('flt-emp-kbt').classList.remove('active-flt');
+           btnElement.classList.add('active-flt');
+       }
+
+       let container = document.getElementById("admin-emp-list");
+       let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase()));
+       
+       container.innerHTML = filtered.map(e => `
+            <div class="req-item" style="border-left-color: var(--btn-color); padding: 8px; margin-bottom: 8px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                 <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+                    <span>${e.name}</span>
+                 </div>
+              </div>
+              <div class="inner-block" style="font-size:11px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 4px;">
+                 ${e.tabelStr}
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">
+                <span>Ошибок: <b>${e.reportErrors}</b></span>
+                <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
+              </div>
+            </div>
+          `).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
     }
 
     function renderAdminScItems(dept, btnElement) {
@@ -1465,7 +1526,7 @@
        if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
        
        if (filtered.length === 0) {
-           container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:13px;'>Пусто</p>";
+           container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Пусто</p>";
            return;
        }
 
@@ -1476,14 +1537,15 @@
            for (const [dName, items] of Object.entries(groups)) {
                if (items.length === 0) continue;
                let headerText = items[0].focusHeader || `${dName} Фокус`;
-               let html = `<div class="inner-block" style="margin-bottom:10px;"><div style="font-size:14px; font-weight:bold; color:var(--text-color); margin-bottom:8px;">${headerText}</div>`;
+               let html = `<div class="inner-block" style="margin-bottom:8px; padding:8px;"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`;
                
                items.forEach((i, idx) => {
+                  let ptNoun = formatPointsNoun(i.pts);
                   html += `
-                    <div style="padding:8px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                    <div style="padding:6px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
                        <div>
-                         <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
-                         <div style="font-size:11px; color:#e74c3c; font-weight:bold;">Фокус — ${i.pts} баллов</div>
+                         <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
+                         <div style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div>
                        </div>
                     </div>`;
                });
@@ -1492,13 +1554,13 @@
            }
        } else {
            filtered.forEach((i, idx) => {
-               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:20px; padding:4px 8px; border-radius:8px; display:inline-block; transition:0.2s;">📄</a>` : '';
+               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:18px; padding:4px 8px; border-radius:8px; display:inline-block; transition:0.2s;">📄</a>` : '';
                let div = document.createElement("div");
-               div.style = "padding:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
+               div.style = "padding:8px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
                div.innerHTML = `
                   <div>
-                     <div style="font-size:13px; margin-bottom:4px;"><b>${idx+1}.</b> ${i.name}</div>
-                     <div style="font-size:11px; color:#e67e22; font-weight:bold;">
+                     <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
+                     <div style="font-size:10px; color:#e67e22; font-weight:bold;">
                         СЦ
                         ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
                      </div>
@@ -1510,6 +1572,15 @@
        }
     }
 
+    function switchScDept(dept) {
+        currentScTabDept = dept;
+        document.getElementById('sc-tab-cifra').classList.remove('active-flt');
+        document.getElementById('sc-tab-mbt').classList.remove('active-flt');
+        document.getElementById('sc-tab-kbt').classList.remove('active-flt');
+        document.getElementById(`sc-tab-${dept.toLowerCase()}`).classList.add('active-flt');
+        renderScItems();
+    }
+
     function openForm(type) {
       document.getElementById("menu-list").classList.add("hidden");
       
@@ -1518,7 +1589,11 @@
         document.getElementById("sc-search").value = "";
         document.getElementById("btn-act-doc").style.opacity = "0.3";
         document.getElementById("btn-act-doc").style.pointerEvents = "none";
-        renderScItems();
+        
+        let deptToSet = appState.dept || 'Цифра';
+        if (deptToSet !== 'Цифра' && deptToSet !== 'МБТ' && deptToSet !== 'КБТ') deptToSet = 'Цифра';
+        switchScDept(deptToSet);
+        
         document.getElementById("form-sc").classList.remove("hidden");
         document.getElementById("form-sc").classList.add("fade-in");
       }
@@ -1534,7 +1609,7 @@
         let noticeBox = document.getElementById("fp-balance-notice");
         if (isZero) {
           noticeBox.innerHTML = "<b>У вас нет оставшихся баллов</b>";
-          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 12px; border-radius: 12px; font-size: 14px; text-align: center; margin-bottom: 12px; border: 1px dashed #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
+          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 12px; border-radius: 12px; font-size: 13px; text-align: center; margin-bottom: 12px; border: 1px dashed #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
           
           document.getElementById("fp-action").classList.add("hidden");
           document.getElementById("fp-time").classList.add("hidden");
@@ -1543,8 +1618,8 @@
           document.getElementById("fp-submit-btn").disabled = true;
           document.getElementById("fp-submit-btn").style.background = "#95a5a6";
         } else {
-          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:18px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
-          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 12px; border-radius: 12px; font-size: 14px; text-align: center; margin-bottom: 12px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
+          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:16px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
+          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 12px; border-radius: 12px; font-size: 13px; text-align: center; margin-bottom: 12px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
           
           document.getElementById("fp-action").classList.remove("hidden");
           document.getElementById("fp-time").classList.remove("hidden");
@@ -1591,26 +1666,35 @@
       const list = document.getElementById("sc-list");
       list.innerHTML = "";
       
-      let scList = globalScItems.filter(i => i.name.toLowerCase().includes(q) && i.type === 'СЦ');
-      let focusList = globalScItems.filter(i => i.name.toLowerCase().includes(q) && i.type === 'Фокус');
+      let scList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'СЦ');
+      if (q) scList = scList.filter(i => i.name.toLowerCase().includes(q));
+
+      let focusList = globalScItems.filter(i => i.type === 'Фокус');
+      if (q) focusList = focusList.filter(i => i.name.toLowerCase().includes(q));
+
       let sortedFiltered = [...scList, ...focusList];
 
-      if (sortedFiltered.length === 0) list.innerHTML = "<p style='padding:12px; color:gray; font-size:13px; text-align:center;'>Ничего не найдено</p>";
+      if (sortedFiltered.length === 0) {
+          list.innerHTML = "<p style='padding:12px; color:gray; font-size:12px; text-align:center;'>Ничего не найдено</p>";
+          return;
+      }
 
       sortedFiltered.forEach(i => {
         let div = document.createElement("div");
-        let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type);
+        let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type && selectedScItem.dept === i.dept);
         div.className = "sc-item" + (isSelected ? " selected" : "");
         let typeCol = i.type === 'СЦ' ? '#e67e22' : '#e74c3c'; 
         let ptNoun = formatPointsNoun(i.pts);
         let ptsText = i.type === 'СЦ' ? '2 балла' : `${String(i.pts).replace('.', ',')} ${ptNoun}`; 
         
+        let deptLabel = i.type === 'Фокус' ? `<span style="color:gray; font-weight:normal;"> (${i.dept})</span>` : '';
+
         div.innerHTML = `
           <div>
-             <div style="margin-bottom:4px;">${i.name}</div>
+             <div style="margin-bottom:4px; font-size:13px;">${i.name}${deptLabel}</div>
              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="type-label" style="font-size:11px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
-                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:12px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
+                <div class="type-label" style="font-size:10px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
+                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:11px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
              </div>
           </div>`;
           
