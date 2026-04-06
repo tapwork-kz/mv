@@ -267,7 +267,7 @@
             </div>
 
             <div class="info-box tabel-box" onclick="openDetails('tabel')">
-              <div class="info-box-title">Табель (Штрафы)</div>
+              <div class="info-box-title">Табель / Штрафы</div>
               <div class="tabel-grid" id="info-tabel"></div>
             </div>
           </div>
@@ -284,206 +284,204 @@
       </div>
     </div> 
     
-    <div class="scrollable-content slide-up-fade" id="scrollable-body" style="padding-top: 5px;">
+    <div class="scrollable-content slide-up-fade hidden" id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;">
+      <p id="action-hint" style="margin-bottom: 12px; font-weight:bold; padding-top: 5px; font-size:15px;">Загрузка лимитов...</p>
       
-      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;">
-        <p id="action-hint" style="margin-bottom: 12px; font-weight:bold; padding-top: 5px; font-size:15px;">Загрузка лимитов...</p>
+      <div id="standard-buttons">
+        <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')" disabled>
+          <span>Перерыв</span><span class="desc" id="desc-break">10 мин</span>
+        </button>
+        <button id="btn-lunch" class="btn-lunch" onclick="triggerAction('Обед')" disabled>
+          <span>Обед</span><span class="desc" id="desc-lunch">40 мин</span>
+        </button>
+        <button id="btn-snack" class="btn-snack" onclick="triggerAction('Полдник')" disabled>
+          <span>Полдник</span><span class="desc" id="desc-snack">30 мин</span>
+        </button>
+      </div>
+
+      <div id="return-button-container" class="hidden">
+        <button id="btn-return" class="btn-return" onclick="triggerReturn()">
+          <span id="return-text">Вернуться</span>
+        </button>
+      </div>
+
+      <div id="active-outs-container" class="active-outs-box hidden inner-block" style="background:var(--card-bg);">
+        <div class="active-outs-title">Коллеги в отсутствии:</div>
+        <div id="active-outs-list"></div>
+      </div>
+    </div>
+
+    <div class="scrollable-content slide-up-fade hidden" id="content-create">
+      <div id="menu-list">
+        <button onclick="openForm('sc')">Продажа СЦ / Фокус</button>
+        <button onclick="openForm('tradein')">Продажа Trade-In</button>
+        <button onclick="openForm('points')">Баллы мотивации</button>
+        <button onclick="openForm('swap')" class="btn-orange">Обмен сменами</button>
         
-        <div id="standard-buttons">
-          <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')" disabled>
-            <span>Перерыв</span><span class="desc" id="desc-break">10 мин</span>
-          </button>
-          <button id="btn-lunch" class="btn-lunch" onclick="triggerAction('Обед')" disabled>
-            <span>Обед</span><span class="desc" id="desc-lunch">40 мин</span>
-          </button>
-          <button id="btn-snack" class="btn-snack" onclick="triggerAction('Полдник')" disabled>
-            <span>Полдник</span><span class="desc" id="desc-snack">30 мин</span>
-          </button>
-        </div>
-
-        <div id="return-button-container" class="hidden">
-          <button id="btn-return" class="btn-return" onclick="triggerReturn()">
-            <span id="return-text">Вернуться</span>
-          </button>
-        </div>
-
-        <div id="active-outs-container" class="active-outs-box hidden inner-block" style="background:var(--card-bg);">
-          <div class="active-outs-title">Коллеги в отсутствии:</div>
-          <div id="active-outs-list"></div>
+        <div class="card" style="margin-top: 15px;">
+          <h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>
+          <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
+          </div>
+          <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Аксессуары</div>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
+            <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
+          </div>
         </div>
       </div>
 
-      <div id="content-create" class="hidden">
-        <div id="menu-list">
-          <button onclick="openForm('sc')">Продажа СЦ / Фокус</button>
-          <button onclick="openForm('tradein')">Продажа Trade-In</button>
-          <button onclick="openForm('points')">Баллы мотивации</button>
-          <button onclick="openForm('swap')" class="btn-orange">Обмен сменами</button>
-          
-          <div class="card" style="margin-top: 15px;">
-            <h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>
-            <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 100к')">100к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 150к')">150к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 200к')">200к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги 300к')">300к</button>
-            </div>
-            <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Аксессуары</div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 200к')">200к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 300к')">300к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 400к')">400к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары 500к')">500к</button>
-            </div>
-          </div>
+      <div id="form-sc" class="card form-dark hidden" style="padding: 0; background: transparent; border: none; box-shadow: none;">
+        <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
+           <div style="display:flex; align-items:center;">
+              <h3 style="margin:0; font-size: 15px;">Продажа СЦ/Фокус</h3>
+              <div id="btn-act-doc" onclick="openScDoc()" style="font-size:18px; padding:6px; margin-left:8px; line-height:1; background:rgba(150,150,150,0.1); border-radius:8px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
+           </div>
+           <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
+        </div>
+        
+        <div style="display:flex; gap:6px; margin-bottom:8px;" id="sc-dept-tabs">
+             <button id="sc-tab-cifra" class="admin-flt active-flt" onclick="switchScDept('Цифра')">Цифра</button>
+             <button id="sc-tab-mbt" class="admin-flt" onclick="switchScDept('МБТ')">МБТ</button>
+             <button id="sc-tab-kbt" class="admin-flt" onclick="switchScDept('КБТ')">КБТ</button>
         </div>
 
-        <div id="form-sc" class="card form-dark hidden" style="padding: 0; background: transparent; border: none; box-shadow: none;">
-          <div class="sticky-header glass" style="display:flex; justify-content:space-between; align-items:center; margin-top:0;">
-             <div style="display:flex; align-items:center;">
-                <h3 style="margin:0; font-size: 15px;">Продажа СЦ/Фокус</h3>
-                <div id="btn-act-doc" onclick="openScDoc()" style="font-size:18px; padding:6px; margin-left:8px; line-height:1; background:rgba(150,150,150,0.1); border-radius:8px; opacity:0; pointer-events:none; transition:0.3s; cursor:pointer;">📄</div>
+        <div class="card" style="margin-top: 5px;">
+            <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
+            <div class="sc-list-container" id="sc-list"></div>
+            <div class="grid-btns">
+              <button class="btn-gray" onclick="closeForm()">Отмена</button>
+              <button onclick="submitScForm()">Отправить</button>
+            </div>
+        </div>
+      </div>
+
+      <div id="form-tradein" class="card form-dark hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+           <h3 style="margin:0; font-size:15px;">Продажа Trade-In</h3>
+           <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
+        </div>
+        <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
+        <div class="grid-btns" style="margin-top: 15px;">
+          <button class="btn-gray" onclick="closeForm()">Отмена</button>
+          <button onclick="submitTradeIn()">Отправить</button>
+        </div>
+      </div>
+
+      <div id="form-points" class="card form-dark hidden">
+        <h3 style="font-size:15px;">Баллы мотивации</h3>
+        <div id="fp-balance-notice"></div>
+        
+        <select id="fp-action">
+          <option value="Придти позже">Придти позже</option>
+          <option value="Уйти раньше">Уйти раньше</option>
+        </select>
+        <select id="fp-time">
+          <option value="30 мин">30 мин</option>
+          <option value="1 час">1 час</option>
+          <option value="2 часа">2 часа</option>
+          <option value="3 часа">3 часа</option>
+        </select>
+        <p id="fp-date-label" style="margin: 12px 0 6px; font-size: 13px; color:gray;">Укажите дату:</p>
+        <input type="text" id="fp-date" class="smart-date" data-realdate="">
+        <div class="grid-btns" style="margin-top: 15px;">
+          <button class="btn-gray" onclick="closeForm()">Отмена</button>
+          <button id="fp-submit-btn" onclick="submitPoints()">Отправить</button>
+        </div>
+      </div>
+
+      <div id="form-swap" class="card form-dark hidden">
+        <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:15px;">
+           <h3 style="margin-top:0; font-size:14px;">Исправить смену за сегодня</h3>
+           <select id="fs-fix-shift">
+             <option value="" disabled selected>Выберите правильную смену</option>
+             <option value="09:00 - 19:00">09:00 - 19:00</option>
+             <option value="12:00 - 22:00">12:00 - 22:00</option>
+           </select>
+           <button class="btn-green" onclick="submitFixShift()" style="margin-top:10px; font-size:13px; padding:10px;">Отправить исправление</button>
+        </div>
+
+        <h3 style="padding-top:10px; border-top:1px solid var(--border-color); font-size:15px;">Обмен сменами</h3>
+        <select id="fs-target" onchange="checkSwapFields()"></select>
+        <div id="fs-extra" class="hidden">
+          <p style="margin: 10px 0 6px; font-size: 13px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
+          <input type="text" id="fs-date" class="smart-date" data-realdate="">
+          <select id="fs-shift">
+            <option value="09:00 - 19:00">09:00 - 19:00</option>
+            <option value="12:00 - 22:00">12:00 - 22:00</option>
+          </select>
+        </div>
+        <div class="grid-btns" style="margin-top: 15px;">
+          <button class="btn-gray" onclick="closeForm()">Отмена</button>
+          <button onclick="submitSwap()">Запросить обмен</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrollable-content slide-up-fade hidden" id="content-inbox">
+      <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;">
+          <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы на обмен</h3>
+      </div>
+      <div id="inbox-list" class="req-list"></div>
+    </div>
+
+    <div class="scrollable-content slide-up-fade hidden" id="content-admin">
+      <div class="sticky-header glass" style="display:flex; gap:6px; margin-top:0; margin-bottom:12px; flex-wrap: wrap; justify-content:center;">
+        <button id="btn-adm-plan" onclick="toggleAdminView('plan')" class="admin-flt active-flt" style="min-width: 45%;">План</button>
+        <button id="btn-adm-sc" onclick="toggleAdminView('sc')" class="admin-flt" style="min-width: 45%;">СЦ Товары</button>
+        <button id="btn-adm-emp" onclick="toggleAdminView('emps')" class="admin-flt" style="min-width: 30%;">Сотрудники</button>
+        <button id="btn-adm-pend" onclick="toggleAdminView('pending')" class="admin-flt" style="position:relative; min-width: 30%;">
+           Запросы <span id="admin-badge" class="badge hidden"></span>
+        </button>
+        <button id="btn-adm-hist" onclick="toggleAdminView('history')" class="admin-flt" style="min-width: 30%;">История</button>
+      </div>
+      
+      <div id="admin-plan-list" class="hidden" style="font-size:13px; line-height: 1.4;"></div>
+      
+      <div id="admin-sc-list" class="hidden">
+         <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px; margin-top:0;">
+             <div style="display:flex; gap:6px;">
+                 <button id="flt-cifra" class="admin-flt active-flt" onclick="renderAdminScItems('Цифра', this)">Цифра</button>
+                 <button id="flt-mbt" class="admin-flt" onclick="renderAdminScItems('МБТ', this)">МБТ</button>
+                 <button id="flt-kbt" class="admin-flt" onclick="renderAdminScItems('КБТ', this)">КБТ</button>
+                 <button id="flt-focus" class="admin-flt focus-flt" onclick="renderAdminScItems('Фокус', this)">Фокус</button>
              </div>
-             <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
-          </div>
-          
-          <div style="display:flex; gap:6px; margin-bottom:8px;" id="sc-dept-tabs">
-               <button id="sc-tab-cifra" class="admin-flt active-flt" onclick="switchScDept('Цифра')">Цифра</button>
-               <button id="sc-tab-mbt" class="admin-flt" onclick="switchScDept('МБТ')">МБТ</button>
-               <button id="sc-tab-kbt" class="admin-flt" onclick="switchScDept('КБТ')">КБТ</button>
-          </div>
-
-          <div class="card" style="margin-top: 5px;">
-              <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
-              <div class="sc-list-container" id="sc-list"></div>
-              <div class="grid-btns">
-                <button class="btn-gray" onclick="closeForm()">Отмена</button>
-                <button onclick="submitScForm()">Отправить</button>
-              </div>
-          </div>
-        </div>
-
-        <div id="form-tradein" class="card form-dark hidden">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-             <h3 style="margin:0; font-size:15px;">Продажа Trade-In</h3>
-             <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
-          </div>
-          <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
-          <div class="grid-btns" style="margin-top: 15px;">
-            <button class="btn-gray" onclick="closeForm()">Отмена</button>
-            <button onclick="submitTradeIn()">Отправить</button>
-          </div>
-        </div>
-
-        <div id="form-points" class="card form-dark hidden">
-          <h3 style="font-size:15px;">Баллы мотивации</h3>
-          <div id="fp-balance-notice"></div>
-          
-          <select id="fp-action">
-            <option value="Придти позже">Придти позже</option>
-            <option value="Уйти раньше">Уйти раньше</option>
-          </select>
-          <select id="fp-time">
-            <option value="30 мин">30 мин</option>
-            <option value="1 час">1 час</option>
-            <option value="2 часа">2 часа</option>
-            <option value="3 часа">3 часа</option>
-          </select>
-          <p id="fp-date-label" style="margin: 12px 0 6px; font-size: 13px; color:gray;">Укажите дату:</p>
-          <input type="text" id="fp-date" class="smart-date" data-realdate="">
-          <div class="grid-btns" style="margin-top: 15px;">
-            <button class="btn-gray" onclick="closeForm()">Отмена</button>
-            <button id="fp-submit-btn" onclick="submitPoints()">Отправить</button>
-          </div>
-        </div>
-
-        <div id="form-swap" class="card form-dark hidden">
-          <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:15px;">
-             <h3 style="margin-top:0; font-size:14px;">Исправить смену за сегодня</h3>
-             <select id="fs-fix-shift">
-               <option value="" disabled selected>Выберите правильную смену</option>
-               <option value="09:00 - 19:00">09:00 - 19:00</option>
-               <option value="12:00 - 22:00">12:00 - 22:00</option>
-             </select>
-             <button class="btn-green" onclick="submitFixShift()" style="margin-top:10px; font-size:13px; padding:10px;">Отправить исправление</button>
-          </div>
-
-          <h3 style="padding-top:10px; border-top:1px solid var(--border-color); font-size:15px;">Обмен сменами</h3>
-          <select id="fs-target" onchange="checkSwapFields()"></select>
-          <div id="fs-extra" class="hidden">
-            <p style="margin: 10px 0 6px; font-size: 13px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
-            <input type="text" id="fs-date" class="smart-date" data-realdate="">
-            <select id="fs-shift">
-              <option value="09:00 - 19:00">09:00 - 19:00</option>
-              <option value="12:00 - 22:00">12:00 - 22:00</option>
-            </select>
-          </div>
-          <div class="grid-btns" style="margin-top: 15px;">
-            <button class="btn-gray" onclick="closeForm()">Отмена</button>
-            <button onclick="submitSwap()">Запросить обмен</button>
-          </div>
-        </div>
+             <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept, null)">
+         </div>
+         <div id="admin-sc-container" class="card" style="padding:6px;"></div>
       </div>
 
-      <div id="content-inbox" class="hidden">
-        <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;">
-            <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы на обмен</h3>
-        </div>
-        <div id="inbox-list" class="req-list"></div>
+      <div id="admin-emp-container" class="hidden">
+         <div class="sticky-header glass" style="display:flex; gap:6px; margin-bottom:12px; margin-top:0; padding:6px;">
+             <button id="flt-emp-cifra" class="admin-flt active-flt" onclick="renderAdminEmps('Цифра', this)">Цифра</button>
+             <button id="flt-emp-mbt" class="admin-flt" onclick="renderAdminEmps('МБТ', this)">МБТ</button>
+             <button id="flt-emp-kbt" class="admin-flt" onclick="renderAdminEmps('КБТ', this)">КБТ</button>
+         </div>
+         <div id="admin-emp-list" class="req-list"></div>
       </div>
 
-      <div id="content-admin" class="hidden">
-        <div class="sticky-header glass" style="display:flex; gap:6px; margin-top:0; margin-bottom:12px; flex-wrap: wrap; justify-content:center;">
-          <button id="btn-adm-plan" onclick="toggleAdminView('plan')" class="admin-flt active-flt" style="min-width: 45%;">План</button>
-          <button id="btn-adm-sc" onclick="toggleAdminView('sc')" class="admin-flt" style="min-width: 45%;">СЦ Товары</button>
-          <button id="btn-adm-emp" onclick="toggleAdminView('emps')" class="admin-flt" style="min-width: 30%;">Сотрудники</button>
-          <button id="btn-adm-pend" onclick="toggleAdminView('pending')" class="admin-flt" style="position:relative; min-width: 30%;">
-             Запросы <span id="admin-badge" class="badge hidden"></span>
-          </button>
-          <button id="btn-adm-hist" onclick="toggleAdminView('history')" class="admin-flt" style="min-width: 30%;">История</button>
-        </div>
-        
-        <div id="admin-plan-list" class="hidden" style="font-size:13px; line-height: 1.4;"></div>
-        
-        <div id="admin-sc-list" class="hidden">
-           <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px; margin-top:0;">
-               <div style="display:flex; gap:6px;">
-                   <button id="flt-cifra" class="admin-flt active-flt" onclick="renderAdminScItems('Цифра', this)">Цифра</button>
-                   <button id="flt-mbt" class="admin-flt" onclick="renderAdminScItems('МБТ', this)">МБТ</button>
-                   <button id="flt-kbt" class="admin-flt" onclick="renderAdminScItems('КБТ', this)">КБТ</button>
-                   <button id="flt-focus" class="admin-flt focus-flt" onclick="renderAdminScItems('Фокус', this)">Фокус</button>
-               </div>
-               <input type="text" id="admin-sc-search" placeholder="Поиск товара..." style="height:40px; font-size:14px; margin:0; color:var(--text-color);" oninput="renderAdminScItems(currentAdminScDept, null)">
-           </div>
-           <div id="admin-sc-container" class="card" style="padding:6px;"></div>
-        </div>
+      <div id="admin-list" class="req-list hidden"></div>
+      <div id="admin-history-list" class="req-list hidden"></div>
+    </div>
 
-        <div id="admin-emp-container" class="hidden">
-           <div class="sticky-header glass" style="display:flex; gap:6px; margin-bottom:12px; margin-top:0; padding:6px;">
-               <button id="flt-emp-cifra" class="admin-flt active-flt" onclick="renderAdminEmps('Цифра', this)">Цифра</button>
-               <button id="flt-emp-mbt" class="admin-flt" onclick="renderAdminEmps('МБТ', this)">МБТ</button>
-               <button id="flt-emp-kbt" class="admin-flt" onclick="renderAdminEmps('КБТ', this)">КБТ</button>
-           </div>
-           <div id="admin-emp-list" class="req-list"></div>
+    <div class="scrollable-content slide-up-fade hidden" id="content-details">
+      <div class="sticky-header glass" style="display:flex; align-items:center; margin-top:0; margin-bottom:12px; justify-content: space-between;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div id="btn-details-back" onclick="closeDetails()" style="cursor:pointer; padding:6px 10px; background:var(--inner-bg); border-radius:10px; font-size:18px; transition:0.2s;">🔙</div>
+          <h3 id="details-title" style="margin:0; color:var(--btn-color); font-size:15px;">Детали</h3>
         </div>
-
-        <div id="admin-list" class="req-list hidden"></div>
-        <div id="admin-history-list" class="req-list hidden"></div>
+        <div id="details-kpi-circle-container"></div>
       </div>
+      <div id="details-list" style="padding:0; overflow:hidden;"></div>
+    </div>
 
-      <div id="content-details" class="hidden">
-        <div class="sticky-header glass" style="display:flex; align-items:center; margin-top:0; margin-bottom:12px; justify-content: space-between;">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div id="btn-details-back" onclick="closeDetails()" style="cursor:pointer; padding:6px 10px; background:var(--inner-bg); border-radius:10px; font-size:18px; transition:0.2s;">🔙</div>
-            <h3 id="details-title" style="margin:0; color:var(--btn-color); font-size:15px;">Детали</h3>
-          </div>
-          <div id="details-kpi-circle-container"></div>
-        </div>
-        <div id="details-list" style="padding:0; overflow:hidden;"></div>
-      </div>
-
-    </div> </div>
+  </div>
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwbxkG4t-70Eoz9Hes44DP5C82F_lWHnBmrzoD_UIKCYVAP54hesdgz6CHVj4_CCzR6pw/exec";
@@ -598,9 +596,7 @@
         loadDashboard(false); 
         startPolling(); 
       } else {
-        const loader = document.getElementById("loader-screen");
-        loader.style.opacity = '0';
-        setTimeout(() => loader.classList.add("hidden"), 400);
+        hideLoader();
         document.getElementById("auth-screen").classList.remove("hidden");
       }
     });
@@ -637,6 +633,18 @@
         }, {passive: true});
     }
 
+    function hideLoader() {
+        const loader = document.getElementById("loader-screen");
+        loader.style.opacity = '0';
+        setTimeout(() => loader.classList.add("hidden"), 400);
+    }
+
+    function showLoader() {
+        const loader = document.getElementById("loader-screen");
+        loader.classList.remove("hidden");
+        setTimeout(() => loader.style.opacity = '1', 10);
+    }
+
     function forceLogout() {
         if(pollingTimer) clearInterval(pollingTimer);
         clearMemory();
@@ -668,7 +676,8 @@
                 
                 renderDashboardData(data, true);
                 
-                if(!isUserPromoter && appState.role !== 'Директор') {
+                let isDir = (data.role || "").toLowerCase() === "директор";
+                if(!isUserPromoter && !isDir) {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
                     if(state && state.authorized !== false) applyLimits(state);
                 }
@@ -747,16 +756,17 @@
       document.getElementById("content-details").classList.add("hidden");
       
       let sections = document.querySelectorAll('#scrollable-body > div');
-      let animClass = 'fade-in';
+      let animClass = 'slide-up-fade';
       if (direction === 'right') animClass = 'slide-in-right';
       else if (direction === 'left') animClass = 'slide-in-left';
 
       sections.forEach(s => { 
-          s.classList.remove('fade-in', 'slide-in-right', 'slide-in-left'); 
+          s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); 
           s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
       });
 
-      let isSeller = !isUserPromoter && appState.role !== 'Директор';
+      let isDir = appState.role.toLowerCase() === "директор";
+      let isSeller = !isUserPromoter && !isDir;
       if (isSeller && tab !== 'details') {
          document.getElementById("info-dashboard").classList.remove("hidden");
       } else {
@@ -789,7 +799,8 @@
       if (state.activeOuts) {
          globalActiveOuts = state.activeOuts;
          renderActiveOuts();
-         if(!isUserPromoter && appState.role !== 'Директор') checkAutoReturn(state.activeOuts);
+         let isDir = appState.role.toLowerCase() === "директор";
+         if(!isUserPromoter && !isDir) checkAutoReturn(state.activeOuts);
       }
     }
 
@@ -986,35 +997,39 @@
     }
 
     async function loadDashboard(isSilent = false) {
+      let cachedData = localStorage.getItem("dashData_" + appState.iin);
+
       if (!isSilent) {
-          let cachedData = localStorage.getItem("dashData_" + appState.iin);
           if (cachedData) {
               renderDashboardData(JSON.parse(cachedData), true);
+              hideLoader(); 
+              isSilent = true; 
           } else {
-              document.getElementById("loader-screen").classList.remove("hidden");
-              document.getElementById("loader-screen").style.opacity = '1';
+              showLoader();
           }
       }
 
       let data = await callBackend('getDashboardData', { token: appState.token });
         
-      if (!data || data.error === "Оффлайн режим") return; 
+      if (!data || data.error === "Оффлайн режим") {
+          if (!isSilent) hideLoader();
+          return; 
+      }
       
       if (data.authorized === false) { 
           forceLogout();
           return; 
       } 
       
-      if (!isSilent) {
-         const loader = document.getElementById("loader-screen");
-         loader.style.opacity = '0';
-         setTimeout(() => loader.classList.add("hidden"), 400);
-      }
-
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
       
-      if (data.role && data.role.toLowerCase() !== "директор") {
+      if (!isSilent) {
+         hideLoader();
+      }
+      
+      let isDir = (data.role || "").toLowerCase() === "директор";
+      if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
              appState.currentAction = state.myActiveAction || null;
@@ -1032,7 +1047,8 @@
       saveMemory("userRole", appState.role);
       saveMemory("userDept", appState.dept);
 
-      let isSeller = !isUserPromoter && appState.role !== 'Директор';
+      let isDir = appState.role.toLowerCase() === "директор";
+      let isSeller = !isUserPromoter && !isDir;
 
       if (isUserPromoter) {
           document.getElementById("nav-create-icon").classList.add("hidden");
@@ -1087,7 +1103,7 @@
       const aBadge = document.getElementById("admin-badge");
       const aDot = document.getElementById("admin-dot");
 
-      if (appState.role === "Директор") {
+      if (isDir) {
           document.getElementById("nav-time-icon").classList.add("hidden");
           document.getElementById("content-time").classList.add("hidden");
           document.getElementById("nav-create-icon").classList.add("hidden");
@@ -1183,7 +1199,7 @@
       globalSellers = data.sellers || [];
       globalScItems = data.scItems || [];
       
-      if (appState.role === "Директор") {
+      if (isDir) {
           renderAdminEmps(currentEmpDept, null);
       }
     }
@@ -1230,16 +1246,16 @@
       `;
       
       if (isCompact) {
-          return `<div style="border-left: 3px solid ${typeColor}; padding: 6px 0 6px 8px; margin-bottom: 4px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: transparent;">${inner}</div>`;
+          return `<div class="req-item" style="border-left-color: ${typeColor}; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`;
       }
       return `<div class="detail-item">${inner}</div>`;
     }
 
     function renderMoneyFineItem(i) {
       let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0";
-      return `<div style="border-left: 3px solid #95a5a6; padding: 6px 0 6px 8px; margin-bottom: 4px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: transparent;">
+      return `<div class="req-item" style="border-left-color: #e74c3c; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
-              <b style="font-size:12px; color:#95a5a6; display:inline-block; margin-bottom:3px;">Штраф</b><br>
+              <b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br>
               <span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
               <span style="color:gray;font-size:10px;">${i.date}</span>
           </div>
@@ -1307,7 +1323,7 @@
       else if (type === 'tabel') {
         document.getElementById("btn-details-back").onclick = () => switchTab('time');
         document.getElementById("details-title").innerText = "Денежные штрафы";
-        listHtml = "<div class='card' style='padding:0;'>";
+        listHtml = "<div style='padding-top:5px;'>";
         if (myMoneyFinesHistory.length > 0) {
            listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join("");
         } else {
@@ -1577,7 +1593,12 @@
         document.getElementById('sc-tab-cifra').classList.remove('active-flt');
         document.getElementById('sc-tab-mbt').classList.remove('active-flt');
         document.getElementById('sc-tab-kbt').classList.remove('active-flt');
-        document.getElementById(`sc-tab-${dept.toLowerCase()}`).classList.add('active-flt');
+        
+        let tabId = 'sc-tab-cifra';
+        if (dept === 'МБТ') tabId = 'sc-tab-mbt';
+        if (dept === 'КБТ') tabId = 'sc-tab-kbt';
+        document.getElementById(tabId).classList.add('active-flt');
+        
         renderScItems();
     }
 
