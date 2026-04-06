@@ -1,6 +1,6 @@
 {
-  "name": "Мотивация App",
-  "short_name": "Мотивация",
+  "name": "TapWork",
+  "short_name": "TapWork",
   "description": "Приложение для сотрудников",
   "start_url": "./index.html",
   "display": "standalone",
