@@ -683,7 +683,7 @@
                 
                 renderDashboardData(data, true);
                 
-                let isDir = appState.role.trim().toLowerCase() === "директор";
+                let isDir = String(data.role || "").toLowerCase().includes("директор");
                 if(!isUserPromoter && !isDir) {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
                     if(state && state.authorized !== false) applyLimits(state);
@@ -772,9 +772,11 @@
           s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
       });
 
-      let isDir = appState.role.trim().toLowerCase() === "директор";
+      let isDir = String(appState.role).toLowerCase().includes("директор");
       let isSeller = !isUserPromoter && !isDir;
-      if (isSeller && tab !== 'details') {
+      let isScFormVisible = !document.getElementById("form-sc").classList.contains("hidden");
+
+      if (isSeller && tab !== 'details' && tab !== 'admin' && !isScFormVisible) {
          document.getElementById("info-dashboard").classList.remove("hidden");
       } else {
          document.getElementById("info-dashboard").classList.add("hidden");
@@ -807,7 +809,7 @@
       if (state.activeOuts) {
          globalActiveOuts = state.activeOuts;
          renderActiveOuts();
-         let isDir = appState.role.trim().toLowerCase() === "директор";
+         let isDir = String(appState.role).toLowerCase().includes("директор");
          if(!isUserPromoter && !isDir) checkAutoReturn(state.activeOuts);
       }
     }
@@ -1013,7 +1015,7 @@
           if (cachedData) {
               renderDashboardData(JSON.parse(cachedData), true);
               
-              let isDir = appState.role.trim().toLowerCase() === "директор";
+              let isDir = String(appState.role).toLowerCase().includes("директор");
               if (isDir) {
                   switchTab('admin'); toggleAdminView('plan');
               } else {
@@ -1046,7 +1048,7 @@
          hideLoader();
       }
       
-      let isDir = appState.role.trim().toLowerCase() === "директор";
+      let isDir = String(appState.role).toLowerCase().includes("директор");
       if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
@@ -1065,8 +1067,9 @@
       saveMemory("userRole", appState.role);
       saveMemory("userDept", appState.dept);
 
-      let isDir = appState.role.trim().toLowerCase() === "директор";
+      let isDir = String(appState.role).toLowerCase().includes("директор");
       let isSeller = !isUserPromoter && !isDir;
+      let isScFormVisible = !document.getElementById("form-sc").classList.contains("hidden");
 
       if (isUserPromoter) {
           document.getElementById("nav-create-icon").classList.add("hidden");
@@ -1079,8 +1082,10 @@
           document.getElementById("desc-break").innerText = "10 мин";
           document.getElementById("desc-lunch").innerText = "40 мин (12:00-17:00)";
           document.getElementById("desc-snack").innerText = "30 мин (16:00-20:00)";
-          if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0) {
+          if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isScFormVisible) {
               document.getElementById("info-dashboard").classList.remove("hidden");
+          } else {
+              document.getElementById("info-dashboard").classList.add("hidden");
           }
       }
 
@@ -1698,7 +1703,7 @@
     }
 
     function closeForm() {
-      let isDir = appState.role.trim().toLowerCase() === "директор";
+      let isDir = String(appState.role).toLowerCase().includes("директор");
       if (!isUserPromoter && !isDir) {
           document.getElementById("info-dashboard").classList.remove("hidden");
       }
