@@ -560,6 +560,7 @@
       iin: getMemory("userIIN"), 
       firstName: getMemory("userName") || "", 
       currentAction: getMemory("currentAction"),
+      role: getMemory("userRole") || "Продавец",
       lastInboxCount: 0 
     };
 
@@ -637,10 +638,27 @@
             if(appState.token && !document.hidden) {
                 let data = await callBackend('getDashboardData', { token: appState.token });
                 if (!data || data.error === "Оффлайн режим") return;
-                if (data.authorized === false) { return; } 
+                
+                if (data.authorized === false) { 
+                    clearMemory();
+                    document.getElementById("main-screen").style.opacity = '0';
+                    setTimeout(() => {
+                        document.getElementById("main-screen").classList.add("hidden");
+                        document.getElementById("auth-screen").classList.remove("hidden");
+                        document.getElementById("auth-screen").style.opacity = '1';
+                        document.getElementById("main-screen").style.opacity = '1'; 
+                        appState.token = null;
+                        appState.iin = null;
+                        document.getElementById("iin-input").value = '';
+                        document.getElementById("iin-input").disabled = false;
+                    }, 300);
+                    if(pollingTimer) clearInterval(pollingTimer);
+                    return; 
+                } 
+                
                 renderDashboardData(data, true);
                 
-                if(!isUserPromoter) {
+                if(!isUserPromoter && appState.role !== 'Директор') {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
                     if(state && state.authorized !== false) applyLimits(state);
                 }
@@ -673,7 +691,6 @@
 
             document.getElementById("toast").classList.remove("show");
             
-            // Плавный переход
             document.getElementById("auth-screen").style.opacity = '0';
             setTimeout(() => {
                 document.getElementById("auth-screen").classList.add("hidden");
@@ -729,7 +746,8 @@
           s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
       });
 
-      if (tab === 'time' || tab === 'create') {
+      let isSeller = !isUserPromoter && appState.role !== 'Директор';
+      if (isSeller && tab !== 'details') {
          document.getElementById("info-dashboard").classList.remove("hidden");
       } else {
          document.getElementById("info-dashboard").classList.add("hidden");
@@ -761,7 +779,7 @@
       if (state.activeOuts) {
          globalActiveOuts = state.activeOuts;
          renderActiveOuts();
-         if(!isUserPromoter) checkAutoReturn(state.activeOuts);
+         if(!isUserPromoter && appState.role !== 'Директор') checkAutoReturn(state.activeOuts);
       }
     }
 
@@ -971,12 +989,25 @@
       document.getElementById("loader-screen").classList.add("hidden");
         
       if (!data || data.error === "Оффлайн режим") return; 
-      if (data.authorized === false) { return; } 
+      
+      if (data.authorized === false) { 
+          clearMemory();
+          document.getElementById("main-screen").style.opacity = '0';
+          setTimeout(() => {
+              document.getElementById("main-screen").classList.add("hidden");
+              document.getElementById("auth-screen").classList.remove("hidden");
+              document.getElementById("auth-screen").style.opacity = '1';
+              document.getElementById("main-screen").style.opacity = '1'; 
+              appState.token = null;
+              appState.iin = null;
+          }, 300);
+          if(pollingTimer) clearInterval(pollingTimer);
+          return; 
+      } 
       
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
       
-      // Вызываем всегда (и для продавцов, и для промоутеров), чтобы лимиты корректно снялись с паузы
       if (data.role && data.role.toLowerCase() !== "директор") {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
@@ -990,6 +1021,10 @@
 
     function renderDashboardData(data, isSilent = false) {
       isUserPromoter = data.isPromoter;
+      appState.role = data.role || "Продавец";
+      saveMemory("userRole", appState.role);
+
+      let isSeller = !isUserPromoter && appState.role !== 'Директор';
 
       if (isUserPromoter) {
           document.getElementById("nav-create-icon").classList.add("hidden");
@@ -1002,7 +1037,7 @@
           document.getElementById("desc-break").innerText = "10 мин";
           document.getElementById("desc-lunch").innerText = "40 мин (12:00-17:00)";
           document.getElementById("desc-snack").innerText = "30 мин (16:00-20:00)";
-          if (document.querySelectorAll("#content-admin:not(.hidden)").length === 0) {
+          if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0) {
               document.getElementById("info-dashboard").classList.remove("hidden");
           }
       }
@@ -1042,7 +1077,7 @@
       const aBadge = document.getElementById("admin-badge");
       const aDot = document.getElementById("admin-dot");
 
-      if (data.role && data.role.toLowerCase() === "директор") {
+      if (appState.role === "Директор") {
           document.getElementById("nav-time-icon").classList.add("hidden");
           document.getElementById("content-time").classList.add("hidden");
           document.getElementById("nav-create-icon").classList.add("hidden");
