@@ -683,7 +683,7 @@
                 
                 renderDashboardData(data, true);
                 
-                let isDir = (data.role || "").toLowerCase() === "директор";
+                let isDir = appState.role.trim().toLowerCase() === "директор";
                 if(!isUserPromoter && !isDir) {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
                     if(state && state.authorized !== false) applyLimits(state);
@@ -763,7 +763,7 @@
       document.getElementById("content-details").classList.add("hidden");
       
       let sections = document.querySelectorAll('#scrollable-body > div');
-      let animClass = 'fade-in';
+      let animClass = 'slide-up-fade';
       if (direction === 'right') animClass = 'slide-in-right';
       else if (direction === 'left') animClass = 'slide-in-left';
 
@@ -772,7 +772,7 @@
           s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
       });
 
-      let isDir = appState.role.toLowerCase() === "директор";
+      let isDir = appState.role.trim().toLowerCase() === "директор";
       let isSeller = !isUserPromoter && !isDir;
       if (isSeller && tab !== 'details') {
          document.getElementById("info-dashboard").classList.remove("hidden");
@@ -807,7 +807,7 @@
       if (state.activeOuts) {
          globalActiveOuts = state.activeOuts;
          renderActiveOuts();
-         let isDir = appState.role.toLowerCase() === "директор";
+         let isDir = appState.role.trim().toLowerCase() === "директор";
          if(!isUserPromoter && !isDir) checkAutoReturn(state.activeOuts);
       }
     }
@@ -1012,6 +1012,14 @@
       if (!isSilent) {
           if (cachedData) {
               renderDashboardData(JSON.parse(cachedData), true);
+              
+              let isDir = appState.role.trim().toLowerCase() === "директор";
+              if (isDir) {
+                  switchTab('admin'); toggleAdminView('plan');
+              } else {
+                  switchTab('time');
+              }
+              
               hideLoader(); 
               isSilent = true; 
           } else {
@@ -1038,7 +1046,7 @@
          hideLoader();
       }
       
-      let isDir = (data.role || "").toLowerCase() === "директор";
+      let isDir = appState.role.trim().toLowerCase() === "директор";
       if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
@@ -1057,7 +1065,7 @@
       saveMemory("userRole", appState.role);
       saveMemory("userDept", appState.dept);
 
-      let isDir = appState.role.toLowerCase() === "директор";
+      let isDir = appState.role.trim().toLowerCase() === "директор";
       let isSeller = !isUserPromoter && !isDir;
 
       if (isUserPromoter) {
@@ -1076,7 +1084,18 @@
           }
       }
 
-      document.getElementById("info-sc-val").innerText = `${data.info?.scSales ?? '-'} | ${data.info?.breezySales ?? '-'}`;
+      let scVal = parseInt(data.info?.scSales) || 0;
+      let brzyVal = parseInt(data.info?.breezySales) || 0;
+      let scTotal = scVal + brzyVal;
+      let scEl = document.getElementById("info-sc-val");
+      scEl.innerText = `${data.info?.scSales ?? '-'} | ${data.info?.breezySales ?? '-'}`;
+      
+      if (scTotal > 0) {
+          scEl.style.color = "#27ae60"; 
+      } else {
+          scEl.style.color = "#e74c3c"; 
+      }
+
       document.getElementById("pt-acc").innerText = data.info?.ptsAccrued ?? '-';
       document.getElementById("pt-use").innerText = data.info?.ptsUsed ?? '-';
         
@@ -1139,7 +1158,7 @@
           document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>";
           adminScItemsGlobal = data.adminScItems || [];
           
-          if(document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && !isSilent) {
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) {
               switchTab('admin');
               toggleAdminView('plan'); 
           }
@@ -1163,7 +1182,7 @@
           } 
           else { uBadge.classList.add("hidden"); appState.lastInboxCount = 0;}
           
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0 && !isSilent) {
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) {
               switchTab('time');
           }
       }
@@ -1256,14 +1275,14 @@
       `;
       
       if (isCompact) {
-          return `<div class="req-item" style="border-left-color: ${typeColor}; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`;
+          return `<div class="req-item" style="border-left-color: ${typeColor}; border-left-width: 2px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`;
       }
       return `<div class="detail-item">${inner}</div>`;
     }
 
     function renderMoneyFineItem(i) {
       let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0";
-      return `<div class="req-item" style="border-left-color: #e74c3c; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+      return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
           <div>
               <b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br>
               <span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
@@ -1518,7 +1537,7 @@
        let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase()));
        
        container.innerHTML = filtered.map(e => `
-            <div class="req-item" style="border-left-color: var(--btn-color); padding: 8px; margin-bottom: 8px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+            <div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 8px; margin-bottom: 8px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                  <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
                     <span>${e.name}</span>
@@ -1618,6 +1637,8 @@
       document.getElementById("menu-list").classList.add("hidden");
       
       if(type === 'sc') {
+        document.getElementById("info-dashboard").classList.add("hidden"); 
+
         selectedScItem = null;
         document.getElementById("sc-search").value = "";
         document.getElementById("btn-act-doc").style.opacity = "0.3";
@@ -1677,6 +1698,11 @@
     }
 
     function closeForm() {
+      let isDir = appState.role.trim().toLowerCase() === "директор";
+      if (!isUserPromoter && !isDir) {
+          document.getElementById("info-dashboard").classList.remove("hidden");
+      }
+
       ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => {
           let el = document.getElementById(id);
           el.classList.add("hidden");
