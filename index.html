@@ -6,6 +6,7 @@
   <title>TapWork</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#f4f4f5">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,10 +16,10 @@
 
   <style>
     :root {
-      --bg-color: #f4f4f5;
-      --text-color: #000000;
-      --btn-color: #3390ec;
-      --btn-text: #ffffff;
+      --bg-color: var(--tg-theme-bg-color, #f4f4f5);
+      --text-color: var(--tg-theme-text-color, #000000);
+      --btn-color: var(--tg-theme-button-color, #3390ec);
+      --btn-text: var(--tg-theme-button-text-color, #ffffff);
       --card-bg: #ffffff;
       --card-bg-rgb: 255, 255, 255;
       --border-color: #eee;
@@ -30,8 +31,8 @@
     
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-color: #121212;
-        --text-color: #e0e0e0;
+        --bg-color: var(--tg-theme-bg-color, #121212);
+        --text-color: var(--tg-theme-text-color, #e0e0e0);
         --card-bg: #1e1e1e;
         --card-bg-rgb: 30, 30, 30;
         --border-color: #333;
@@ -103,7 +104,7 @@
 
     .smart-date { color: var(--btn-color); font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
     
-    button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; color: white; background: var(--btn-color); transition: transform 0.1s, background-color 0.2s, opacity 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; color: var(--btn-text); background: var(--btn-color); transition: transform 0.1s, background-color 0.2s, opacity 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     button:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(100%); }
     button:active:not(:disabled) { transform: scale(0.96); opacity: 0.9; }
     
@@ -120,7 +121,7 @@
     .form-dark h3 { color: var(--form-title-color) !important; }
     .form-dark input, .form-dark select { color: var(--form-input-color) !important; }
 
-    .btn-green { background: #27ae60; } .btn-orange { background: #f39c12; } .btn-gray { background: #95a5a6; } .btn-red { background: #e74c3c; }
+    .btn-green { background: #27ae60; color: white; } .btn-orange { background: #f39c12; color: white;} .btn-gray { background: #95a5a6; color: white;} .btn-red { background: #e74c3c; color: white;}
     
     .nav-bar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; position: relative; }
     .badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; border: 2px solid var(--bg-color); transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
@@ -225,7 +226,7 @@
       </div>
       
       <div class="nav-bar" id="nav-container">
-        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 12px; position: relative; border-radius: 14px;">
+        <button id="nav-admin" onclick="switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 12px; position: relative; border-radius: 14px; color: white;">
           Админ-панель 
           <span id="admin-dot" class="badge hidden" style="padding:4px; top:-2px; right:-2px;"></span>
         </button>
@@ -490,6 +491,9 @@
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwbxkG4t-70Eoz9Hes44DP5C82F_lWHnBmrzoD_UIKCYVAP54hesdgz6CHVj4_CCzR6pw/exec";
 
+    let tg = window.Telegram ? window.Telegram.WebApp : null;
+    if (tg) { tg.expand(); }
+
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').then(reg => {
@@ -523,7 +527,10 @@
       }
     }
 
-    function vibrate(ms = 50) { if (navigator.vibrate) navigator.vibrate(ms); }
+    function vibrate(ms = 50) { 
+        if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+        else if (navigator.vibrate) navigator.vibrate(ms); 
+    }
 
     let autoScrollAnimation = true; 
     let activeOutsTimer = null;
@@ -778,9 +785,10 @@
       let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
       let isSeller = !isUserPromoter && !isDir;
       
-      let isScFormActive = (tab === 'create') && !document.getElementById("form-sc").classList.contains("hidden");
+      let isCreateTabActive = (tab === 'create');
+      let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
 
-      if (isSeller && tab !== 'details' && tab !== 'admin' && !isScFormActive) {
+      if (isSeller && tab !== 'details' && tab !== 'admin' && !isAnyFormActive) {
          document.getElementById("info-dashboard").classList.remove("hidden");
       } else {
          document.getElementById("info-dashboard").classList.add("hidden");
@@ -1018,19 +1026,24 @@
 
       if (!isSilent) {
           if (cachedData) {
-              renderDashboardData(JSON.parse(cachedData), true);
-              
-              let roleStr = String(appState.role).toLowerCase();
-              let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-              
-              if (isDir) {
-                  switchTab('admin'); toggleAdminView('plan');
-              } else {
-                  switchTab('time');
+              try {
+                  renderDashboardData(JSON.parse(cachedData), true);
+                  
+                  let roleStr = String(appState.role).toLowerCase();
+                  let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
+                  
+                  if (isDir) {
+                      switchTab('admin'); toggleAdminView('plan');
+                  } else {
+                      switchTab('time');
+                  }
+                  
+                  hideLoader(); 
+                  isSilent = true; 
+              } catch(e) {
+                  localStorage.removeItem("dashData_" + appState.iin);
+                  showLoader();
               }
-              
-              hideLoader(); 
-              isSilent = true; 
           } else {
               showLoader();
           }
@@ -1081,7 +1094,7 @@
       let isSeller = !isUserPromoter && !isDir;
       
       let isCreateTabActive = !document.getElementById("content-create").classList.contains("hidden");
-      let isScFormActive = isCreateTabActive && !document.getElementById("form-sc").classList.contains("hidden");
+      let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
 
       if (isUserPromoter) {
           document.getElementById("nav-create-icon").classList.add("hidden");
@@ -1094,7 +1107,7 @@
           document.getElementById("desc-break").innerText = "10 мин";
           document.getElementById("desc-lunch").innerText = "40 мин (12:00-17:00)";
           document.getElementById("desc-snack").innerText = "30 мин (16:00-20:00)";
-          if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isScFormActive) {
+          if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) {
               document.getElementById("info-dashboard").classList.remove("hidden");
           } else {
               document.getElementById("info-dashboard").classList.add("hidden");
@@ -1795,7 +1808,8 @@
 
     function openScDoc() {
        if (selectedScItem && selectedScItem.docUrl) {
-           window.open(selectedScItem.docUrl, '_blank');
+           if (tg && tg.openLink) tg.openLink(selectedScItem.docUrl);
+           else window.open(selectedScItem.docUrl, '_blank');
        }
     }
 
@@ -1874,8 +1888,15 @@
       let promptMsg = `Вы подтверждаете продажу: ${typeText}?`;
       let dateVal = new Date().toISOString().split('T')[0]; 
       
-      if (confirm(promptMsg)) {
-          executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal));
+      if (typeof tg !== 'undefined' && tg && tg.showPopup) {
+        try {
+          tg.showPopup({ title: 'Горячий чек', message: promptMsg, buttons: [{id: 'yes', type: 'ok', text: 'Да'}, {type: 'cancel', text: 'Отмена'}] }, 
+          function(btnId) { if (btnId === 'yes') executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal)); });
+        } catch(e) {
+          if (confirm(promptMsg)) executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal));
+        }
+      } else {
+        if (confirm(promptMsg)) executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal));
       }
     }
 
