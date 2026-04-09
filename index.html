@@ -38,16 +38,19 @@
     body.dark-mode .grid-details-container { background: var(--card-bg); }
 
     .hidden { display: none !important; }
-    
-    /* 0.6s Animations */
-    .fade-section { transition: opacity 0.6s ease, transform 0.6s ease; opacity: 1; transform: translateY(0); }
-    .fade-section.hidden { opacity: 0; transform: translateY(10px); pointer-events: none; position: absolute; visibility: hidden; }
-
-    #info-dashboard { transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease, transform 0.6s ease; max-height: 500px; opacity: 1; transform: translateY(0); overflow: hidden; }
-    #info-dashboard.collapsed { max-height: 0; opacity: 0; transform: translateY(-20px); pointer-events: none; margin-bottom: 0 !important; border: none; }
+    .fade-in { animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .fixed-header { padding: 15px 15px 0 15px; flex-shrink: 0; }
     .scrollable-content { flex-grow: 1; overflow-y: auto; padding: 0 15px 20px 15px; }
+
+    #info-dashboard {
+        transition: max-height 0.6s ease, opacity 0.6s ease, padding 0.6s ease, margin 0.6s ease;
+        max-height: 200px; opacity: 1; overflow: hidden;
+    }
+    #info-dashboard.hidden-slide {
+        max-height: 0 !important; opacity: 0 !important; margin-bottom: 0 !important; padding-bottom: 0 !important; pointer-events: none;
+    }
 
     input[type="text"], input[type="number"], input[type="date"], select { 
       display: block; width: 100%; height: 50px; padding: 0 14px; margin: 10px 0; border: 1px solid #ccc; 
@@ -94,7 +97,7 @@
     .info-box.tabel-box { min-width: 130px; } 
     
     .circle-box { width: 68px; min-width: 68px; height: 68px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); background: none; }
-    .kpi-container { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.3s; }
+    .kpi-container { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.6s; }
     .kpi-inner { width: 88%; height: 88%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     
     .info-box-title { font-size: 9px; color: gray; text-transform: uppercase; font-weight: bold; white-space: nowrap; margin-bottom: 5px; }
@@ -141,7 +144,7 @@
     .active-out-time { color: var(--btn-color); font-weight: bold; }
     .active-out-time.late { color: #e74c3c; }
 
-    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #34495e; color: white; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; z-index: 1000; transition: opacity 0.6s; pointer-events: none; white-space: nowrap; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     #loader-screen { text-align: center; margin-top: 50px; color: gray; font-style: italic; }
   </style>
 </head>
@@ -150,14 +153,14 @@
   <div id="toast" class="hidden">Уведомление</div>
   <div id="loader-screen"><p style="color: gray; font-style: italic;">Идентификация...</p></div>
 
-  <div id="auth-screen" class="hidden scrollable-content" style="max-width: 400px; margin: 0 auto; text-align:center;">
+  <div id="auth-screen" class="hidden scrollable-content fade-in" style="max-width: 400px; margin: 0 auto; text-align:center;">
     <h2 style="margin-top:20px;">Вход в систему</h2>
     <p style="color:gray; font-size:14px;">Введите ваш ИИН (вход произойдет автоматически)</p>
     <input type="number" id="iin-input" placeholder="Введите 12 цифр" inputmode="numeric" oninput="manualLogin(this)">
     <div id="login-error" style="color: #e74c3c; text-align:center; margin-top: 10px;"></div>
   </div>
 
-  <div id="main-screen" class="hidden" style="display:flex; flex-direction:column; height:100%;">
+  <div id="main-screen" class="hidden fade-in" style="display:flex; flex-direction:column; height:100%;">
     
     <div class="fixed-header">
       <div class="header-container">
@@ -172,13 +175,13 @@
       </div>
       
       <div class="nav-bar" id="nav-container">
-        <button id="nav-admin" onclick="refreshAdminPlan(); switchTab('admin'); toggleAdminView('plan');" class="hidden" style="background: #34495e; padding: 12px; position: relative;">
+        <button id="nav-admin" onclick="navToAdmin();" class="hidden" style="background: #34495e; padding: 12px; position: relative;">
           Админ-панель 
           <span id="admin-dot" class="badge hidden" style="padding:4px; top:0; right:0;"></span>
         </button>
       </div>
 
-      <div class="info-wrapper collapsed" id="info-dashboard">
+      <div class="info-wrapper hidden" id="info-dashboard">
         <div class="scrollable-blocks" id="scroll-container">
           <div class="info-box" onclick="openDetails('sc')">
             <div class="info-box-title">СЦ | Brzy</div>
@@ -229,7 +232,7 @@
       </div>
     </div> <div class="scrollable-content" id="scrollable-body">
       
-      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="fade-section hidden">
+      <div id="content-time" style="max-width: 400px; margin: 0 auto; text-align:center;" class="hidden fade-in">
         <p id="action-hint" style="margin-bottom: 15px; font-weight:bold;">Загрузка лимитов...</p>
         
         <div id="standard-buttons">
@@ -256,7 +259,7 @@
         </div>
       </div>
 
-      <div id="content-create" class="fade-section hidden">
+      <div id="content-create" class="hidden fade-in">
         <div id="menu-list">
           <button onclick="openForm('sc')">Продажа СЦ / Фокус</button>
           <button onclick="openForm('tradein')">Продажа Trade-In</button>
@@ -282,7 +285,7 @@
           </div>
         </div>
 
-        <div id="form-sc" class="card form-dark hidden">
+        <div id="form-sc" class="card form-dark hidden fade-in">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
              <div style="display:flex; align-items:center; gap:8px;">
                 <h3 style="margin:0;">Продажа СЦ/Фокус</h3>
@@ -298,12 +301,14 @@
           </div>
         </div>
 
-        <div id="form-tradein" class="card form-dark hidden">
+        <div id="form-tradein" class="card form-dark hidden fade-in">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
              <h3 style="margin:0;">Продажа Trade-In</h3>
              <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:5px;">
           </div>
-          <div id="tradein-info-data" class="inner-block" style="margin-bottom:10px; font-size:13px; color:var(--text-color); font-weight:bold; text-align:center;"></div>
+          
+          <div id="tradein-ba-info" class="hidden" style="font-size:13px; color:var(--text-color); margin-bottom:10px; padding:10px; background:var(--inner-bg); border-radius:8px; border:1px dashed var(--btn-color);"></div>
+
           <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
           <div class="grid-btns" style="margin-top: 15px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
@@ -311,7 +316,7 @@
           </div>
         </div>
 
-        <div id="form-points" class="card form-dark hidden">
+        <div id="form-points" class="card form-dark hidden fade-in">
           <h3>Баллы мотивации</h3>
           <div id="fp-balance-notice"></div>
           
@@ -333,7 +338,7 @@
           </div>
         </div>
 
-        <div id="form-swap" class="card form-dark hidden">
+        <div id="form-swap" class="card form-dark hidden fade-in">
           <div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:20px;">
              <h3 style="margin-top:0;">Исправить смену за сегодня</h3>
              <select id="fs-fix-shift">
@@ -346,7 +351,7 @@
 
           <h3 style="padding-top:10px; border-top:1px solid var(--border-color);">Обмен сменами</h3>
           <select id="fs-target" onchange="checkSwapFields()"></select>
-          <div id="fs-extra" class="hidden">
+          <div id="fs-extra" class="hidden fade-in">
             <p style="margin: 10px 0 5px; font-size: 14px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p>
             <input type="text" id="fs-date" class="smart-date" data-realdate="">
             <select id="fs-shift">
@@ -361,12 +366,12 @@
         </div>
       </div>
 
-      <div id="content-inbox" class="fade-section hidden">
+      <div id="content-inbox" class="hidden fade-in">
         <h3 style="margin-top:0; color:var(--btn-color);">Запросы на обмен</h3>
         <div id="inbox-list" class="req-list"></div>
       </div>
 
-      <div id="content-admin" class="fade-section hidden">
+      <div id="content-admin" class="hidden fade-in">
         <div style="display:flex; gap:5px; margin-bottom:15px; flex-wrap: wrap;">
           <button id="btn-adm-plan" onclick="toggleAdminView('plan')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">План</button>
           <button id="btn-adm-sc" onclick="toggleAdminView('sc')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 45%;">СЦ Товары</button>
@@ -377,9 +382,9 @@
           <button id="btn-adm-hist" onclick="toggleAdminView('history')" style="flex:1; background:#95a5a6; font-size:12px; padding:10px; min-width: 30%;">История</button>
         </div>
         
-        <div id="admin-plan-list" class="hidden" style="font-size:14px; line-height: 1.5;"></div>
+        <div id="admin-plan-list" class="hidden fade-in" style="font-size:14px; line-height: 1.5;"></div>
         
-        <div id="admin-sc-list" class="hidden">
+        <div id="admin-sc-list" class="hidden fade-in">
            <div style="display:flex; gap:5px; margin-bottom:10px;">
                <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('Цифра')">Цифра</button>
                <button style="padding:8px; font-size:12px; margin:0;" onclick="renderAdminScItems('МБТ')">МБТ</button>
@@ -390,12 +395,12 @@
            <div id="admin-sc-container" class="card" style="padding:5px;"></div>
         </div>
 
-        <div id="admin-emp-list" class="req-list"></div>
-        <div id="admin-list" class="req-list hidden"></div>
-        <div id="admin-history-list" class="req-list hidden"></div>
+        <div id="admin-emp-list" class="req-list fade-in"></div>
+        <div id="admin-list" class="req-list hidden fade-in"></div>
+        <div id="admin-history-list" class="req-list hidden fade-in"></div>
       </div>
 
-      <div id="content-details" class="fade-section hidden">
+      <div id="content-details" class="hidden fade-in">
         <div style="display:flex; align-items:center; margin-bottom:15px; justify-content: space-between; width: 100%;">
           <div style="display:flex; align-items:center; gap:10px;">
             <button id="btn-details-back" onclick="closeDetails()" style="width:auto; padding:10px 15px; margin:0; background:#95a5a6;">🔙 Назад</button>
@@ -491,14 +496,6 @@
       }
     });
 
-    function formatMoney(num) {
-      let n = parseFloat(String(num).replace(/,/g, '.').replace(/[^\d.-]/g, ''));
-      if(isNaN(n)) return "0";
-      let parts = n.toString().split(".");
-      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-      return parts.join(".");
-    }
-
     function manualLogin(el) {
       if (el && el.value && el.value.length === 12) {
         document.getElementById("iin-input").disabled = true;
@@ -538,9 +535,9 @@
     }
 
     function setKpiColor(val, elCircle, elText) {
-       let color = "#e74c3c"; // < 80 red
-       if (val >= 90) color = "#27ae60"; // >= 90 green
-       else if (val >= 80) color = "#f39c12"; // 80-89 yellow/orange
+       let color = "#27ae60"; 
+       if (val < 80) color = "#e74c3c";
+       else if (val < 90) color = "#f39c12";
 
        if(elCircle) {
            let trackColor = document.body.classList.contains('dark-mode') ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
@@ -550,16 +547,29 @@
        return color;
     }
 
+    function navToAdmin() {
+      switchTab('admin'); 
+      toggleAdminView('plan');
+      loadDashboard(true); 
+    }
+
     function switchTab(tab) {
       document.getElementById("loader-screen").classList.add("hidden");
-      document.querySelectorAll('.fade-section').forEach(el => el.classList.add("hidden"));
+      document.getElementById("content-time").classList.add("hidden");
+      document.getElementById("content-create").classList.add("hidden");
+      document.getElementById("content-inbox").classList.add("hidden");
+      document.getElementById("content-admin").classList.add("hidden");
+      document.getElementById("content-details").classList.add("hidden");
       
-      let infoDash = document.getElementById("info-dashboard");
+      const dashboard = document.getElementById("info-dashboard");
       
       if (!isUserPromoter && (tab === 'time' || tab === 'create')) {
-         infoDash.classList.remove("collapsed");
+         dashboard.classList.remove("hidden");
+         dashboard.classList.remove("hidden-slide");
       } else {
-         infoDash.classList.add("collapsed");
+         if (!dashboard.classList.contains("hidden")) {
+            dashboard.classList.add("hidden-slide");
+         }
       }
       
       if(tab === 'time') document.getElementById("content-time").classList.remove("hidden");
@@ -573,7 +583,6 @@
 
     function applyLimits(state) {
       if (!appState.currentAction) {
-        // Break button starts without limit delay for immediate UX, then syncs from here
         document.getElementById("btn-break").disabled = !state.canBreak;
         document.getElementById("btn-lunch").disabled = !state.canLunch;
         document.getElementById("btn-snack").disabled = !state.canSnack;
@@ -595,7 +604,6 @@
            let limitMs = myOut.limit * 60000;
            let rem = limitMs - elapsed;
            if (autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
-           // Если время вышло, тихо сбрасываем состояние через сервер (isSilent=true)
            if (rem <= 0) triggerReturn(true); 
            else autoReturnTimer = setTimeout(() => triggerReturn(true), rem);
        }
@@ -729,6 +737,24 @@
       }
     }
 
+    function formatPointsNoun(num) {
+      let n = Math.abs(parseFloat(String(num).replace(',','.')));
+      if (isNaN(n)) return "баллов";
+      if (n % 1 !== 0) return "балла";
+      n = Math.floor(n) % 100;
+      let n10 = n % 10;
+      if (n >= 11 && n <= 19) return "баллов";
+      if (n10 === 1) return "балл";
+      if (n10 >= 2 && n10 <= 4) return "балла";
+      return "баллов";
+    }
+
+    function formatMoney(val) {
+      let num = parseInt(String(val).replace(/\D/g, ''));
+      if (isNaN(num)) return val;
+      return "-" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₸";
+    }
+
     function getSourceColor(src) {
       let s = String(src).toLowerCase();
       if(s.includes('сц')) return '#e67e22'; 
@@ -758,7 +784,7 @@
       const scroller = document.getElementById("scroll-container");
       let scrollDir = 1;
       let scrollTimer = setInterval(() => {
-        if (!autoScrollAnimation || !scroller || scroller.closest('.collapsed')) return;
+        if (!autoScrollAnimation || !scroller || scroller.closest('.hidden')) return;
         scroller.scrollLeft += 1 * scrollDir;
         if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1;
         else if (scroller.scrollLeft <= 0) scrollDir = 1;
@@ -777,7 +803,7 @@
         isUserPromoter = data.isPromoter;
 
         if (isUserPromoter) {
-            document.getElementById("info-dashboard").classList.add("collapsed");
+            document.getElementById("info-dashboard").classList.add("hidden");
             document.getElementById("nav-create-icon").classList.add("hidden");
             document.getElementById("inbox-icon").classList.add("hidden");
             document.getElementById("desc-break").innerText = "";
@@ -807,10 +833,6 @@
         setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val"));
         
         myKpiDetails = data.info?.kpiDetails || [];
-        
-        if(data.tradeInBA) {
-           document.getElementById("tradein-info-data").innerText = "Факт по отделу: " + data.tradeInBA;
-        }
 
         document.getElementById("info-tabel").innerHTML = `
           <div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div>
@@ -822,7 +844,7 @@
 
         myReports = data.info?.reports || [];
         myPointsHistory = data.info?.myPtsHistory || [];
-        myDisplayPointsHistory = myPointsHistory.filter(p => p.type !== "KPI" && p.type !== "Штраф"); 
+        myDisplayPointsHistory = myPointsHistory.filter(p => p.type !== "KPI"); 
         myScHistory = myPointsHistory.filter(p => p.type === "Начисление");
         allEmployeesData = data.adminEmployees || [];
 
@@ -830,11 +852,19 @@
         const aBadge = document.getElementById("admin-badge");
         const aDot = document.getElementById("admin-dot");
 
+        if (data.info?.tradeInBA) {
+           let tiBaEl = document.getElementById('tradein-ba-info');
+           tiBaEl.innerHTML = data.info.tradeInBA;
+           tiBaEl.classList.remove("hidden");
+        } else {
+           document.getElementById('tradein-ba-info').classList.add("hidden");
+        }
+
         if (data.role && data.role.toLowerCase() === "директор") {
           document.getElementById("nav-time-icon").classList.add("hidden");
           document.getElementById("nav-create-icon").classList.add("hidden");
           document.getElementById("inbox-icon").classList.add("hidden");
-          document.getElementById("info-dashboard").classList.add("collapsed"); 
+          document.getElementById("info-dashboard").classList.add("hidden"); 
           document.getElementById("nav-admin").classList.remove("hidden");
           
           if (data.adminInbox && data.adminInbox.length > 0) { 
@@ -850,7 +880,7 @@
           adminScItemsGlobal = data.adminScItems || [];
           
           document.getElementById("admin-emp-list").innerHTML = allEmployeesData.map(e => `
-            <div class="req-item" style="border-left-color: var(--btn-color); padding: 10px 15px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+            <div class="req-item fade-in" style="border-left-color: var(--btn-color); padding: 10px 15px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                  <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center;">
                     <span>${e.name}</span> <span style="font-size:11px; font-weight:normal; color:gray;">${e.dept}</span>
@@ -866,8 +896,10 @@
             </div>
           `).join("") || "<p style='color:gray'>Сотрудников нет</p>";
           
-          switchTab('admin');
-          toggleAdminView('plan'); 
+          if(!isSilent) {
+             switchTab('admin');
+             toggleAdminView('plan'); 
+          }
         } 
         else {
           if (!isUserPromoter) {
@@ -880,7 +912,7 @@
           if (data.userInbox && data.userInbox.length > 0) { uBadge.innerText = data.userInbox.length; uBadge.classList.remove("hidden"); } 
           else uBadge.classList.add("hidden");
           
-          switchTab('time');
+          if(!isSilent) switchTab('time');
           
           google.script.run.withSuccessHandler((state) => {
             appState.currentAction = state.myActiveAction || null;
@@ -892,7 +924,7 @@
         
         let uInbox = data.userInbox || [];
         document.getElementById("inbox-list").innerHTML = uInbox.map(r => `
-          <div class="req-item">
+          <div class="req-item fade-in">
             <div class="req-title">Обмен сменами</div>
             <div class="req-desc">${r.authorName} просит поменяться.<br><b>${r.details}</b></div>
             <div class="grid-btns">
@@ -912,7 +944,7 @@
                  <button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button>
                </div>`;
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
-          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
+          return `<div class="req-item admin fade-in"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
         }).join("") || "<p style='color:gray;'>Все заявки обработаны</p>";
 
         let aHist = data.adminHistory || [];
@@ -922,7 +954,7 @@
           if(r.status === "rejected_by_user") stText = "Отклонен сменщиком";
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
           
-          return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;">
+          return `<div class="req-item fade-in" style="border-left-color: ${stColor}; opacity: 0.9;">
             <div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
             <div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div>
           </div>`
@@ -934,18 +966,11 @@
       }).getDashboardData(appState.token);
     }
 
-    function refreshAdminPlan() {
-      document.getElementById("admin-plan-list").innerHTML = "<p style='text-align:center;color:gray;padding:20px;'>Загрузка...</p>";
-      google.script.run.withSuccessHandler(html => {
-          document.getElementById("admin-plan-list").innerHTML = html;
-      }).getAdminPlanOnly();
-    }
-
     function generateHorizontalGrid(dataObj) {
       if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:15px;text-align:center;color:gray'>Нет данных</div>";
       let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
       
-      let html = `<div class="grid-details-container inner-block" style="padding: 8px; margin-bottom:8px;">`;
+      let html = `<div class="grid-details-container inner-block fade-in" style="padding: 8px; margin-bottom:8px;">`;
       html += `<div class="grid-details-title" style="margin-bottom: 5px; font-size:13px;">${dataObj.title}</div>`;
       html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
       
@@ -983,14 +1008,14 @@
       `;
       
       if (isCompact) {
-          return `<div style="border-left: 3px solid ${typeColor}; padding: 6px 0 6px 10px; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">${inner}</div>`;
+          return `<div class="fade-in" style="border-left: 3px solid ${typeColor}; padding: 6px 0 6px 10px; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">${inner}</div>`;
       }
-      return `<div class="detail-item">${inner}</div>`;
+      return `<div class="detail-item fade-in">${inner}</div>`;
     }
 
     function openDetails(type) {
       switchTab('details');
-      document.getElementById("btn-details-back").onclick = () => { closeDetailsAction(); switchTab('create'); };
+      document.getElementById("btn-details-back").onclick = () => switchTab('create');
       document.getElementById("details-kpi-circle-container").innerHTML = ""; 
       
       let listHtml = "";
@@ -1001,7 +1026,7 @@
         if (myScHistory.length > 0) {
            listHtml += myScHistory.map((i, idx) => {
               let srcColor = getSourceColor(i.source);
-              return `<div class="detail-item"><div><span style="color:var(--text-color)">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span></div></div>`;
+              return `<div class="detail-item fade-in"><div><span style="color:var(--text-color)">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:11px;">${i.source}</b> <span style="color:gray;font-size:11px;"> • ${i.date}</span></div></div>`;
            }).join("");
         } else {
            listHtml += "<div style='padding:20px;text-align:center;color:gray'>История пуста</div>";
@@ -1032,7 +1057,7 @@
            if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
            let dateStr = k.date ? `<span style="color:gray;font-size:11px;"> • ${k.date}</span>` : "";
            
-           listHtml += `<div class="detail-item">
+           listHtml += `<div class="detail-item fade-in">
               <div><span style="color:var(--text-color); font-size:13px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
               <span class="${col}">${valStr}</span>
            </div>`;
@@ -1068,7 +1093,7 @@
          if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
          let dateStr = k.date ? `<span style="color:gray;font-size:11px;"> • ${k.date}</span>` : "";
 
-         listHtml += `<div class="detail-item">
+         listHtml += `<div class="detail-item fade-in">
             <div><span style="color:var(--text-color); font-size:13px;">${dispName}</span><br><b style="color:${srcColor}; font-size:11px;">${k.source}</b>${dateStr}</div>
             <span class="${col}">${valStr}</span>
          </div>`;
@@ -1083,7 +1108,7 @@
       if(!emp) return;
       
       switchTab('details');
-      document.getElementById("btn-details-back").onclick = () => { closeDetailsAction(); switchTab('admin'); };
+      document.getElementById("btn-details-back").onclick = () => switchTab('admin');
       document.getElementById("details-title").innerText = emp.name;
       
       document.getElementById("details-kpi-circle-container").innerHTML = `
@@ -1096,12 +1121,12 @@
         </div>
       `;
 
-      let listHtml = "<div class='card' style='padding:0; overflow:hidden; background:var(--bg-color); box-shadow:none;'>";
+      let listHtml = "<div class='card fade-in' style='padding:0; overflow:hidden; background:var(--bg-color); box-shadow:none;'>";
       listHtml += emp.reports.map(generateHorizontalGrid).join('');
       listHtml += `<div style="height:10px;"></div>`;
 
       listHtml += `
-        <div class="grid-details-container inner-block" style="padding: 10px;">
+        <div class="grid-details-container inner-block fade-in" style="padding: 10px;">
             <div class="grid-details-title" style="margin-bottom: 5px;">Баллы сотрудника</div>
             <div style="display:flex; justify-content:space-around; text-align:center;">
                <div><div style="color:gray; font-size:11px; margin-bottom:4px;">Начислено</div><b style="font-size:16px;">${emp.pts.acc}</b></div>
@@ -1114,52 +1139,56 @@
       listHtml += `<div style="height:8px;"></div>`;
 
       listHtml += `
-        <div class="grid-details-container inner-block" style="padding: 10px;">
+        <div class="grid-details-container inner-block fade-in" style="padding: 10px;">
           <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:10px; font-size:13px; width:100%; margin:0;">Выписать штраф</button>
-          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:10px; background:rgba(231, 76, 60, 0.1); color:var(--text-color);">
-             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:34px; margin-top:0; margin-bottom:8px; font-size:14px; background:var(--card-bg);">
-             <div style="display:flex; gap:10px; margin-bottom:10px;">
-                <input type="number" id="fine-amount-${emp.iin}" placeholder="Сумма (₸) 0" style="flex:1; height:34px; margin:0; font-size:14px; background:var(--card-bg);">
-                <input type="number" id="fine-pts-${emp.iin}" placeholder="Баллы 0" style="flex:1; height:34px; margin:0; font-size:14px; background:var(--card-bg);">
+          <div id="fine-form-${emp.iin}" class="hidden fade-in" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:10px; background:rgba(231, 76, 60, 0.1); color:var(--text-color);">
+             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:40px; margin-top:0; margin-bottom:8px; font-size:14px; background:var(--card-bg);">
+             <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px; justify-content:center;">
+                <input type="number" id="fine-money-${emp.iin}" placeholder="0 (₸)" style="flex:1; height:40px; margin:0; text-align:center; font-size:14px; background:var(--card-bg);">
+                <input type="number" id="fine-pts-${emp.iin}" placeholder="0 (Баллы)" step="0.5" style="flex:1; height:40px; margin:0; text-align:center; font-size:14px; background:var(--card-bg);">
              </div>
-             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:14px; margin:0;">Подтвердить штраф</button>
+             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:14px; margin:0;">Подтвердить</button>
           </div>
         </div>
       `;
       listHtml += `<div style="height:8px;"></div>`;
 
-      let finesHistory = emp.ptsHistory.filter(h => h.type === "Штраф");
-      let empDisplayHistory = emp.ptsHistory.filter(p => p.type !== "KPI" && p.type !== "Штраф");
-      
-      listHtml += `<div class="grid-details-container inner-block" style="padding: 10px; overflow:hidden;">`;
-      
-      if (finesHistory.length > 0) {
-          listHtml += `<div class="grid-details-title" style="padding-top:5px; margin-bottom: 8px;">История штрафов</div>`;
-          finesHistory.forEach(h => {
-             let fMoney = parseFloat(String(h.money).replace(',','.')) || 0;
-             let fPts = parseFloat(String(h.val).replace(',','.')) || 0;
-             
-             if(fMoney === 0 && fPts === 0) return; 
+      let empFines = emp.ptsHistory.filter(h => h.type.toLowerCase().includes("штраф"));
+      let empPts = emp.ptsHistory.filter(h => !h.type.toLowerCase().includes("штраф") && h.type !== "KPI");
 
-             let mText = fMoney !== 0 ? `<b class="detail-fine">${formatMoney(fMoney)} ₸</b>` : "";
-             let pText = fPts !== 0 ? `<b class="detail-fine">${fPts} б.</b>` : "";
-             let punishStr = [mText, pText].filter(Boolean).join(" | ");
+      if (empFines.length > 0) {
+         let hasValidFines = false;
+         let finesHtml = `<div class="grid-details-container inner-block fade-in" style="padding: 10px; overflow:hidden; margin-bottom: 8px;">`;
+         finesHtml += `<div class="grid-details-title" style="padding-top:5px; margin-bottom: 8px; color:#e74c3c;">История штрафов</div>`;
+         
+         empFines.forEach(f => {
+            let moneyVal = parseInt(String(f.kpi));
+            let ptsVal = parseFloat(String(f.val).replace(',','.'));
+            if (isNaN(moneyVal)) moneyVal = 0;
+            if (isNaN(ptsVal)) ptsVal = 0;
+            if (moneyVal === 0 && ptsVal === 0) return; 
 
-             listHtml += `<div style="border-left: 3px solid #e74c3c; padding: 6px 0 6px 10px; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
-                 <div><b style="color:#e74c3c; font-size:13px;">Штраф</b><br><span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:2px;">${h.reason}</span><br><span style="color:gray;font-size:11px;">${h.date}</span></div>
-                 <div style="text-align:right;">${punishStr}</div>
-             </div>`;
-          });
-          listHtml += `<div style="height:15px; border-bottom:1px dashed var(--border-color); margin-bottom:15px;"></div>`;
+            hasValidFines = true;
+            let moneyStr = moneyVal < 0 ? formatMoney(moneyVal) : "";
+            let ptStr = ptsVal < 0 ? String(ptsVal).replace('.',',') + " б." : "";
+            let valDisplay = [moneyStr, ptStr].filter(Boolean).join(" | ");
+
+            finesHtml += `<div class="detail-item fade-in" style="border-left: 3px solid #e74c3c; padding: 6px 0 6px 10px; margin-bottom: 5px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 14px; background: transparent;">
+               <div><span style="color:var(--text-color); font-size:14px; display:inline-block; margin-bottom:2px;">${f.reason}</span><br><span style="color:gray;font-size:11px;"> • ${f.date}</span></div>
+               <span class="detail-fine">${valDisplay}</span>
+            </div>`;
+         });
+         finesHtml += `</div>`;
+         if(hasValidFines) listHtml += finesHtml;
       }
 
-      listHtml += `<div class="grid-details-title" style="margin-bottom: 8px;">История баллов</div>`;
-      if(empDisplayHistory.length > 0) {
-         listHtml += empDisplayHistory.map(h => renderHistoryItem(h, true)).join("");
+      listHtml += `<div class="grid-details-container inner-block fade-in" style="padding: 10px; overflow:hidden;">`;
+      listHtml += `<div class="grid-details-title" style="padding-top:5px; margin-bottom: 8px;">История баллов</div>`;
+      if(empPts.length > 0) {
+         listHtml += empPts.map(h => renderHistoryItem(h, true)).join("");
       } else {
          listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:13px;">История пуста</div>`;
       }
-      
       listHtml += `</div>`;
       listHtml += "</div>";
       document.getElementById("details-list").innerHTML = listHtml;
@@ -1169,26 +1198,21 @@
 
     function executeFine(iin, name) {
        let reason = document.getElementById(`fine-reason-${iin}`).value;
-       let moneyAmount = document.getElementById(`fine-amount-${iin}`).value;
-       let ptsAmount = document.getElementById(`fine-pts-${iin}`).value;
+       let money = document.getElementById(`fine-money-${iin}`).value || 0;
+       let pts = document.getElementById(`fine-pts-${iin}`).value || 0;
        
        if (!reason) return showToast("Укажите причину штрафа!", true);
-       if (!moneyAmount && !ptsAmount) return showToast("Укажите сумму штрафа или баллы!", true);
+       if (money == 0 && pts == 0) return showToast("Укажите сумму штрафа (деньги или баллы)!", true);
        
        showToast("Отправка...", false, 9999);
        google.script.run.withSuccessHandler(res => {
-         if (res.success) { showToast("Штраф успешно выписан!"); loadDashboard(true); switchTab('admin'); }
+         if (res.success) { showToast("Штраф выписан!"); loadDashboard(true); closeDetails(); }
          else showToast(res.error, true);
-       }).submitFine(appState.token, iin, name, reason, moneyAmount || 0, ptsAmount || 0);
+       }).submitFine(appState.token, iin, name, reason, money, pts);
     }
 
     function closeDetails() {
       switchTab('admin'); 
-      closeDetailsAction();
-    }
-    
-    function closeDetailsAction() {
-       if(!isUserPromoter) document.getElementById("info-dashboard").classList.remove("collapsed");
     }
 
     function toggleAdminView(view) {
@@ -1245,7 +1269,7 @@
            for (const [dName, items] of Object.entries(groups)) {
                if (items.length === 0) continue;
                let headerText = items[0].focusHeader || `${dName} Фокус`;
-               let html = `<div class="inner-block" style="margin-bottom:10px;"><div style="font-size:14px; font-weight:bold; color:#555; margin-bottom:8px;">${headerText}</div>`;
+               let html = `<div class="inner-block fade-in" style="margin-bottom:10px;"><div style="font-size:14px; font-weight:bold; color:#555; margin-bottom:8px;">${headerText}</div>`;
                
                items.forEach((i, idx) => {
                   html += `
@@ -1263,6 +1287,7 @@
            filtered.forEach((i, idx) => {
                let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:22px; padding:5px; border-radius:5px; display:inline-block;">📄</a>` : '';
                let div = document.createElement("div");
+               div.className = "fade-in";
                div.style = "padding:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
                div.innerHTML = `
                   <div>
@@ -1281,7 +1306,7 @@
 
     function openForm(type) {
       document.getElementById("menu-list").classList.add("hidden");
-      document.getElementById("info-dashboard").classList.add("collapsed");
+      document.getElementById("info-dashboard").classList.add("hidden-slide");
       
       if(type === 'sc') {
         selectedScItem = null;
@@ -1339,9 +1364,7 @@
       document.getElementById("form-swap").classList.add("hidden");
       document.getElementById("menu-list").classList.remove("hidden");
       
-      if(!isUserPromoter) {
-         document.getElementById("info-dashboard").classList.remove("collapsed");
-      }
+      document.getElementById("info-dashboard").classList.remove("hidden-slide");
       document.getElementById("scrollable-body").scrollTop = 0;
     }
 
