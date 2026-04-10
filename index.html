@@ -211,7 +211,7 @@
 
   <div id="auth-screen" class="hidden scrollable-content" style="max-width: 400px; margin: 0 auto; text-align:center; transition: opacity 0.6s ease;">
     <h2 style="margin-top:20px;">Вход в систему</h2>
-    <p style="color:gray; font-size:14px;">Введите ваш ИИН (вход произойдет автоматически)</p>
+    <p style="color:gray; font-size:14px;">Введите ваш ИИН</p>
     <input type="number" id="iin-input" placeholder="Введите 12 цифр" inputmode="numeric" oninput="manualLogin(this)">
     <div id="login-error" style="color: #e74c3c; text-align:center; margin-top: 10px;"></div>
   </div>
@@ -889,7 +889,10 @@
                
                let actionTitle = out.action;
                if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв";
-               let roleLabel = out.role.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${out.role}</div>` : '';
+               
+               // ИСПРАВЛЕНИЕ: Безопасная проверка и вывод должности промоутера
+               let rRole = out.role ? String(out.role) : "";
+               let roleLabel = rRole.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${rRole}</div>` : '';
                
                return `<div class="active-out-item" style="align-items: center;">
                   <div>
@@ -1342,9 +1345,10 @@
         else if (v === '✖') displayVal = '❌';
         else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>';
         else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>';
-        else displayVal = v;
+        else displayVal = v || '-';
         
-        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
+        // ИСПРАВЛЕНИЕ: Добавлены min-height: 28px и width: 100% для жесткой фиксации квадратов
+        html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; min-height:28px; width:100%; box-sizing:border-box;">${displayVal}</div>`;
       });
       html += `</div></div>`;
       return html;
