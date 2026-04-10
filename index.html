@@ -62,8 +62,9 @@
     
     .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-up-fade { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-    .slide-in-right { animation: slideInRight 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-    .slide-in-left { animation: slideInLeft 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .slide-out-right { animation: slideOutRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-down-fade { animation: slideDownFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
     @keyframes fadeIn {
@@ -75,8 +76,12 @@
       100% { opacity: 1; transform: translateY(0); }
     }
     @keyframes slideInRight {
-      0% { opacity: 0; transform: translateX(20px); }
+      0% { opacity: 0; transform: translateX(30px); }
       100% { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes slideOutRight {
+      0% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(30px); display: none; }
     }
     @keyframes slideInLeft {
       0% { opacity: 0; transform: translateX(-20px); }
@@ -330,17 +335,17 @@
             <h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>
             <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >100к')">100к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >150к')">150к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >200к')">200к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >300к')">300к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >100k')">>100k</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >150k')">>150k</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >200k')">>200k</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Услуги >300k')">>300k</button>
             </div>
             <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Аксессуары</div>
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >200к')">200к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >300к')">300к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >400к')">400к</button>
-              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >500к')">500к</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >200k')">>200k</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >300k')">>300k</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >400k')">>400k</button>
+              <button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('Аксессуары >500k')">>500k</button>
             </div>
           </div>
         </div>
@@ -375,8 +380,8 @@
              <h3 style="margin:0; font-size:15px;">Продажа Trade-In</h3>
              <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
-          <div id="tradein-ba-info" style="font-size:12px; color:var(--btn-color); margin-bottom:10px;"></div>
-          <input type="text" id="ft-input" placeholder="Опишите продажу (модель)...">
+          <datalist id="tradein-models-list"></datalist>
+          <input list="tradein-models-list" id="ft-input" placeholder="Выберите модель из списка...">
           <div class="grid-btns" style="margin-top: 15px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button onclick="submitTradeIn()">Отправить</button>
@@ -547,6 +552,7 @@
     let currentEmpDept = 'Цифра';
     let currentScTabDept = 'Цифра';
     let pollingTimer = null;
+    let lastActiveTab = 'time';
 
     function saveMemory(key, value) {
       try { localStorage.setItem(key, value); } catch(e){}
@@ -765,6 +771,10 @@
     }
 
     function switchTab(tab, direction = null) {
+      if (tab !== 'details') {
+          lastActiveTab = tab;
+      }
+
       if(appState.token) loadDashboard(true);
       
       document.querySelectorAll('#main-tabs .icon-btn').forEach(btn => btn.classList.remove('active-tab'));
@@ -905,7 +915,7 @@
       
       appState.currentAction = actionType;
       saveMemory("currentAction", actionType);
-      renderTimeUI();
+      renderTimeUI(); // Мгновенный оптимистичный UI
 
       let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionType, isReturn: false, isSilentAutoReturn: false });
 
@@ -931,7 +941,7 @@
 
       appState.currentAction = null;
       saveMemory("currentAction", "");
-      renderTimeUI();
+      renderTimeUI(); // Мгновенный оптимистичный UI
       if(autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
 
       document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = true);
@@ -1042,9 +1052,8 @@
     async function openAdminPanel() {
         switchTab('admin');
         toggleAdminView('plan');
-        showLoader();
+        // Обновление бесшовно
         await loadDashboard(true);
-        hideLoader();
     }
 
     async function loadDashboard(isSilent = false) {
@@ -1100,8 +1109,11 @@
       if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
-             appState.currentAction = state.myActiveAction || null;
-             saveMemory("currentAction", appState.currentAction);
+             // Не перетираем локально начатое действие оптимистичным UI, если сервер еще пустой
+             if (!appState.currentAction || state.myActiveAction) {
+                appState.currentAction = state.myActiveAction || null;
+                saveMemory("currentAction", appState.currentAction);
+             }
              renderTimeUI();
              applyLimits(state);
           }
@@ -1167,7 +1179,7 @@
         
       document.getElementById("pt-fin").innerText = data.info?.ptsFine ?? '-';
         
-      let kpiValue = data.info?.kpiValue ?? 90;
+      let kpiValue = data.info?.kpiValue ?? data.baseKpi;
       document.getElementById("kpi-val").innerText = kpiValue + '%';
       setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val"));
         
@@ -1189,8 +1201,8 @@
       
       allEmployeesData = data.adminEmployees || [];
 
-      if (data.tradeInBA && document.getElementById("tradein-ba-info")) {
-          document.getElementById("tradein-ba-info").innerHTML = "<b>Инфо:</b> " + data.tradeInBA;
+      if (data.tradeInModels) {
+          document.getElementById("tradein-models-list").innerHTML = data.tradeInModels.map(m => `<option value="${m}">`).join("");
       }
 
       const uBadge = document.getElementById("user-badge");
@@ -1254,7 +1266,7 @@
         
       let uInbox = data.userInbox || [];
       document.getElementById("inbox-list").innerHTML = uInbox.map(r => `
-          <div class="req-item">
+          <div class="req-item" id="req-${r.id}">
             <div class="req-title">Обмен сменами</div>
             <div class="req-desc">${r.authorName} просит поменяться.<br><b>${r.details}</b></div>
             <div class="grid-btns">
@@ -1274,7 +1286,7 @@
                  <button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button>
                </div>`;
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
-          return `<div class="req-item admin"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
+          return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Все заявки обработаны</p>";
 
       let aHist = data.adminHistory || [];
@@ -1311,6 +1323,10 @@
         let displayVal = '-';
         if (v === '✔') displayVal = '✅';
         else if (v === '✖') displayVal = '❌';
+        else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>';
+        else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>';
+        else displayVal = v;
+        
         html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; height:100%;">${displayVal}</div>`;
       });
       html += `</div></div>`;
@@ -1416,7 +1432,7 @@
         listHtml += "</div>";
       }
       else if (type === 'tabel') {
-        document.getElementById("btn-details-back").onclick = () => switchTab('time');
+        document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab);
         document.getElementById("details-title").innerText = "Денежные штрафы";
         listHtml = "<div style='padding-top:5px;'>";
         if (myMoneyFinesHistory.length > 0) {
@@ -1723,12 +1739,14 @@
         switchScDept(deptToSet);
         
         document.getElementById("form-sc").classList.remove("hidden");
-        document.getElementById("form-sc").classList.add("fade-in");
+        document.getElementById("form-sc").classList.remove("slide-out-right");
+        document.getElementById("form-sc").classList.add("slide-in-right");
       }
       if(type === 'tradein') {
         document.getElementById("ft-input").value = "";
         document.getElementById("form-tradein").classList.remove("hidden");
-        document.getElementById("form-tradein").classList.add("fade-in");
+        document.getElementById("form-tradein").classList.remove("slide-out-right");
+        document.getElementById("form-tradein").classList.add("slide-in-right");
       }
       if(type === 'points') {
         let remVal = parseFloat(document.getElementById("pt-rem").innerText.replace(',','.'));
@@ -1757,7 +1775,8 @@
           document.getElementById("fp-submit-btn").style.background = "var(--btn-color)";
         }
         document.getElementById("form-points").classList.remove("hidden");
-        document.getElementById("form-points").classList.add("fade-in");
+        document.getElementById("form-points").classList.remove("slide-out-right");
+        document.getElementById("form-points").classList.add("slide-in-right");
       }
       if(type === 'swap') {
         const select = document.getElementById("fs-target");
@@ -1765,7 +1784,8 @@
           globalSellers.map(s => `<option value="${s.iin}">${s.name}</option>`).join("");
         document.getElementById("fs-extra").classList.add("hidden");
         document.getElementById("form-swap").classList.remove("hidden");
-        document.getElementById("form-swap").classList.add("fade-in");
+        document.getElementById("form-swap").classList.remove("slide-out-right");
+        document.getElementById("form-swap").classList.add("slide-in-right");
       }
       let scroller = document.getElementById("scrollable-body");
       if (scroller) scroller.scrollTop = 0;
@@ -1778,22 +1798,27 @@
       
       if (!isUserPromoter && !isDir) {
           dash.classList.remove("hidden");
-          dash.classList.remove("fade-in", "slide-up-fade");
+          dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade");
           dash.classList.add("slide-down-fade");
       }
 
       ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => {
           let el = document.getElementById(id);
-          el.classList.add("hidden");
-          el.classList.remove("fade-in");
+          if (!el.classList.contains("hidden")) {
+              el.classList.remove("slide-in-right");
+              el.classList.add("slide-out-right");
+              setTimeout(() => el.classList.add("hidden"), 400);
+          }
       });
-      let menu = document.getElementById("menu-list");
-      menu.classList.remove("hidden");
-      menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
-      menu.classList.add("fade-in");
       
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller) scroller.scrollTop = 0;
+      setTimeout(() => {
+          let menu = document.getElementById("menu-list");
+          menu.classList.remove("hidden");
+          menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
+          menu.classList.add("fade-in");
+          let scroller = document.getElementById("scrollable-body");
+          if (scroller) scroller.scrollTop = 0;
+      }, 300);
     }
 
     function checkSwapFields() {
@@ -1952,10 +1977,18 @@
       vibrate(50);
       showToast("Обработка...", false, 9999);
       
+      // Оптимистичный UI - моментально убираем элемент с экрана
+      const reqEl = document.getElementById("req-" + id);
+      if (reqEl) {
+         reqEl.style.opacity = '0.5';
+         reqEl.style.pointerEvents = 'none';
+         setTimeout(() => reqEl.remove(), 200);
+      }
+      
       let res = await callBackend('processRequest', { token: appState.token, reqId: id, reqAction: action });
       
       if(res.success) { showToast(res.msg); loadDashboard(true); } 
-      else showToast(res.error, true);
+      else { showToast(res.error, true); loadDashboard(true); }
     }
   </script>
 </body>
