@@ -63,7 +63,6 @@
     .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-up-fade { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-    .slide-out-right { animation: slideOutRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-down-fade { animation: slideDownFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
@@ -78,10 +77,6 @@
     @keyframes slideInRight {
       0% { opacity: 0; transform: translateX(30px); }
       100% { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes slideOutRight {
-      0% { opacity: 1; transform: translateX(0); }
-      100% { opacity: 0; transform: translateX(30px); display: none; }
     }
     @keyframes slideInLeft {
       0% { opacity: 0; transform: translateX(-20px); }
@@ -255,11 +250,11 @@
               <div class="pts-grid" style="display:flex; gap:3px; margin-top:4px; width:100%; justify-content:space-between;">
                 <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;">
                    <div style="font-size:8px; color:gray;">Нач.</div>
-                   <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-acc">-</div>
+                   <div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-acc">-</div>
                 </div>
                 <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;">
                    <div style="font-size:8px; color:gray;">Исп.</div>
-                   <div style="font-size:12px; font-weight:bold; color:var(--text-color);" id="pt-use">-</div>
+                   <div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-use">-</div>
                 </div>
                 <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(41, 128, 185, 0.1);">
                    <div style="font-size:8px; color:gray;">Ост.</div>
@@ -380,8 +375,8 @@
              <h3 style="margin:0; font-size:15px;">Продажа Trade-In</h3>
              <input type="text" id="ft-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
-          <datalist id="tradein-models-list"></datalist>
-          <input list="tradein-models-list" id="ft-input" placeholder="Выберите модель из списка...">
+          <div style="font-size:13px; margin-bottom:8px; color:gray;">Выберите модель из списка:</div>
+          <div class="sc-list-container" id="tradein-list" style="max-height:300px;"></div>
           <div class="grid-btns" style="margin-top: 15px;">
             <button class="btn-gray" onclick="closeForm()">Отмена</button>
             <button onclick="submitTradeIn()">Отправить</button>
@@ -553,6 +548,9 @@
     let currentScTabDept = 'Цифра';
     let pollingTimer = null;
     let lastActiveTab = 'time';
+    let processedReqIds = new Set();
+    let tradeInModelsGlobal = [];
+    let selectedTradeInModel = null;
 
     function saveMemory(key, value) {
       try { localStorage.setItem(key, value); } catch(e){}
@@ -836,7 +834,6 @@
       if (!appState.currentAction) {
         document.getElementById("btn-lunch").disabled = !state.canLunch;
         document.getElementById("btn-snack").disabled = !state.canSnack;
-        // Перерыв всегда разблокирован с самого начала согласно ТЗ
         document.getElementById("action-hint").innerText = "Выберите действие:";
       }
       
@@ -915,7 +912,7 @@
       
       appState.currentAction = actionType;
       saveMemory("currentAction", actionType);
-      renderTimeUI(); // Мгновенный оптимистичный UI
+      renderTimeUI(); 
 
       let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionType, isReturn: false, isSilentAutoReturn: false });
 
@@ -941,11 +938,11 @@
 
       appState.currentAction = null;
       saveMemory("currentAction", "");
-      renderTimeUI(); // Мгновенный оптимистичный UI
+      renderTimeUI(); 
       if(autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
 
       document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = true);
-      document.getElementById("btn-break").disabled = false; // Перерыв разблокирован
+      document.getElementById("btn-break").disabled = false;
       document.getElementById("action-hint").innerText = isSilentAuto ? "Лимит исчерпан. Готов к новой записи..." : "Фиксируем возвращение...";
 
       let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionToReturnFrom, isReturn: true, isSilentAutoReturn: isSilentAuto });
@@ -978,7 +975,8 @@
       const standardBtns = document.getElementById("standard-buttons");
       const returnContainer = document.getElementById("return-button-container");
 
-      if (appState.currentAction) {
+      let actStr = String(appState.currentAction);
+      if (appState.currentAction && actStr !== "null" && actStr !== "undefined") {
         document.getElementById("btn-return").disabled = false;
         standardBtns.classList.add("hidden");
         returnContainer.classList.remove("hidden");
@@ -1052,7 +1050,6 @@
     async function openAdminPanel() {
         switchTab('admin');
         toggleAdminView('plan');
-        // Обновление бесшовно
         await loadDashboard(true);
     }
 
@@ -1109,15 +1106,30 @@
       if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
-             // Не перетираем локально начатое действие оптимистичным UI, если сервер еще пустой
              if (!appState.currentAction || state.myActiveAction) {
-                appState.currentAction = state.myActiveAction || null;
+                appState.currentAction = state.myActiveAction || "";
                 saveMemory("currentAction", appState.currentAction);
              }
              renderTimeUI();
              applyLimits(state);
           }
       }
+    }
+
+    function renderTradeInList() {
+        let container = document.getElementById("tradein-list");
+        if (!container) return;
+        container.innerHTML = tradeInModelsGlobal.map(m => {
+            let isSel = (selectedTradeInModel === m);
+            return `<div class="sc-item ${isSel ? 'selected' : ''}" onclick="selectTradeIn('${m}')">
+               <div style="font-size:13px;">${m}</div>
+            </div>`;
+        }).join("");
+    }
+
+    function selectTradeIn(m) {
+        selectedTradeInModel = m;
+        renderTradeInList();
     }
 
     function renderDashboardData(data, isSilent = false) {
@@ -1138,9 +1150,9 @@
       if (isUserPromoter) {
           document.getElementById("nav-create-icon").classList.add("hidden");
           document.getElementById("inbox-icon").classList.add("hidden");
-          document.getElementById("desc-break").innerText = "";
-          document.getElementById("desc-lunch").innerText = "";
-          document.getElementById("desc-snack").innerText = "";
+          document.getElementById("desc-break").innerText = "15 мин";
+          document.getElementById("desc-lunch").innerText = "1 час";
+          document.getElementById("desc-snack").innerText = "30 мин";
           dash.classList.add("hidden");
       } else {
           document.getElementById("desc-break").innerText = "10 мин";
@@ -1202,7 +1214,8 @@
       allEmployeesData = data.adminEmployees || [];
 
       if (data.tradeInModels) {
-          document.getElementById("tradein-models-list").innerHTML = data.tradeInModels.map(m => `<option value="${m}">`).join("");
+          tradeInModelsGlobal = data.tradeInModels;
+          renderTradeInList();
       }
 
       const uBadge = document.getElementById("user-badge");
@@ -1216,15 +1229,17 @@
           document.getElementById("inbox-icon").classList.add("hidden");
           document.getElementById("nav-admin").classList.remove("hidden");
           
-          if (data.adminInbox && data.adminInbox.length > 0) { 
-             aBadge.innerText = data.adminInbox.length; 
+          let filteredAdminInbox = data.adminInbox ? data.adminInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
+
+          if (filteredAdminInbox.length > 0) { 
+             aBadge.innerText = filteredAdminInbox.length; 
              aBadge.classList.remove("hidden"); 
              aDot.classList.remove("hidden");
              
-             if (data.adminInbox.length > appState.lastInboxCount) {
+             if (filteredAdminInbox.length > appState.lastInboxCount) {
                  showPushNotification("Новая заявка!", "Появилась заявка в админке");
              }
-             appState.lastInboxCount = data.adminInbox.length;
+             appState.lastInboxCount = filteredAdminInbox.length;
              
           } else {
              aBadge.classList.add("hidden");
@@ -1248,14 +1263,16 @@
           }
           document.getElementById("nav-admin").classList.add("hidden");
           
-          if (data.userInbox && data.userInbox.length > 0) { 
-              uBadge.innerText = data.userInbox.length; 
+          let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
+
+          if (filteredUserInbox.length > 0) { 
+              uBadge.innerText = filteredUserInbox.length; 
               uBadge.classList.remove("hidden"); 
               
-              if (data.userInbox.length > appState.lastInboxCount) {
+              if (filteredUserInbox.length > appState.lastInboxCount) {
                  showPushNotification("Новый запрос!", "Коллега хочет поменяться сменами");
               }
-              appState.lastInboxCount = data.userInbox.length;
+              appState.lastInboxCount = filteredUserInbox.length;
           } 
           else { uBadge.classList.add("hidden"); appState.lastInboxCount = 0;}
           
@@ -1264,7 +1281,7 @@
           }
       }
         
-      let uInbox = data.userInbox || [];
+      let uInbox = data.userInbox ? data.userInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
       document.getElementById("inbox-list").innerHTML = uInbox.map(r => `
           <div class="req-item" id="req-${r.id}">
             <div class="req-title">Обмен сменами</div>
@@ -1276,7 +1293,7 @@
           </div>
       `).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
 
-      let aInbox = data.adminInbox || [];
+      let aInbox = data.adminInbox ? data.adminInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
       document.getElementById("admin-list").innerHTML = aInbox.map(r => {
           let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены";
           let btns = isViewOnly 
@@ -1626,13 +1643,13 @@
        let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase()));
        
        container.innerHTML = filtered.map(e => `
-            <div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 8px; margin-bottom: 8px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+            <div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                  <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
                     <span>${e.name}</span>
                  </div>
               </div>
-              <div class="inner-block" style="font-size:11px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 4px;">
+              <div class="inner-block" style="font-size:10px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 2px; height: 32px; display:flex; align-items:center;">
                  ${e.tabelStr}
               </div>
               <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">
@@ -1739,14 +1756,13 @@
         switchScDept(deptToSet);
         
         document.getElementById("form-sc").classList.remove("hidden");
-        document.getElementById("form-sc").classList.remove("slide-out-right");
-        document.getElementById("form-sc").classList.add("slide-in-right");
+        document.getElementById("form-sc").classList.add("slide-up-fade");
       }
       if(type === 'tradein') {
-        document.getElementById("ft-input").value = "";
+        selectedTradeInModel = null;
+        renderTradeInList();
         document.getElementById("form-tradein").classList.remove("hidden");
-        document.getElementById("form-tradein").classList.remove("slide-out-right");
-        document.getElementById("form-tradein").classList.add("slide-in-right");
+        document.getElementById("form-tradein").classList.add("slide-up-fade");
       }
       if(type === 'points') {
         let remVal = parseFloat(document.getElementById("pt-rem").innerText.replace(',','.'));
@@ -1775,8 +1791,7 @@
           document.getElementById("fp-submit-btn").style.background = "var(--btn-color)";
         }
         document.getElementById("form-points").classList.remove("hidden");
-        document.getElementById("form-points").classList.remove("slide-out-right");
-        document.getElementById("form-points").classList.add("slide-in-right");
+        document.getElementById("form-points").classList.add("slide-up-fade");
       }
       if(type === 'swap') {
         const select = document.getElementById("fs-target");
@@ -1784,8 +1799,7 @@
           globalSellers.map(s => `<option value="${s.iin}">${s.name}</option>`).join("");
         document.getElementById("fs-extra").classList.add("hidden");
         document.getElementById("form-swap").classList.remove("hidden");
-        document.getElementById("form-swap").classList.remove("slide-out-right");
-        document.getElementById("form-swap").classList.add("slide-in-right");
+        document.getElementById("form-swap").classList.add("slide-up-fade");
       }
       let scroller = document.getElementById("scrollable-body");
       if (scroller) scroller.scrollTop = 0;
@@ -1804,21 +1818,16 @@
 
       ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => {
           let el = document.getElementById(id);
-          if (!el.classList.contains("hidden")) {
-              el.classList.remove("slide-in-right");
-              el.classList.add("slide-out-right");
-              setTimeout(() => el.classList.add("hidden"), 400);
-          }
+          el.classList.add("hidden");
+          el.classList.remove("slide-up-fade");
       });
       
-      setTimeout(() => {
-          let menu = document.getElementById("menu-list");
-          menu.classList.remove("hidden");
-          menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
-          menu.classList.add("fade-in");
-          let scroller = document.getElementById("scrollable-body");
-          if (scroller) scroller.scrollTop = 0;
-      }, 300);
+      let menu = document.getElementById("menu-list");
+      menu.classList.remove("hidden");
+      menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
+      menu.classList.add("fade-in");
+      let scroller = document.getElementById("scrollable-body");
+      if (scroller) scroller.scrollTop = 0;
     }
 
     function checkSwapFields() {
@@ -1922,11 +1931,10 @@
     }
 
     function submitTradeIn() {
-      const text = document.getElementById("ft-input").value;
+      if(!selectedTradeInModel) return showToast("Выберите модель!", true);
       const dateVal = document.getElementById("ft-date").dataset.realdate;
-      if(!text) return showToast("Заполните поле!", true);
-      let meta = JSON.stringify({ date: getFormattedDate(dateVal), text: text });
-      executeSubmit("Продажа Trade-In", text, null, meta);
+      let meta = JSON.stringify({ date: getFormattedDate(dateVal), text: selectedTradeInModel });
+      executeSubmit("Продажа Trade-In", selectedTradeInModel, null, meta);
     }
 
     function submitPoints() {
@@ -1977,13 +1985,9 @@
       vibrate(50);
       showToast("Обработка...", false, 9999);
       
-      // Оптимистичный UI - моментально убираем элемент с экрана
-      const reqEl = document.getElementById("req-" + id);
-      if (reqEl) {
-         reqEl.style.opacity = '0.5';
-         reqEl.style.pointerEvents = 'none';
-         setTimeout(() => reqEl.remove(), 200);
-      }
+      processedReqIds.add(String(id));
+      let el = document.getElementById("req-" + id);
+      if (el) { el.style.display = 'none'; }
       
       let res = await callBackend('processRequest', { token: appState.token, reqId: id, reqAction: action });
       
