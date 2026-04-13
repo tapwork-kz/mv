@@ -1172,18 +1172,6 @@
           }
       }
 
-      //let scVal = parseInt(data.info?.scSales) || 0;
-      let brzyVal = parseInt(data.info?.breezySales) || 0;
-      let scTotal = scVal + brzyVal;
-      let scEl = document.getElementById("info-sc-val");
-      scEl.innerText = `${data.info?.scSales ?? '-'} | ${data.info?.breezySales ?? '-'}`;
-      
-      if (scTotal > 0) {
-          scEl.style.color = "#27ae60"; 
-      } else {
-          scEl.style.color = "#e74c3c"; 
-      }
-
       document.getElementById("pt-acc").innerText = data.info?.ptsAccrued ?? '-';
       document.getElementById("pt-use").innerText = data.info?.ptsUsed ?? '-';
         
