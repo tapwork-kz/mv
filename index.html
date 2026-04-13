@@ -1323,7 +1323,9 @@
 
       globalSellers = data.sellers || [];
       globalScItems = data.scItems || [];
-      
+      allEmployeesData = data.adminEmployees || [];   // Сохраняем сотрудников!
+      tradeInModelsGlobal = data.tradeInModels || []; // Сохраняем Trade-In!
+
       if (isDir) {
           renderAdminEmps(currentEmpDept, null);
       }
