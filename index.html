@@ -1647,7 +1647,18 @@
        let container = document.getElementById("admin-emp-list");
        let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase()));
        
-       container.innerHTML = filtered.map(e => `
+       // Определяем текущий месяц и год
+       let currentMonth = new Date().getMonth() + 1;
+       let currentYear = new Date().getFullYear();
+       let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
+
+       container.innerHTML = filtered.map(e => {
+            // Вычисляем СЦ и Trade-In только за текущий месяц из истории
+            let monthScHist = e.ptsHistory.filter(p => p.type === "Начисление" && typeof p.date === 'string' && p.date.includes(monthSuffix));
+            let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length;
+            let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length;
+
+            return `
             <div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                  <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
@@ -1658,14 +1669,15 @@
                  ${e.tabelStr}
               </div>
               <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; margin-bottom:2px;">
-                <span>СЦ | Brzy: <b>${e.sales.sc} | ${e.sales.trade}</b></span>
+                <span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:gray; font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span>
                 <span>Ошибки по отчетам: <b>${e.reportErrors}</b></span>
               </div>
               <div style="display:flex; justify-content:flex-end; font-size:11px; align-items:center;">
                 <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
               </div>
             </div>
-          `).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
+          `;
+       }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
     }
     
     function renderAdminScItems(dept, btnElement) {
@@ -1848,10 +1860,12 @@
       const list = document.getElementById("sc-list");
       list.innerHTML = "";
       
+      // Фильтруем СЦ по текущему отделу
       let scList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'СЦ');
       if (q) scList = scList.filter(i => i.name.toLowerCase().includes(q));
 
-      let focusList = globalScItems.filter(i => i.type === 'Фокус');
+      // ИСПРАВЛЕНИЕ ЗДЕСЬ: Фильтруем Фокус тоже по текущему отделу (currentScTabDept)
+      let focusList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'Фокус');
       if (q) focusList = focusList.filter(i => i.name.toLowerCase().includes(q));
 
       let sortedFiltered = [...scList, ...focusList];
@@ -1926,7 +1940,12 @@
 
     function getFormattedDate(dateStr) {
       const today = new Date().toISOString().split('T')[0];
-      if (!dateStr || dateStr === today) return "Сегодня";
+      
+      // Если дата пустая или пришел текст "Сегодня", принудительно ставим системную дату
+      if (!dateStr || dateStr === "Сегодня") {
+          dateStr = today;
+      }
+      
       const d = new Date(dateStr);
       return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear();
     }
