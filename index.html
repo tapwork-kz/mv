@@ -1680,9 +1680,23 @@
        }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
     }
     
+// Глобальная переменная для отслеживания выбранной подвкладки
+    let currentAdminScTabType = 'active'; 
+
+    // Функция переключения подвкладок
+    function switchScAdminTab(tabType) {
+        currentAdminScTabType = tabType;
+        // Перерисовываем список, используя текущий сохраненный отдел, 
+        // передаем null вместо кнопки, чтобы не сбить верхние фильтры (Цифра, МБТ...)
+        renderAdminScItems(currentAdminScDept, null);
+    }
+
     function renderAdminScItems(dept, btnElement) {
+       // Запоминаем текущий отдел (если передали пустой - берем из памяти)
+       dept = dept || currentAdminScDept;
        currentAdminScDept = dept;
        
+       // Логика подсветки верхних кнопок отделов
        if (btnElement) {
            document.getElementById('flt-cifra').classList.remove('active-flt');
            document.getElementById('flt-mbt').classList.remove('active-flt');
@@ -1692,53 +1706,129 @@
        }
 
        let container = document.getElementById("admin-sc-container");
-       let searchQ = document.getElementById("admin-sc-search").value.toLowerCase();
+       let searchInput = document.getElementById("admin-sc-search");
+       let searchQ = searchInput ? searchInput.value.toLowerCase() : "";
        container.innerHTML = "";
-       
-       let filtered = adminScItemsGlobal.filter(i => (dept === "Фокус" ? i.type === "Фокус" : (i.dept === dept && i.type === "СЦ")));
-       if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
-       
-       if (filtered.length === 0) {
-           container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Пусто</p>";
-           return;
-       }
 
-       if (dept === "Фокус") {
-           let groups = {"Цифра": [], "МБТ": [], "КБТ": []};
-           filtered.forEach(i => { if(groups[i.dept]) groups[i.dept].push(i); });
+       // ДОБАВЛЯЕМ КНОПКИ "В ПРОДАЖЕ / ПРОДАННЫЕ"
+       let tabsHtml = `
+           <div style="display: flex; gap: 8px; margin-bottom: 12px; padding: 0 4px;">
+               <button class="filter-btn ${currentAdminScTabType === 'active' ? 'active' : ''}" 
+                       style="flex:1; font-size:11px; padding:6px;" 
+                       onclick="switchScAdminTab('active')">В продаже</button>
+               <button class="filter-btn ${currentAdminScTabType === 'sold' ? 'active' : ''}" 
+                       style="flex:1; font-size:11px; padding:6px;" 
+                       onclick="switchScAdminTab('sold')">Проданные</button>
+           </div>
+       `;
+       container.innerHTML = tabsHtml;
+
+       // ---------------------------------------------------------
+       // ВЕТКА 1: ТОВАРЫ В ПРОДАЖЕ (Твой оригинальный код)
+       // ---------------------------------------------------------
+       if (currentAdminScTabType === 'active') {
+           let filtered = adminScItemsGlobal.filter(i => (dept === "Фокус" ? i.type === "Фокус" : (i.dept === dept && i.type === "СЦ")));
+           if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
            
-           for (const [dName, items] of Object.entries(groups)) {
-               if (items.length === 0) continue;
-               let headerText = items[0].focusHeader || `${dName} Фокус`;
-               let html = `<div class="inner-block" style="margin-bottom:8px; padding:8px;"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`;
-               
-               items.forEach((i, idx) => {
-                  let ptNoun = formatPointsNoun(i.pts);
-                  html += `
-                    <div style="padding:6px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
-                       <div>
-                         <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
-                         <div style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div>
-                       </div>
-                    </div>`;
-               });
-               html += `</div>`;
-               container.innerHTML += html;
+           if (filtered.length === 0) {
+               container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Пусто</p>";
+               return;
            }
-       } else {
-           filtered.forEach((i, idx) => {
-               let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:18px; padding:4px 8px; border-radius:8px; display:inline-block; transition:0.6s;">📄</a>` : '';
-               let div = document.createElement("div");
-               div.style = "padding:8px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
-               div.innerHTML = `
-                  <div>
-                     <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
-                     <div style="font-size:10px; color:#e67e22; font-weight:bold;">
-                        СЦ
-                        ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
+
+           if (dept === "Фокус") {
+               let groups = {"Цифра": [], "МБТ": [], "КБТ": []};
+               filtered.forEach(i => { if(groups[i.dept]) groups[i.dept].push(i); });
+               
+               for (const [dName, items] of Object.entries(groups)) {
+                   if (items.length === 0) continue;
+                   let headerText = items[0].focusHeader || `${dName} Фокус`;
+                   let html = `<div class="inner-block" style="margin-bottom:8px; padding:8px;"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`;
+                   
+                   items.forEach((i, idx) => {
+                      let ptNoun = formatPointsNoun(i.pts);
+                      html += `
+                        <div style="padding:6px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
+                           <div>
+                             <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
+                             <div style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div>
+                           </div>
+                        </div>`;
+                   });
+                   html += `</div>`;
+                   container.innerHTML += html;
+               }
+           } else {
+               filtered.forEach((i, idx) => {
+                   let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:18px; padding:4px 8px; border-radius:8px; display:inline-block; transition:0.6s;">📄</a>` : '';
+                   let div = document.createElement("div");
+                   div.style = "padding:8px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
+                   div.innerHTML = `
+                     <div>
+                        <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
+                        <div style="font-size:10px; color:#e67e22; font-weight:bold;">
+                           СЦ
+                           ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
+                        </div>
                      </div>
-                  </div>
-                  <div>${docBtn}</div>
+                     <div>${docBtn}</div>
+                   `;
+                   container.appendChild(div);
+               });
+           }
+       } 
+       // ---------------------------------------------------------
+       // ВЕТКА 2: ПРОДАННЫЕ ТОВАРЫ (Новая логика)
+       // ---------------------------------------------------------
+       else {
+           // Берем все одобренные заявки по СЦ/Фокус
+           let sold = allRequests.filter(r => 
+               r.status === "approved" && 
+               r.type === "Продажа СЦ/Фокус"
+           );
+
+           // Распределяем по выбранной вкладке (Цифра, МБТ, КБТ или Фокус)
+           if (dept === "Фокус") {
+               sold = sold.filter(r => r.details.toLowerCase().includes("фокус"));
+           } else {
+               sold = sold.filter(r => {
+                   try { 
+                       let meta = JSON.parse(r.metadata);
+                       // Для СЦ проверяем отдел и исключаем Фокус (чтобы он не дублировался)
+                       return meta.dept === dept && !r.details.toLowerCase().includes("фокус");
+                   } catch(e) { return false; }
+               });
+           }
+
+           // Работа поиска
+           if (searchQ) {
+               sold = sold.filter(r => r.details.toLowerCase().includes(searchQ) || r.userName.toLowerCase().includes(searchQ));
+           }
+
+           if (sold.length === 0) {
+               container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Нет проданных товаров</p>";
+               return;
+           }
+
+           // Рисуем карточки проданных
+           sold.forEach(r => {
+               const isFocus = r.details.toLowerCase().includes("фокус");
+               const tagColor = isFocus ? "#f39c12" : "#e67e22";
+               const label = isFocus ? "Фокус" : "СЦ";
+               
+               let div = document.createElement("div");
+               div.className = "inner-block";
+               div.style = `padding:8px; margin-bottom:8px; border-left: 3px solid ${tagColor};`;
+               div.innerHTML = `
+                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                       <span style="font-size:9px; font-weight:bold; color:${tagColor}; text-transform:uppercase;">${label}</span>
+                       <span style="font-size:9px; color:gray;">${r.date}</span>
+                   </div>
+                   <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div>
+                   <div style="font-size:11px; line-height:1.4;">
+                       👤 <span style="color:gray;">Продавец:</span> <b>${r.userName}</b><br>
+                       ${r.discount && r.discount !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${r.discount}</b><br>` : ''}
+                       ${r.actUrl ? `📄 <a href="${r.actUrl}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не найден)</span>'}
+                   </div>
                `;
                container.appendChild(div);
            });
