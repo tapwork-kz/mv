@@ -1777,11 +1777,15 @@
            }
        } 
        // ---------------------------------------------------------
-       // ВЕТКА 2: ПРОДАННЫЕ ТОВАРЫ (Новая логика)
+       // ВЕТКА 2: ПРОДАННЫЕ ТОВАРЫ (Исправленная логика)
        // ---------------------------------------------------------
        else {
+           // ВАЖНО: В зависимости от того, как у тебя называется глобальная переменная 
+           // с историей заявок (allRequests или adminHistoryGlobal), берем нужную:
+           let historyArray = typeof adminHistoryGlobal !== 'undefined' ? adminHistoryGlobal : (typeof allRequests !== 'undefined' ? allRequests : []);
+
            // Берем все одобренные заявки по СЦ/Фокус
-           let sold = allRequests.filter(r => 
+           let sold = historyArray.filter(r => 
                r.status === "approved" && 
                r.type === "Продажа СЦ/Фокус"
            );
@@ -1792,16 +1796,17 @@
            } else {
                sold = sold.filter(r => {
                    try { 
-                       let meta = JSON.parse(r.metadata);
-                       // Для СЦ проверяем отдел и исключаем Фокус (чтобы он не дублировался)
-                       return meta.dept === dept && !r.details.toLowerCase().includes("фокус");
+                       // ИСПРАВЛЕНО: используем r.meta вместо r.metadata
+                       let metaObj = JSON.parse(r.meta);
+                       // Для СЦ проверяем отдел и исключаем Фокус
+                       return metaObj.dept === dept && !r.details.toLowerCase().includes("фокус");
                    } catch(e) { return false; }
                });
            }
 
-           // Работа поиска
+           // Работа поиска (ИСПРАВЛЕНО: r.authorName вместо r.userName)
            if (searchQ) {
-               sold = sold.filter(r => r.details.toLowerCase().includes(searchQ) || r.userName.toLowerCase().includes(searchQ));
+               sold = sold.filter(r => r.details.toLowerCase().includes(searchQ) || r.authorName.toLowerCase().includes(searchQ));
            }
 
            if (sold.length === 0) {
@@ -1812,7 +1817,7 @@
            // Рисуем карточки проданных
            sold.forEach(r => {
                const isFocus = r.details.toLowerCase().includes("фокус");
-               const tagColor = isFocus ? "#f39c12" : "#e67e22";
+               const tagColor = isFocus ? "#f39c12" : "#3390ec"; // Золотой для Фокуса, Синий для СЦ
                const label = isFocus ? "Фокус" : "СЦ";
                
                let div = document.createElement("div");
@@ -1825,9 +1830,9 @@
                    </div>
                    <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div>
                    <div style="font-size:11px; line-height:1.4;">
-                       👤 <span style="color:gray;">Продавец:</span> <b>${r.userName}</b><br>
+                       👤 <span style="color:gray;">Продавец:</span> <b>${r.authorName}</b><br>
                        ${r.discount && r.discount !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${r.discount}</b><br>` : ''}
-                       ${r.actUrl ? `📄 <a href="${r.actUrl}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не найден)</span>'}
+                       ${r.actUrl ? `📄 <a href="${r.actUrl}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}
                    </div>
                `;
                container.appendChild(div);
@@ -1917,7 +1922,7 @@
 
     function closeForm() {
       let roleStr = String(appState.role).toLowerCase();
-      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
+      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("Супервайзер");
       let dash = document.getElementById("info-dashboard");
       
       if (!isUserPromoter && !isDir) {
