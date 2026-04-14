@@ -1251,6 +1251,7 @@
 
           document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>";
           adminScItemsGlobal = data.adminScItems || [];
+          window.adminHistoryGlobal = data.adminHistory || [];
           
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) {
               switchTab('admin');
@@ -1782,7 +1783,8 @@
        else {
            // ВАЖНО: В зависимости от того, как у тебя называется глобальная переменная 
            // с историей заявок (allRequests или adminHistoryGlobal), берем нужную:
-           let historyArray = typeof adminHistoryGlobal !== 'undefined' ? adminHistoryGlobal : (typeof allRequests !== 'undefined' ? allRequests : []);
+           // Берем глобальную переменную, которую мы только что создали
+           let historyArray = window.adminHistoryGlobal || [];
 
            // Берем все одобренные заявки по СЦ/Фокус
            let sold = historyArray.filter(r => 
