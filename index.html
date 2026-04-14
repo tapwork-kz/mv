@@ -1815,26 +1815,29 @@
                container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Нет проданных товаров</p>";
                return;
            }
-
            // Рисуем карточки проданных
            sold.forEach(r => {
                const isFocus = r.details.toLowerCase().includes("фокус");
-               const tagColor = isFocus ? "#f39c12" : "#3390ec"; // Золотой для Фокуса, Синий для СЦ
-               const label = isFocus ? "Фокус" : "СЦ";
+               const tagColor = isFocus ? "#f39c12" : "#3390ec";
                
+               // Пытаемся достать данные: сначала из столбцов K/L, если пусто - из JSON в J
+               let metaObj = {}; try { metaObj = JSON.parse(r.meta); } catch(e){}
+               let displayAct = r.actUrl || metaObj.docUrl || "";
+               let displayDisc = r.discount || metaObj.discount || "0%";
+
                let div = document.createElement("div");
                div.className = "inner-block";
                div.style = `padding:8px; margin-bottom:8px; border-left: 3px solid ${tagColor};`;
                div.innerHTML = `
                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                       <span style="font-size:9px; font-weight:bold; color:${tagColor}; text-transform:uppercase;">${label}</span>
+                       <span style="font-size:9px; font-weight:bold; color:${tagColor};">${isFocus ? 'ФОКУС' : 'СЦ'}</span>
                        <span style="font-size:9px; color:gray;">${r.date}</span>
                    </div>
                    <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div>
                    <div style="font-size:11px; line-height:1.4;">
                        👤 <span style="color:gray;">Продавец:</span> <b>${r.authorName}</b><br>
-                       ${r.discount && r.discount !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${r.discount}</b><br>` : ''}
-                       ${r.actUrl ? `📄 <a href="${r.actUrl}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}
+                       ${displayDisc !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${displayDisc}</b><br>` : ''}
+                       ${displayAct ? `📄 <a href="${displayAct}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}
                    </div>
                `;
                container.appendChild(div);
