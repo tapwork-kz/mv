@@ -830,22 +830,6 @@
       if (scroller) scroller.scrollTop = 0;
     }
 
-    function applyLimits(state) {
-      if (!appState.currentAction) {
-        document.getElementById("btn-lunch").disabled = !state.canLunch;
-        document.getElementById("btn-snack").disabled = !state.canSnack;
-        document.getElementById("action-hint").innerText = "Выберите действие:";
-      }
-      
-      if (state.activeOuts) {
-         globalActiveOuts = state.activeOuts;
-         renderActiveOuts();
-         let roleStr = String(appState.role).toLowerCase();
-         let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-         if(!isUserPromoter && !isDir) checkAutoReturn(state.activeOuts);
-      }
-    }
-
     function checkAutoReturn(activeOuts) {
        if (!appState.currentAction) return;
        let myOut = activeOuts.find(o => String(o.iin) === String(appState.iin));
@@ -966,12 +950,53 @@
       }
     }
 
+
+
     function getDeclension(action) {
       if (!action) return "";
       if (action.startsWith("Перерыв")) return "Перерыва";
       if (action === "Обед") return "Обеда";
       if (action === "Полдник") return "Полдника";
       return action.toLowerCase();
+    }
+
+    function applyLimits(state) {
+        if (!state) return;
+
+        // 1. Блокируем кнопки, только если мы сейчас не находимся на перерыве/обеде
+        if (!appState.currentAction) {
+            let btnBreak = document.getElementById("btn-break");
+            let btnLunch = document.getElementById("btn-lunch");
+            let btnSnack = document.getElementById("btn-snack");
+
+            if (btnBreak) {
+                btnBreak.disabled = !state.canBreak;
+                btnBreak.style.opacity = state.canBreak ? "1" : "0.5";
+            }
+            if (btnLunch) {
+                btnLunch.disabled = !state.canLunch;
+                btnLunch.style.opacity = state.canLunch ? "1" : "0.5";
+            }
+            if (btnSnack) {
+                btnSnack.disabled = !state.canSnack;
+                btnSnack.style.opacity = state.canSnack ? "1" : "0.5";
+            }
+            document.getElementById("action-hint").innerText = "Выберите действие:";
+        }
+
+        // 2. Обновляем список коллег и таймер истечения времени
+        if (state.activeOuts !== undefined) {
+            globalActiveOuts = state.activeOuts;
+            renderActiveOuts();
+            
+            let roleStr = String(appState.role).toLowerCase();
+            let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
+            
+            // Если это продавец - следим, чтобы его выкинуло по истечении таймера
+            if(!isUserPromoter && !isDir) {
+                checkAutoReturn(state.activeOuts);
+            }
+        }
     }
 
     function renderTimeUI() {
