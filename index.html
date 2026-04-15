@@ -1134,10 +1134,11 @@
       if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
-             if (!appState.currentAction || state.myActiveAction) {
-                appState.currentAction = state.myActiveAction || "";
-                saveMemory("currentAction", appState.currentAction);
-             }
+             
+             // Всегда жестко синхронизируем статус с бэкендом:
+             appState.currentAction = state.myActiveAction || "";
+             saveMemory("currentAction", appState.currentAction);
+             
              renderTimeUI();
              applyLimits(state);
           }
