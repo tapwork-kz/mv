@@ -16,49 +16,27 @@
 
   <style>
     :root {
-      --bg-color: var(--tg-theme-bg-color, #f4f4f5);
-      --text-color: var(--tg-theme-text-color, #000000);
-      --btn-color: var(--tg-theme-button-color, #3390ec);
-      --btn-text: var(--tg-theme-button-text-color, #ffffff);
-      --card-bg: #ffffff;
-      --card-bg-rgb: 255, 255, 255;
-      --border-color: #eee;
-      --inner-bg: rgba(100, 100, 100, 0.05);
-      --form-title-color: #000000;
-      --form-input-color: #4d4d4d;
-      --banner-bg: rgba(0, 0, 0, 0.03);
+      --bg-color: var(--tg-theme-bg-color, #f4f4f5); --text-color: var(--tg-theme-text-color, #000000);
+      --btn-color: var(--tg-theme-button-color, #3390ec); --btn-text: var(--tg-theme-button-text-color, #ffffff);
+      --card-bg: #ffffff; --card-bg-rgb: 255, 255, 255; --border-color: #eee;
+      --inner-bg: rgba(100, 100, 100, 0.05); --form-title-color: #000000;
+      --form-input-color: #4d4d4d; --banner-bg: rgba(0, 0, 0, 0.03);
     }
     
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg-color: var(--tg-theme-bg-color, #121212);
-        --text-color: var(--tg-theme-text-color, #e0e0e0);
-        --card-bg: #1e1e1e;
-        --card-bg-rgb: 30, 30, 30;
-        --border-color: #333;
-        --inner-bg: rgba(255, 255, 255, 0.06);
-        --form-title-color: #ffffff;
-        --form-input-color: #e0e0e0;
-        --banner-bg: rgba(255, 255, 255, 0.04);
+        --bg-color: var(--tg-theme-bg-color, #121212); --text-color: var(--tg-theme-text-color, #e0e0e0);
+        --card-bg: #1e1e1e; --card-bg-rgb: 30, 30, 30; --border-color: #333;
+        --inner-bg: rgba(255, 255, 255, 0.06); --form-title-color: #ffffff;
+        --form-input-color: #e0e0e0; --banner-bg: rgba(255, 255, 255, 0.04);
       }
-      .glass { 
-        background: rgba(35, 35, 35, 0.85) !important; 
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
-      }
+      .glass { background: rgba(35, 35, 35, 0.85) !important; border: 1px solid rgba(255,255,255,0.08) !important; box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important; }
     }
     
     html, body { height: 100%; overflow: hidden; margin: 0; padding: 0; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); user-select: none; -webkit-user-select: none; transition: background-color 0.6s ease, color 0.6s ease; padding-env(safe-area-inset-top); }
     
-    .glass {
-      background: rgba(var(--card-bg-rgb), 0.75) !important;
-      backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
-      border: 1px solid rgba(150, 150, 150, 0.15);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      border-radius: 20px;
-    }
+    .glass { background: rgba(var(--card-bg-rgb), 0.75) !important; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(150, 150, 150, 0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 20px; }
     
     .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-up-fade { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
@@ -66,32 +44,13 @@
     .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
     .slide-down-fade { animation: slideDownFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; transform: scale(0.99); }
-      100% { opacity: 1; transform: scale(1); }
-    }
-    @keyframes slideUpFade {
-      0% { opacity: 0; transform: translateY(25px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes slideInRight {
-      0% { opacity: 0; transform: translateX(30px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes slideInLeft {
-      0% { opacity: 0; transform: translateX(-20px); }
-      100% { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes slideDownFade {
-      0% { opacity: 0; transform: translateY(-30px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.99); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(25px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes slideInRight { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } }
+    @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 1; transform: translateX(0); } }
+    @keyframes slideDownFade { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
 
-    #loader-screen {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      display: flex; align-items: flex-start; justify-content: center; padding-top: 25vh;
-      background: var(--bg-color); z-index: 1000; transition: opacity 0.6s ease, visibility 0.6s;
-    }
+    #loader-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: flex-start; justify-content: center; padding-top: 25vh; background: var(--bg-color); z-index: 1000; transition: opacity 0.6s ease, visibility 0.6s; }
 
     .sticky-header { position: sticky; top: 5px; z-index: 20; padding: 10px 12px; margin: 0 0 10px 0; border-radius: 16px; transition: 0.6s; }
     .fixed-header { padding: calc(env(safe-area-inset-top, 45px) + 15px) 12px 12px 12px; flex-shrink: 0; z-index: 100; border-radius: 0 0 24px 24px; margin-bottom: 12px; border-top: none; transition: 0.6s; }
@@ -99,24 +58,16 @@
     .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 12px calc(30px + env(safe-area-inset-bottom)) 12px; }
 
     input, select { user-select: text; -webkit-user-select: text; transition: 0.6s; }
-    input[type="text"], input[type="number"], input[type="date"], select { 
-      display: block; width: 100%; height: 46px; padding: 0 14px; margin: 8px 0; border: 1px solid var(--border-color); 
-      border-radius: 12px; font-size: 15px; box-sizing: border-box; 
-      -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color);
-    }
+    input[type="text"], input[type="number"], input[type="date"], select { display: block; width: 100%; height: 46px; padding: 0 14px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; box-sizing: border-box; -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color); }
     input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; }
     @media (prefers-color-scheme: dark) { input, select { border: 1px solid #444; } }
-
     .smart-date { color: var(--btn-color); font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
     
     button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; color: var(--btn-text); background: var(--btn-color); transition: transform 0.1s, background-color 0.4s, opacity 0.4s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     button:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(100%); }
     button:active:not(:disabled) { transform: scale(0.96); opacity: 0.9; }
     
-    .btn-break { background-color: #f39c12; color: #fff; }
-    .btn-lunch { background-color: #27ae60; color: #fff; }
-    .btn-snack { background-color: #8e44ad; color: #fff; }
-    .btn-return { background-color: #e74c3c; color: #fff; }
+    .btn-break { background-color: #f39c12; color: #fff; } .btn-lunch { background-color: #27ae60; color: #fff; } .btn-snack { background-color: #8e44ad; color: #fff; } .btn-return { background-color: #e74c3c; color: #fff; }
     .desc { font-size: 12px; opacity: 0.9; font-weight: normal; margin-top: 2px; }
     
     .card { background: var(--card-bg); padding: 14px; border-radius: 16px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.6s; border: 1px solid var(--border-color); }
@@ -232,8 +183,7 @@
       
       <div class="nav-bar" id="nav-container">
         <button id="nav-admin" onclick="openAdminPanel()" class="hidden" style="background: #34495e; padding: 12px; position: relative; border-radius: 14px; color: white;">
-          Админ-панель 
-          <span id="admin-dot" class="badge hidden" style="padding:4px; top:-2px; right:-2px;"></span>
+          Админ-панель <span id="admin-dot" class="badge hidden" style="padding:4px; top:-2px; right:-2px;"></span>
         </button>
       </div>
 
@@ -244,40 +194,24 @@
               <div class="info-box-title">СЦ | Brzy</div>
               <div class="info-box-value" id="info-sc-val">- | -</div>
             </div>
-
             <div class="info-box pts-box" onclick="openDetails('points')">
               <div class="info-box-title">Мои баллы</div>
               <div class="pts-grid" style="display:flex; gap:3px; margin-top:4px; width:100%; justify-content:space-between;">
-                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;">
-                   <div style="font-size:8px; color:gray;">Нач.</div>
-                   <div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-acc">-</div>
-                </div>
-                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;">
-                   <div style="font-size:8px; color:gray;">Исп.</div>
-                   <div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-use">-</div>
-                </div>
-                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(41, 128, 185, 0.1);">
-                   <div style="font-size:8px; color:gray;">Ост.</div>
-                   <div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div>
-                </div>
-                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(231, 76, 60, 0.1);">
-                   <div style="font-size:8px; color:gray;">Штрф.</div>
-                   <div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div>
-                </div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;"><div style="font-size:8px; color:gray;">Нач.</div><div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-acc">-</div></div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;"><div style="font-size:8px; color:gray;">Исп.</div><div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-use">-</div></div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(41, 128, 185, 0.1);"><div style="font-size:8px; color:gray;">Ост.</div><div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div></div>
+                <div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(231, 76, 60, 0.1);"><div style="font-size:8px; color:gray;">Штрф.</div><div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div></div>
               </div>
             </div>
-
             <div class="info-box" onclick="openDetails('report')">
               <div class="info-box-title">Мои отчеты</div>
               <div class="info-box-value" style="font-size:12px; line-height: 24px;">См. детали</div>
             </div>
-
             <div class="info-box tabel-box" onclick="openDetails('tabel')">
               <div class="info-box-title">Табель / Штрафы</div>
               <div class="tabel-grid" id="info-tabel"></div>
             </div>
           </div>
-
           <div class="info-box circle-box" onclick="openDetails('kpi')">
             <div class="kpi-container" id="kpi-circle">
               <div class="kpi-inner">
@@ -296,7 +230,7 @@
         <p id="action-hint" style="margin-bottom: 12px; font-weight:bold; padding-top: 5px; font-size:15px;">Загрузка лимитов...</p>
         
         <div id="standard-buttons">
-          <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')">
+          <button id="btn-break" class="btn-break" onclick="triggerAction('Перерыв')" disabled>
             <span>Перерыв</span><span class="desc" id="desc-break">10 мин</span>
           </button>
           <button id="btn-lunch" class="btn-lunch" onclick="triggerAction('Обед')" disabled>
@@ -325,7 +259,6 @@
           <button onclick="openForm('tradein')">Продажа Trade-In</button>
           <button onclick="openForm('points')">Баллы мотивации</button>
           <button onclick="openForm('swap')" class="btn-orange">Обмен сменами</button>
-          
           <div class="card" style="margin-top: 15px;">
             <h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>
             <div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">Услуги</div>
@@ -353,13 +286,11 @@
              </div>
              <input type="text" id="sc-date" class="smart-date" data-realdate="" style="height:30px; width:100px; margin:0; font-size:13px; background:var(--card-bg); border:1px solid var(--btn-color); color:var(--btn-color) !important; border-radius:8px;">
           </div>
-          
           <div style="display:flex; gap:6px; margin-bottom:8px;" id="sc-dept-tabs">
                <button id="sc-tab-cifra" class="admin-flt active-flt" onclick="switchScDept('Цифра')">Цифра</button>
                <button id="sc-tab-mbt" class="admin-flt" onclick="switchScDept('МБТ')">МБТ</button>
                <button id="sc-tab-kbt" class="admin-flt" onclick="switchScDept('КБТ')">КБТ</button>
           </div>
-
           <div class="card" style="margin-top: 5px;">
               <input type="text" id="sc-search" placeholder="Поиск товара..." oninput="renderScItems()">
               <div class="sc-list-container" id="sc-list"></div>
@@ -386,7 +317,6 @@
         <div id="form-points" class="card form-dark hidden">
           <h3 style="font-size:15px;">Баллы мотивации</h3>
           <div id="fp-balance-notice"></div>
-          
           <select id="fp-action">
             <option value="Придти позже">Придти позже</option>
             <option value="Уйти раньше">Уйти раньше</option>
@@ -415,7 +345,6 @@
              </select>
              <button class="btn-green" onclick="submitFixShift()" style="margin-top:10px; font-size:13px; padding:10px;">Отправить исправление</button>
           </div>
-
           <h3 style="padding-top:10px; border-top:1px solid var(--border-color); font-size:15px;">Обмен сменами</h3>
           <select id="fs-target" onchange="checkSwapFields()"></select>
           <div id="fs-extra" class="hidden">
@@ -434,9 +363,7 @@
       </div>
 
       <div id="content-inbox" class="hidden">
-        <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;">
-            <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы на обмен</h3>
-        </div>
+        <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;"><h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы на обмен</h3></div>
         <div id="inbox-list" class="req-list"></div>
       </div>
 
@@ -445,14 +372,10 @@
           <button id="btn-adm-plan" onclick="toggleAdminView('plan')" class="admin-flt active-flt" style="min-width: 45%;">План</button>
           <button id="btn-adm-sc" onclick="toggleAdminView('sc')" class="admin-flt" style="min-width: 45%;">СЦ Товары</button>
           <button id="btn-adm-emp" onclick="toggleAdminView('emps')" class="admin-flt" style="min-width: 30%;">Сотрудники</button>
-          <button id="btn-adm-pend" onclick="toggleAdminView('pending')" class="admin-flt" style="position:relative; min-width: 30%;">
-             Запросы <span id="admin-badge" class="badge hidden"></span>
-          </button>
+          <button id="btn-adm-pend" onclick="toggleAdminView('pending')" class="admin-flt" style="position:relative; min-width: 30%;">Запросы <span id="admin-badge" class="badge hidden"></span></button>
           <button id="btn-adm-hist" onclick="toggleAdminView('history')" class="admin-flt" style="min-width: 30%;">История</button>
         </div>
-        
         <div id="admin-plan-list" class="hidden" style="font-size:13px; line-height: 1.4;"></div>
-        
         <div id="admin-sc-list" class="hidden">
            <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px; margin-top:0;">
                <div style="display:flex; gap:6px;">
@@ -465,7 +388,6 @@
            </div>
            <div id="admin-sc-container" class="card" style="padding:6px;"></div>
         </div>
-
         <div id="admin-emp-container" class="hidden">
            <div class="sticky-header glass" style="display:flex; gap:6px; margin-bottom:12px; margin-top:0; padding:6px;">
                <button id="flt-emp-cifra" class="admin-flt active-flt" onclick="renderAdminEmps('Цифра', this)">Цифра</button>
@@ -474,7 +396,6 @@
            </div>
            <div id="admin-emp-list" class="req-list"></div>
         </div>
-
         <div id="admin-list" class="req-list hidden"></div>
         <div id="admin-history-list" class="req-list hidden"></div>
       </div>
@@ -491,7 +412,6 @@
       </div>
 
     </div>
-
   </div>
 
   <script>
@@ -502,55 +422,26 @@
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                console.log('SW registered');
-            }).catch(err => console.log('SW error', err));
+            navigator.serviceWorker.register('sw.js').then(reg => console.log('SW registered')).catch(err => console.log('SW error', err));
         });
     }
 
-    function requestNotificationPermission() {
-        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-    }
-
-    function showPushNotification(title, bodyText) {
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification(title, { body: bodyText, icon: "icon.png" });
-        }
-    }
+    function requestNotificationPermission() { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") Notification.requestPermission(); }
+    function showPushNotification(title, bodyText) { if ("Notification" in window && Notification.permission === "granted") new Notification(title, { body: bodyText, icon: "icon.png" }); }
 
     async function callBackend(actionName, payloadData = {}) {
       try {
-        const response = await fetch(GAS_URL, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: actionName, payload: payloadData })
-        });
+        const response = await fetch(GAS_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ action: actionName, payload: payloadData }) });
         return await response.json();
-      } catch (error) {
-        return { success: false, error: "Оффлайн режим" };
-      }
+      } catch (error) { return { success: false, error: "Оффлайн режим" }; }
     }
 
-    function vibrate(ms = 50) { 
-        if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        else if (navigator.vibrate) navigator.vibrate(ms); 
-    }
+    function vibrate(ms = 50) { if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); else if (navigator.vibrate) navigator.vibrate(ms); }
 
-    let autoScrollAnimation = true; 
-    let activeOutsTimer = null;
-    let autoReturnTimer = null;
-    let globalActiveOuts = [];
-    let isUserPromoter = false;
-    let currentAdminScDept = 'Цифра';
-    let currentEmpDept = 'Цифра';
-    let currentScTabDept = 'Цифра';
-    let pollingTimer = null;
-    let lastActiveTab = 'time';
-    let processedReqIds = new Set();
-    let tradeInModelsGlobal = [];
-    let selectedTradeInModel = null;
+    let autoScrollAnimation = true; let activeOutsTimer = null; let globalActiveOuts = []; let isUserPromoter = false;
+    let currentAdminScDept = 'Цифра'; let currentEmpDept = 'Цифра'; let currentScTabDept = 'Цифра';
+    let pollingTimer = null; let lastActiveTab = 'time'; let processedReqIds = new Set();
+    let tradeInModelsGlobal = []; let selectedTradeInModel = null;
 
     function saveMemory(key, value) {
       try { localStorage.setItem(key, value); } catch(e){}
@@ -558,51 +449,22 @@
     }
 
     function getMemory(key) {
-      let val = null;
-      try { val = localStorage.getItem(key); } catch(e){}
-      if (!val) {
-        let match = document.cookie.match(new RegExp('(^| )' + key + '=([^;]+)'));
-        if (match) val = decodeURIComponent(match[2]);
-      }
+      let val = null; try { val = localStorage.getItem(key); } catch(e){}
+      if (!val) { let match = document.cookie.match(new RegExp('(^| )' + key + '=([^;]+)')); if (match) val = decodeURIComponent(match[2]); }
       return val;
     }
 
     function clearMemory() {
       try { localStorage.clear(); } catch(e){}
       let cookies = document.cookie.split("; ");
-      for (let c of cookies) {
-        document.cookie = c.split("=")[0] + "=; max-age=0; path=/";
-      }
+      for (let c of cookies) document.cookie = c.split("=")[0] + "=; max-age=0; path=/";
     }
 
-    let appState = { 
-      token: getMemory("userToken"), 
-      iin: getMemory("userIIN"), 
-      firstName: getMemory("userName") || "", 
-      currentAction: getMemory("currentAction"),
-      role: getMemory("userRole") || "Продавец",
-      dept: getMemory("userDept") || "Цифра",
-      lastInboxCount: 0 
-    };
-
-    let globalSellers = [];
-    let globalScItems = [];
-    let adminScItemsGlobal = [];
-    let selectedScItem = null;
-    let myReports = [];
-    let myPointsHistory = []; 
-    let myDisplayPointsHistory = []; 
-    let myScHistory = []; 
-    let myKpiDetails = [];
-    let allEmployeesData = []; 
-    let myMoneyFinesHistory = [];
+    let appState = { token: getMemory("userToken"), iin: getMemory("userIIN"), firstName: getMemory("userName") || "", currentAction: getMemory("currentAction"), role: getMemory("userRole") || "Продавец", dept: getMemory("userDept") || "Цифра", lastInboxCount: 0 };
+    let globalSellers = []; let globalScItems = []; let adminScItemsGlobal = []; let selectedScItem = null; let myReports = []; let myPointsHistory = []; let myDisplayPointsHistory = []; let myScHistory = []; let myKpiDetails = []; let allEmployeesData = []; let myMoneyFinesHistory = [];
 
     document.addEventListener("DOMContentLoaded", async () => {
-      requestNotificationPermission(); 
-      initAutoScroll(); 
-      initSmartDates(); 
-      initSwipe(); 
-      
+      requestNotificationPermission(); initAutoScroll(); initSmartDates(); initSwipe(); 
       const urlParams = new URLSearchParams(window.location.search);
       const urlIin = urlParams.get('iin');
 
@@ -612,43 +474,23 @@
       } else if (appState.iin && appState.token) {
         document.getElementById("auth-screen").classList.add("hidden");
         document.getElementById("main-screen").classList.remove("hidden");
-        if (appState.firstName) {
-            document.getElementById("user-greeting").innerText = appState.firstName;
-        }
-        
-        loadDashboard(false); 
-        startPolling(); 
-      } else {
-        hideLoader();
-        document.getElementById("auth-screen").classList.remove("hidden");
-      }
+        if (appState.firstName) document.getElementById("user-greeting").innerText = appState.firstName;
+        loadDashboard(false); startPolling(); 
+      } else { hideLoader(); document.getElementById("auth-screen").classList.remove("hidden"); }
     });
 
     function initSwipe() {
-        let startX = 0, startY = 0;
-        const scrollArea = document.getElementById('scrollable-body');
-        if (!scrollArea) return;
-        
-        scrollArea.addEventListener('touchstart', e => {
-            startX = e.changedTouches[0].screenX;
-            startY = e.changedTouches[0].screenY;
-        }, {passive: true});
-
+        let startX = 0, startY = 0; const scrollArea = document.getElementById('scrollable-body'); if (!scrollArea) return;
+        scrollArea.addEventListener('touchstart', e => { startX = e.changedTouches[0].screenX; startY = e.changedTouches[0].screenY; }, {passive: true});
         scrollArea.addEventListener('touchend', e => {
-            let endX = e.changedTouches[0].screenX;
-            let endY = e.changedTouches[0].screenY;
-            let diffX = endX - startX;
-            let diffY = Math.abs(endY - startY);
-
+            let endX = e.changedTouches[0].screenX; let endY = e.changedTouches[0].screenY;
+            let diffX = endX - startX; let diffY = Math.abs(endY - startY);
             if (diffY < 60 && Math.abs(diffX) > 80) {
                 if (document.getElementById('nav-time-icon').classList.contains('hidden')) return;
-                
-                let tabs = ['time', 'create', 'inbox'];
-                let currentIdx = -1;
+                let tabs = ['time', 'create', 'inbox']; let currentIdx = -1;
                 if (!document.getElementById('content-time').classList.contains('hidden')) currentIdx = 0;
                 else if (!document.getElementById('content-create').classList.contains('hidden') && document.getElementById('menu-list').classList.contains('hidden') === false) currentIdx = 1;
                 else if (!document.getElementById('content-inbox').classList.contains('hidden')) currentIdx = 2;
-
                 if (currentIdx !== -1) {
                     if (diffX < 0 && currentIdx < 2) switchTab(tabs[currentIdx + 1], 'right'); 
                     else if (diffX > 0 && currentIdx > 0) switchTab(tabs[currentIdx - 1], 'left'); 
@@ -657,32 +499,17 @@
         }, {passive: true});
     }
 
-    function hideLoader() {
-        const loader = document.getElementById("loader-screen");
-        loader.style.opacity = '0';
-        setTimeout(() => loader.classList.add("hidden"), 600);
-    }
-
-    function showLoader() {
-        const loader = document.getElementById("loader-screen");
-        loader.classList.remove("hidden");
-        setTimeout(() => loader.style.opacity = '1', 10);
-    }
+    function hideLoader() { const loader = document.getElementById("loader-screen"); loader.style.opacity = '0'; setTimeout(() => loader.classList.add("hidden"), 600); }
+    function showLoader() { const loader = document.getElementById("loader-screen"); loader.classList.remove("hidden"); setTimeout(() => loader.style.opacity = '1', 10); }
 
     function forceLogout() {
         if(pollingTimer) clearInterval(pollingTimer);
-        clearMemory();
-        appState.token = null;
-        appState.iin = null;
-        
+        clearMemory(); appState.token = null; appState.iin = null;
         document.getElementById("main-screen").style.opacity = '0';
         setTimeout(() => {
-            document.getElementById("main-screen").classList.add("hidden");
-            document.getElementById("auth-screen").classList.remove("hidden");
-            document.getElementById("auth-screen").style.opacity = '1';
-            document.getElementById("main-screen").style.opacity = '1'; 
-            document.getElementById("iin-input").value = '';
-            document.getElementById("iin-input").disabled = false;
+            document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden");
+            document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; 
+            document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false;
         }, 600);
     }
 
@@ -692,342 +519,181 @@
             if(appState.token && !document.hidden) {
                 let data = await callBackend('getDashboardData', { token: appState.token });
                 if (!data || data.error === "Оффлайн режим") return;
-                
-                if (data.authorized === false) { 
-                    forceLogout();
-                    return; 
-                } 
-                
+                if (data.authorized === false) { forceLogout(); return; } 
                 renderDashboardData(data, true);
                 
-                let roleStr = String(data.role || "").toLowerCase();
-                let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-                
-                if(!isUserPromoter && !isDir) {
+                let roleStr = String(data.role || "").toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
+                if(!isDir) {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-                    if(state && state.authorized !== false) applyLimits(state);
+                    if(state && state.authorized !== false) {
+                        appState.currentAction = state.myActiveAction || ""; saveMemory("currentAction", appState.currentAction);
+                        renderTimeUI(); applyLimits(state);
+                    }
                 }
             }
         }, 5000);
     }
 
-    document.addEventListener('visibilitychange', () => {
-       if (!document.hidden && appState.token) loadDashboard(true);
-    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && appState.token) loadDashboard(true); });
 
     async function manualLogin(el) {
       if (el && el.value && el.value.length === 12) {
-        document.getElementById("iin-input").disabled = true;
-        showToast("Авторизация...", false, 9999);
-        
+        document.getElementById("iin-input").disabled = true; showToast("Авторизация...", false, 9999);
         let res = await callBackend('loginByIIN', { iin: el.value });
-        
         if (res.success) {
-            appState.iin = res.iin;
-            appState.token = res.token;
-            appState.firstName = res.firstName;
-            appState.currentAction = null;
-            isUserPromoter = res.isPromoter;
-
-            saveMemory("userIIN", appState.iin);
-            saveMemory("userToken", appState.token);
-            saveMemory("userName", appState.firstName);
-            saveMemory("currentAction", "");
-
+            appState.iin = res.iin; appState.token = res.token; appState.firstName = res.firstName; appState.currentAction = null; isUserPromoter = res.isPromoter;
+            saveMemory("userIIN", appState.iin); saveMemory("userToken", appState.token); saveMemory("userName", appState.firstName); saveMemory("currentAction", "");
             document.getElementById("toast").classList.remove("show");
-            
             document.getElementById("auth-screen").style.opacity = '0';
             setTimeout(() => {
-                document.getElementById("auth-screen").classList.add("hidden");
-                document.getElementById("main-screen").classList.remove("hidden");
-                document.getElementById("main-screen").style.opacity = '1';
-                document.getElementById("user-greeting").innerText = appState.firstName;
-                loadDashboard(false);
-                startPolling();
+                document.getElementById("auth-screen").classList.add("hidden"); document.getElementById("main-screen").classList.remove("hidden");
+                document.getElementById("main-screen").style.opacity = '1'; document.getElementById("user-greeting").innerText = appState.firstName;
+                loadDashboard(false); startPolling();
             }, 600);
-
         } else {
-            document.getElementById("iin-input").disabled = false;
-            document.getElementById("login-error").innerText = res.error;
-            document.getElementById("toast").classList.remove("show");
+            document.getElementById("iin-input").disabled = false; document.getElementById("login-error").innerText = res.error; document.getElementById("toast").classList.remove("show");
         }
       }
     }
 
     function setKpiColor(val, elCircle, elText) {
-       let color = "#27ae60"; // Base green
-       if (val >= 100) color = "#1e8449"; // Stronger contrast green
-       else if (val >= 80 && val < 90) color = "#f39c12"; // Yellow
-       else if (val < 80) color = "#e74c3c"; // Red
-
-       if(elCircle) {
-           let trackColor = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
-           elCircle.style.background = `conic-gradient(${color} ${val > 100 ? 100 : val}%, ${trackColor} 0)`;
-       }
-       if(elText) elText.style.color = color;
-       return color;
+       let color = "#27ae60"; if (val >= 100) color = "#1e8449"; else if (val >= 80 && val < 90) color = "#f39c12"; else if (val < 80) color = "#e74c3c";
+       if(elCircle) { let trackColor = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'; elCircle.style.background = `conic-gradient(${color} ${val > 100 ? 100 : val}%, ${trackColor} 0)`; }
+       if(elText) elText.style.color = color; return color;
     }
 
     function switchTab(tab, direction = null) {
-      if (tab !== 'details') {
-          lastActiveTab = tab;
-      }
-
+      if (tab !== 'details') lastActiveTab = tab;
       if(appState.token) loadDashboard(true);
-      
       document.querySelectorAll('#main-tabs .icon-btn').forEach(btn => btn.classList.remove('active-tab'));
       if(tab === 'time') document.getElementById('nav-time-icon').classList.add('active-tab');
       if(tab === 'create') document.getElementById('nav-create-icon').classList.add('active-tab');
       if(tab === 'inbox') document.getElementById('inbox-icon').classList.add('active-tab');
         
-      document.getElementById("content-time").classList.add("hidden");
-      document.getElementById("content-create").classList.add("hidden");
-      document.getElementById("content-inbox").classList.add("hidden");
-      document.getElementById("content-admin").classList.add("hidden");
+      document.getElementById("content-time").classList.add("hidden"); document.getElementById("content-create").classList.add("hidden");
+      document.getElementById("content-inbox").classList.add("hidden"); document.getElementById("content-admin").classList.add("hidden");
       document.getElementById("content-details").classList.add("hidden");
       
       let sections = document.querySelectorAll('#scrollable-body > div');
-      let animClass = 'slide-up-fade';
-      if (direction === 'right') animClass = 'slide-in-right';
-      else if (direction === 'left') animClass = 'slide-in-left';
+      let animClass = 'slide-up-fade'; if (direction === 'right') animClass = 'slide-in-right'; else if (direction === 'left') animClass = 'slide-in-left';
+      sections.forEach(s => { s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
 
-      sections.forEach(s => { 
-          s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); 
-          s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
-      });
-
-      let roleStr = String(appState.role).toLowerCase();
-      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-      let isSeller = !isUserPromoter && !isDir;
-      
-      let isCreateTabActive = (tab === 'create');
-      let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
+      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ"); let isSeller = !isUserPromoter && !isDir;
+      let isCreateTabActive = (tab === 'create'); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
 
       let dash = document.getElementById("info-dashboard");
       if (isSeller && tab !== 'details' && tab !== 'admin' && !isAnyFormActive) {
-         if (dash.classList.contains("hidden")) {
-            dash.classList.remove("hidden");
-            dash.classList.remove("fade-in", "slide-up-fade");
-            dash.classList.add("slide-down-fade");
-         }
-      } else {
-         dash.classList.add("hidden");
-      }
+         if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); }
+      } else { dash.classList.add("hidden"); }
       
       let targetEl = null;
-      if(tab === 'time') targetEl = document.getElementById("content-time");
-      else if(tab === 'create') targetEl = document.getElementById("content-create");
-      else if(tab === 'inbox') targetEl = document.getElementById("content-inbox");
-      else if(tab === 'admin') targetEl = document.getElementById("content-admin");
-      else if(tab === 'details') targetEl = document.getElementById("content-details");
+      if(tab === 'time') targetEl = document.getElementById("content-time"); else if(tab === 'create') targetEl = document.getElementById("content-create");
+      else if(tab === 'inbox') targetEl = document.getElementById("content-inbox"); else if(tab === 'admin') targetEl = document.getElementById("content-admin"); else if(tab === 'details') targetEl = document.getElementById("content-details");
       
-      if(targetEl) {
-          targetEl.classList.remove("hidden");
-          targetEl.classList.add(animClass);
-      }
-
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller) scroller.scrollTop = 0;
+      if(targetEl) { targetEl.classList.remove("hidden"); targetEl.classList.add(animClass); }
+      let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
     function applyLimits(state) {
       if (!appState.currentAction) {
+        document.getElementById("btn-break").disabled = !state.canBreak;
         document.getElementById("btn-lunch").disabled = !state.canLunch;
         document.getElementById("btn-snack").disabled = !state.canSnack;
-        document.getElementById("action-hint").innerText = "Выберите действие:";
+        document.getElementById("action-hint").innerText = (state.canBreak || state.canLunch || state.canSnack) ? "Выберите действие:" : "Очередь заполнена или лимит исчерпан";
       }
-      
       if (state.activeOuts) {
          globalActiveOuts = state.activeOuts;
          renderActiveOuts();
-         let roleStr = String(appState.role).toLowerCase();
-         let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-         if(!isUserPromoter && !isDir) checkAutoReturn(state.activeOuts);
       }
-    }
-
-    function checkAutoReturn(activeOuts) {
-       if (!appState.currentAction) return;
-       let myOut = activeOuts.find(o => String(o.iin) === String(appState.iin));
-       if (myOut) {
-           let elapsed = Date.now() - myOut.leftAt;
-           let limitMs = myOut.limit * 60000;
-           let rem = limitMs - elapsed;
-           if (autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
-           
-           if (rem <= 0) triggerReturn(true); 
-           else autoReturnTimer = setTimeout(() => triggerReturn(true), rem);
-       }
     }
     
     function renderActiveOuts() {
        const container = document.getElementById("active-outs-container");
        const list = document.getElementById("active-outs-list");
-       
        if (!globalActiveOuts || globalActiveOuts.length === 0) {
-           container.classList.add("hidden");
-           if (activeOutsTimer) clearInterval(activeOutsTimer);
-           return;
+           container.classList.add("hidden"); if (activeOutsTimer) clearInterval(activeOutsTimer); return;
        }
-       
        container.classList.remove("hidden");
-       
        function updateTimers() {
            const now = Date.now();
            list.innerHTML = globalActiveOuts.map(out => {
-               let elapsedMin = Math.floor((now - out.leftAt) / 60000);
-               let diffMin = out.limit - elapsedMin;
-               
-               let timeClass = "";
-               let timeText = "";
-               if (diffMin > 0) {
-                   timeText = `Осталось ${diffMin} мин`;
-               } else {
-                   timeClass = "late";
-                   timeText = `Опаздывает на ${Math.abs(diffMin)} мин!`;
-               }
-               
-               let actionTitle = out.action;
-               if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв";
-               
-               // ИСПРАВЛЕНИЕ: Безопасная проверка и вывод должности промоутера
-               let rRole = out.role ? String(out.role) : "";
-               let roleLabel = rRole.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${rRole}</div>` : '';
-               
-               return `<div class="active-out-item" style="align-items: center;">
-                  <div>
-                     <span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px; margin-left: 5px;">(${actionTitle})</span>
-                     ${roleLabel}
-                  </div>
-                  <span class="active-out-time ${timeClass}">${timeText}</span>
-               </div>`;
+               let elapsedMin = Math.floor((now - out.leftAt) / 60000); let diffMin = out.limit - elapsedMin;
+               let timeClass = ""; let timeText = "";
+               if (diffMin > 0) timeText = `Осталось ${diffMin} мин`; else { timeClass = "late"; timeText = `Опаздывает на ${Math.abs(diffMin)} мин!`; }
+               let actionTitle = out.action; if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв";
+               let rRole = out.role ? String(out.role) : ""; let roleLabel = rRole.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${rRole}</div>` : '';
+               return `<div class="active-out-item" style="align-items: center;"><div><span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px; margin-left: 5px;">(${actionTitle})</span>${roleLabel}</div><span class="active-out-time ${timeClass}">${timeText}</span></div>`;
            }).join("");
        }
-       
-       updateTimers();
-       if (activeOutsTimer) clearInterval(activeOutsTimer);
-       activeOutsTimer = setInterval(updateTimers, 10000); 
+       updateTimers(); if (activeOutsTimer) clearInterval(activeOutsTimer); activeOutsTimer = setInterval(updateTimers, 10000); 
     }
 
     async function triggerAction(actionType) {
-      vibrate(50);
-      let prevAction = appState.currentAction;
-      
-      appState.currentAction = actionType;
-      saveMemory("currentAction", actionType);
-      renderTimeUI(); 
-
+      vibrate(50); let prevAction = appState.currentAction;
+      appState.currentAction = actionType; saveMemory("currentAction", actionType); renderTimeUI(); 
       let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionType, isReturn: false, isSilentAutoReturn: false });
-
       if (res.success && res.savedAction) {
-        appState.currentAction = res.savedAction;
-        saveMemory("currentAction", res.savedAction);
-        renderTimeUI();
-        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-        applyLimits(state);
+        appState.currentAction = res.savedAction; saveMemory("currentAction", res.savedAction); renderTimeUI();
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); applyLimits(state);
       } else {
-        appState.currentAction = prevAction;
-        saveMemory("currentAction", prevAction || "");
-        renderTimeUI();
-        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-        applyLimits(state);
-        showToast("Ошибка: " + res.error, true);
+        appState.currentAction = prevAction; saveMemory("currentAction", prevAction || ""); renderTimeUI();
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); applyLimits(state); showToast("Ошибка: " + res.error, true);
       }
     }
 
-    async function triggerReturn(isSilentAuto = false) {
-      if (!isSilentAuto) vibrate(50);
-      const actionToReturnFrom = appState.currentAction;
-
-      appState.currentAction = null;
-      saveMemory("currentAction", "");
-      renderTimeUI(); 
-      if(autoReturnTimer) { clearTimeout(autoReturnTimer); autoReturnTimer = null; }
-
+    async function triggerReturn() {
+      vibrate(50); const actionToReturnFrom = appState.currentAction;
+      appState.currentAction = null; saveMemory("currentAction", ""); renderTimeUI(); 
       document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = true);
       document.getElementById("btn-break").disabled = false;
-      document.getElementById("action-hint").innerText = isSilentAuto ? "Лимит исчерпан. Готов к новой записи..." : "Фиксируем возвращение...";
+      document.getElementById("action-hint").innerText = "Фиксируем возвращение...";
 
-      let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionToReturnFrom, isReturn: true, isSilentAutoReturn: isSilentAuto });
-      
+      let res = await callBackend('recordAction', { token: appState.token, iin: appState.iin, actionType: actionToReturnFrom, isReturn: true, isSilentAutoReturn: false });
       if (res.success) {
         document.getElementById("action-hint").innerText = "Обновление лимитов...";
         let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-        document.querySelectorAll("#standard-buttons button").forEach(b => b.disabled = false);
-        document.getElementById("action-hint").innerText = "Выберите действие:";
-        applyLimits(state);
+        document.getElementById("action-hint").innerText = "Выберите действие:"; applyLimits(state);
       } else {
-        appState.currentAction = actionToReturnFrom;
-        saveMemory("currentAction", actionToReturnFrom);
-        renderTimeUI();
-        if (!isSilentAuto) showToast("Ошибка возврата: " + res.error, true);
-        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
-        applyLimits(state);
+        appState.currentAction = actionToReturnFrom; saveMemory("currentAction", actionToReturnFrom); renderTimeUI(); showToast("Ошибка возврата: " + res.error, true);
+        let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); applyLimits(state);
       }
     }
 
     function getDeclension(action) {
-      if (!action) return "";
-      if (action.startsWith("Перерыв")) return "Перерыва";
-      if (action === "Обед") return "Обеда";
-      if (action === "Полдник") return "Полдника";
-      return action.toLowerCase();
+      if (!action) return ""; if (action.startsWith("Перерыв")) return "Перерыва"; if (action === "Обед") return "Обеда"; if (action === "Полдник") return "Полдника"; return action.toLowerCase();
     }
 
     function renderTimeUI() {
-      const standardBtns = document.getElementById("standard-buttons");
-      const returnContainer = document.getElementById("return-button-container");
-
+      const standardBtns = document.getElementById("standard-buttons"); const returnContainer = document.getElementById("return-button-container");
       let actStr = String(appState.currentAction);
-      if (appState.currentAction && actStr !== "null" && actStr !== "undefined") {
-        document.getElementById("btn-return").disabled = false;
-        standardBtns.classList.add("hidden");
-        returnContainer.classList.remove("hidden");
-
+      if (appState.currentAction && actStr !== "null" && actStr !== "undefined" && actStr !== "") {
+        document.getElementById("btn-return").disabled = false; standardBtns.classList.add("hidden"); returnContainer.classList.remove("hidden");
         const declension = getDeclension(appState.currentAction);
         document.getElementById("return-text").innerText = "Вернуться с " + declension;
         document.getElementById("action-hint").innerText = "Ожидаем возвращения:";
       } else {
-        standardBtns.classList.remove("hidden");
-        returnContainer.classList.add("hidden");
+        standardBtns.classList.remove("hidden"); returnContainer.classList.add("hidden");
       }
     }
 
     function formatPointsNoun(num) {
-      let n = Math.abs(parseFloat(String(num).replace(',','.')));
-      if (isNaN(n)) return "баллов";
-      if (n % 1 !== 0) return "балла";
-      n = Math.floor(n) % 100;
-      let n10 = n % 10;
-      if (n >= 11 && n <= 19) return "баллов";
-      if (n10 === 1) return "балл";
-      if (n10 >= 2 && n10 <= 4) return "балла";
-      return "баллов";
+      let n = Math.abs(parseFloat(String(num).replace(',','.'))); if (isNaN(n)) return "баллов"; if (n % 1 !== 0) return "балла";
+      n = Math.floor(n) % 100; let n10 = n % 10; if (n >= 11 && n <= 19) return "баллов"; if (n10 === 1) return "балл"; if (n10 >= 2 && n10 <= 4) return "балла"; return "баллов";
     }
 
-    function formatNumberWithSpaces(x) {
-        if (!x) return "0";
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
+    function formatNumberWithSpaces(x) { if (!x) return "0"; return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
 
     function getSourceColor(src) {
-      let s = String(src).toLowerCase();
-      if(s.includes('сц')) return '#e67e22'; 
-      if(s.includes('фокус')) return '#e74c3c'; 
-      if(s.includes('trade-in')) return '#8e44ad'; 
-      if(s.includes('горячий')) return '#e84393'; 
-      return '#7f8c8d'; 
+      let s = String(src).toLowerCase(); if(s.includes('сц')) return '#e67e22'; if(s.includes('фокус')) return '#e74c3c'; if(s.includes('trade-in')) return '#8e44ad'; if(s.includes('горячий')) return '#e84393'; return '#7f8c8d'; 
     }
 
     function initSmartDates() {
       const today = new Date().toISOString().split('T')[0];
       document.querySelectorAll('.smart-date').forEach(el => {
-         el.dataset.realdate = today;
-         el.value = "Сегодня";
+         el.dataset.realdate = today; el.value = "Сегодня";
          el.addEventListener('focus', function() { this.type = 'date'; this.value = this.dataset.realdate; if(this.showPicker) this.showPicker(); });
          el.addEventListener('blur', function() {
-             if(!this.value) this.value = today;
-             this.dataset.realdate = this.value;
+             if(!this.value) this.value = today; this.dataset.realdate = this.value;
              if (this.value === today) { this.type = 'text'; this.value = "Сегодня"; } 
              else { this.type = 'text'; const d = new Date(this.value); this.value = ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); }
          });
@@ -1036,13 +702,11 @@
     }
 
     function initAutoScroll() {
-      const scroller = document.getElementById("scroll-container");
-      let scrollDir = 1;
+      const scroller = document.getElementById("scroll-container"); let scrollDir = 1;
       let scrollTimer = setInterval(() => {
         if (!autoScrollAnimation || !scroller || scroller.closest('.hidden')) return;
         scroller.scrollLeft += 1 * scrollDir;
-        if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1;
-        else if (scroller.scrollLeft <= 0) scrollDir = 1;
+        if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1; else if (scroller.scrollLeft <= 0) scrollDir = 1;
       }, 40);
       if(scroller) {
           scroller.addEventListener('touchstart', () => autoScrollAnimation = false, {passive: true});
@@ -1050,261 +714,118 @@
       }
     }
 
-    async function openAdminPanel() {
-        switchTab('admin');
-        toggleAdminView('plan');
-        await loadDashboard(true);
-    }
+    async function openAdminPanel() { switchTab('admin'); toggleAdminView('plan'); await loadDashboard(true); }
 
     async function loadDashboard(isSilent = false) {
       let cachedData = localStorage.getItem("dashData_" + appState.iin);
-
       if (!isSilent) {
           if (cachedData) {
               try {
                   renderDashboardData(JSON.parse(cachedData), true);
-                  
-                  let roleStr = String(appState.role).toLowerCase();
-                  let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-                  
-                  if (isDir) {
-                      switchTab('admin'); toggleAdminView('plan');
-                  } else {
-                      switchTab('time');
-                  }
-                  
-                  hideLoader(); 
-                  isSilent = true; 
-              } catch(e) {
-                  localStorage.removeItem("dashData_" + appState.iin);
-                  showLoader();
-              }
-          } else {
-              showLoader();
-          }
+                  let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
+                  if (isDir) { switchTab('admin'); toggleAdminView('plan'); } else { switchTab('time'); }
+                  hideLoader(); isSilent = true; 
+              } catch(e) { localStorage.removeItem("dashData_" + appState.iin); showLoader(); }
+          } else showLoader();
       }
 
       let data = await callBackend('getDashboardData', { token: appState.token });
-        
-      if (!data || data.error === "Оффлайн режим") {
-          if (!isSilent) hideLoader();
-          return; 
-      }
-      
-      if (data.authorized === false) { 
-          forceLogout();
-          return; 
-      } 
+      if (!data || data.error === "Оффлайн режим") { if (!isSilent) hideLoader(); return; }
+      if (data.authorized === false) { forceLogout(); return; } 
       
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data));
       renderDashboardData(data, isSilent);
+      if (!isSilent) hideLoader();
       
-      if (!isSilent) {
-         hideLoader();
-      }
-      
-      let roleStr = String(appState.role).toLowerCase();
-      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-      
+      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
       if (!isDir) {
           let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null });
           if(state && state.authorized !== false) {
-             if (!appState.currentAction || state.myActiveAction) {
-                appState.currentAction = state.myActiveAction || "";
-                saveMemory("currentAction", appState.currentAction);
-             }
-             renderTimeUI();
-             applyLimits(state);
+             appState.currentAction = state.myActiveAction || ""; saveMemory("currentAction", appState.currentAction);
+             renderTimeUI(); applyLimits(state);
           }
       }
     }
 
     function renderTradeInList() {
-        let container = document.getElementById("tradein-list");
-        if (!container) return;
-        container.innerHTML = tradeInModelsGlobal.map(m => {
-            let isSel = (selectedTradeInModel === m);
-            return `<div class="sc-item ${isSel ? 'selected' : ''}" onclick="selectTradeIn('${m}')">
-               <div style="font-size:13px;">${m}</div>
-            </div>`;
-        }).join("");
+        let container = document.getElementById("tradein-list"); if (!container) return;
+        container.innerHTML = tradeInModelsGlobal.map(m => { let isSel = (selectedTradeInModel === m); return `<div class="sc-item ${isSel ? 'selected' : ''}" onclick="selectTradeIn('${m}')"><div style="font-size:13px;">${m}</div></div>`; }).join("");
     }
 
-    function selectTradeIn(m) {
-        selectedTradeInModel = m;
-        renderTradeInList();
-    }
+    function selectTradeIn(m) { selectedTradeInModel = m; renderTradeInList(); }
 
     function renderDashboardData(data, isSilent = false) {
-      isUserPromoter = data.isPromoter;
-      appState.role = data.role || "Продавец";
-      appState.dept = data.info?.dept || "Цифра";
-      saveMemory("userRole", appState.role);
-      saveMemory("userDept", appState.dept);
+      isUserPromoter = data.isPromoter; appState.role = data.role || "Продавец"; appState.dept = data.info?.dept || "Цифра";
+      saveMemory("userRole", appState.role); saveMemory("userDept", appState.dept);
 
-      let roleStr = String(appState.role).toLowerCase();
-      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ");
-      let isSeller = !isUserPromoter && !isDir;
-      
-      let isCreateTabActive = !document.getElementById("content-create").classList.contains("hidden");
-      let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
+      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ"); let isSeller = !isUserPromoter && !isDir;
+      let isCreateTabActive = !document.getElementById("content-create").classList.contains("hidden"); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
 
       let dash = document.getElementById("info-dashboard");
       if (isUserPromoter) {
-          document.getElementById("nav-create-icon").classList.add("hidden");
-          document.getElementById("inbox-icon").classList.add("hidden");
-          document.getElementById("desc-break").innerText = "15 мин";
-          document.getElementById("desc-lunch").innerText = "1 час";
-          document.getElementById("desc-snack").innerText = "30 мин";
-          dash.classList.add("hidden");
+          document.getElementById("nav-create-icon").classList.add("hidden"); document.getElementById("inbox-icon").classList.add("hidden");
+          document.getElementById("desc-break").innerText = "15 мин"; document.getElementById("desc-lunch").innerText = "1 час"; document.getElementById("desc-snack").innerText = "30 мин"; dash.classList.add("hidden");
       } else {
-          document.getElementById("desc-break").innerText = "10 мин";
-          document.getElementById("desc-lunch").innerText = "40 мин (12:00-17:00)";
-          document.getElementById("desc-snack").innerText = "30 мин (16:00-20:00)";
+          document.getElementById("desc-break").innerText = "10 мин"; document.getElementById("desc-lunch").innerText = "40 мин"; document.getElementById("desc-snack").innerText = "30 мин";
           if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) {
-              if (dash.classList.contains("hidden")) {
-                  dash.classList.remove("hidden");
-                  dash.classList.remove("fade-in", "slide-up-fade");
-                  dash.classList.add("slide-down-fade");
-              }
-          } else {
-              dash.classList.add("hidden");
-          }
+              if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); }
+          } else { dash.classList.add("hidden"); }
       }
 
-      document.getElementById("pt-acc").innerText = data.info?.ptsAccrued ?? '-';
-      document.getElementById("pt-use").innerText = data.info?.ptsUsed ?? '-';
-        
-      const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0;
-      const ptRemEl = document.getElementById("pt-rem");
-      ptRemEl.innerText = data.info?.ptsLeft ?? '-';
-      ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
-        
+      document.getElementById("pt-acc").innerText = data.info?.ptsAccrued ?? '-'; document.getElementById("pt-use").innerText = data.info?.ptsUsed ?? '-';
+      const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; const ptRemEl = document.getElementById("pt-rem");
+      ptRemEl.innerText = data.info?.ptsLeft ?? '-'; ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
       document.getElementById("pt-fin").innerText = data.info?.ptsFine ?? '-';
         
-      let kpiValue = data.info?.kpiValue ?? data.baseKpi;
-      document.getElementById("kpi-val").innerText = kpiValue + '%';
-      setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val"));
-        
+      let kpiValue = data.info?.kpiValue ?? data.baseKpi; document.getElementById("kpi-val").innerText = kpiValue + '%'; setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val"));
       myKpiDetails = data.info?.kpiDetails || [];
 
-      document.getElementById("info-tabel").innerHTML = `
-          <div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div>
-          <div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div>
-          <div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div>
-          <div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div>
-          <div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>
-      `;
+      document.getElementById("info-tabel").innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
 
-      myReports = data.info?.reports || [];
-      myPointsHistory = data.info?.myPtsHistory || [];
-      myDisplayPointsHistory = myPointsHistory.filter(p => p.type !== "KPI"); 
-      myScHistory = myPointsHistory.filter(p => p.type === "Начисление");
-      myMoneyFinesHistory = myPointsHistory.filter(p => p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== "");
+      myReports = data.info?.reports || []; myPointsHistory = data.info?.myPtsHistory || []; myDisplayPointsHistory = myPointsHistory.filter(p => p.type !== "KPI"); myScHistory = myPointsHistory.filter(p => p.type === "Начисление"); myMoneyFinesHistory = myPointsHistory.filter(p => p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== "");
 
-      // Считаем СЦ|Brzy ТОЛЬКО за текущий месяц для баннера
-      let currentMonth = new Date().getMonth() + 1;
-      let currentYear = new Date().getFullYear();
-      let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
-      
+      let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
       let monthSc = myScHistory.filter(p => typeof p.date === 'string' && p.date.includes(monthSuffix));
-      let countSc = monthSc.filter(p => !p.source.toLowerCase().includes("trade-in")).length;
-      let countTrade = monthSc.filter(p => p.source.toLowerCase().includes("trade-in")).length;
-      
-      let scEl = document.getElementById("info-sc-val");
-      scEl.innerText = `${countSc} | ${countTrade}`;
-      
-      if (countSc + countTrade > 0) {
-          scEl.style.color = "#27ae60"; 
-      } else {
-          scEl.style.color = "#e74c3c"; 
-      }
+      let countSc = monthSc.filter(p => !p.source.toLowerCase().includes("trade-in")).length; let countTrade = monthSc.filter(p => p.source.toLowerCase().includes("trade-in")).length;
+      let scEl = document.getElementById("info-sc-val"); scEl.innerText = `${countSc} | ${countTrade}`;
+      if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; 
 
-      const uBadge = document.getElementById("user-badge");
-      const aBadge = document.getElementById("admin-badge");
-      const aDot = document.getElementById("admin-dot");
+      const uBadge = document.getElementById("user-badge"); const aBadge = document.getElementById("admin-badge"); const aDot = document.getElementById("admin-dot");
 
       if (isDir) {
-          document.getElementById("nav-time-icon").classList.add("hidden");
-          document.getElementById("content-time").classList.add("hidden");
-          document.getElementById("nav-create-icon").classList.add("hidden");
-          document.getElementById("inbox-icon").classList.add("hidden");
-          document.getElementById("nav-admin").classList.remove("hidden");
-          
+          document.getElementById("nav-time-icon").classList.add("hidden"); document.getElementById("content-time").classList.add("hidden"); document.getElementById("nav-create-icon").classList.add("hidden"); document.getElementById("inbox-icon").classList.add("hidden"); document.getElementById("nav-admin").classList.remove("hidden");
           let filteredAdminInbox = data.adminInbox ? data.adminInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
 
           if (filteredAdminInbox.length > 0) { 
-             aBadge.innerText = filteredAdminInbox.length; 
-             aBadge.classList.remove("hidden"); 
-             aDot.classList.remove("hidden");
-             
-             if (filteredAdminInbox.length > appState.lastInboxCount) {
-                 showPushNotification("Новая заявка!", "Появилась заявка в админке");
-             }
+             aBadge.innerText = filteredAdminInbox.length; aBadge.classList.remove("hidden"); aDot.classList.remove("hidden");
+             if (filteredAdminInbox.length > appState.lastInboxCount) showPushNotification("Новая заявка!", "Появилась заявка в админке");
              appState.lastInboxCount = filteredAdminInbox.length;
-             
-          } else {
-             aBadge.classList.add("hidden");
-             aDot.classList.add("hidden");
-             appState.lastInboxCount = 0;
-          }
+          } else { aBadge.classList.add("hidden"); aDot.classList.add("hidden"); appState.lastInboxCount = 0; }
 
-          document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>";
-          adminScItemsGlobal = data.adminScItems || [];
-          window.adminHistoryGlobal = data.adminHistory || [];
-          
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) {
-              switchTab('admin');
-              toggleAdminView('plan'); 
-          }
+          document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>"; adminScItemsGlobal = data.adminScItems || []; window.adminHistoryGlobal = data.adminHistory || [];
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('admin'); toggleAdminView('plan'); }
       } 
       else {
-          if (!isUserPromoter) {
-            document.getElementById("nav-time-icon").classList.remove("hidden");
-            document.getElementById("nav-create-icon").classList.remove("hidden");
-            document.getElementById("inbox-icon").classList.remove("hidden");
-          }
+          if (!isUserPromoter) { document.getElementById("nav-time-icon").classList.remove("hidden"); document.getElementById("nav-create-icon").classList.remove("hidden"); document.getElementById("inbox-icon").classList.remove("hidden"); }
           document.getElementById("nav-admin").classList.add("hidden");
-          
           let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
 
           if (filteredUserInbox.length > 0) { 
-              uBadge.innerText = filteredUserInbox.length; 
-              uBadge.classList.remove("hidden"); 
-              
-              if (filteredUserInbox.length > appState.lastInboxCount) {
-                 showPushNotification("Новый запрос!", "Коллега хочет поменяться сменами");
-              }
+              uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); 
+              if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Новый запрос!", "Коллега хочет поменяться сменами");
               appState.lastInboxCount = filteredUserInbox.length;
-          } 
-          else { uBadge.classList.add("hidden"); appState.lastInboxCount = 0;}
+          } else { uBadge.classList.add("hidden"); appState.lastInboxCount = 0;}
           
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) {
-              switchTab('time');
-          }
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) switchTab('time');
       }
         
       let uInbox = data.userInbox ? data.userInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
-      document.getElementById("inbox-list").innerHTML = uInbox.map(r => `
-          <div class="req-item" id="req-${r.id}">
-            <div class="req-title">Обмен сменами</div>
-            <div class="req-desc">${r.authorName} просит поменяться.<br><b>${r.details}</b></div>
-            <div class="grid-btns">
-              <button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button>
-              <button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button>
-            </div>
-          </div>
-      `).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
+      document.getElementById("inbox-list").innerHTML = uInbox.map(r => `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName} просит поменяться.<br><b>${r.details}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
 
       let aInbox = data.adminInbox ? data.adminInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
       document.getElementById("admin-list").innerHTML = aInbox.map(r => {
           let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены";
-          let btns = isViewOnly 
-            ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>`
-            : `<div class="grid-btns">
-                 <button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button>
-                 <button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button>
-               </div>`;
+          let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`;
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
           return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}</div>${btns}</div>`
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Все заявки обработаны</p>";
@@ -1315,811 +836,269 @@
           let stText = r.status === "approved" ? "Одобрен" : (r.status.includes("rejected") ? "Отклонен" : "Просмотрен");
           if(r.status === "rejected_by_user") stText = "Отклонен сменщиком";
           let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details;
-          
-          return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;">
-            <div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div>
-            <div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div>
-          </div>`
+          return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);"><b>От:</b> ${r.adminDisplayName}<br><b>Суть:</b> ${desc}<br><b style="color:${stColor}">Статус: ${stText}</b></div></div>`
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
 
-      globalSellers = data.sellers || [];
-      globalScItems = data.scItems || [];
-      allEmployeesData = data.adminEmployees || [];   // Сохраняем сотрудников!
-      tradeInModelsGlobal = data.tradeInModels || []; // Сохраняем Trade-In!
-
-      if (isDir) {
-          renderAdminEmps(currentEmpDept, null);
-      }
+      globalSellers = data.sellers || []; globalScItems = data.scItems || []; allEmployeesData = data.adminEmployees || []; tradeInModelsGlobal = data.tradeInModels || [];
+      if (isDir) renderAdminEmps(currentEmpDept, null);
     }
 
     function generateHorizontalGrid(dataObj) {
       if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:8px;text-align:center;color:gray;font-size:12px;'>Нет данных</div>";
       let gridCols = `repeat(${dataObj.headers.length}, 1fr)`;
-      
-      let html = `<div class="grid-details-container inner-block">`;
-      html += `<div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div>`;
-      html += `<div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
-      
+      let html = `<div class="grid-details-container inner-block"><div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div><div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`;
       dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; });
       dataObj.values.forEach(v => {
         let displayVal = '-';
-        if (v === '✔') displayVal = '✅';
-        else if (v === '✖') displayVal = '❌';
-        else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>';
-        else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>';
-        else displayVal = v || '-';
-        
-        // ИСПРАВЛЕНИЕ: Добавлены min-height: 28px и width: 100% для жесткой фиксации квадратов
+        if (v === '✔') displayVal = '✅'; else if (v === '✖') displayVal = '❌'; else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>'; else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>'; else displayVal = v || '-';
         html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; min-height:28px; width:100%; box-sizing:border-box;">${displayVal}</div>`;
       });
-      html += `</div></div>`;
-      return html;
+      html += `</div></div>`; return html;
     }
 
     function renderHistoryItem(i, isCompact = false) {
-      let valStr = String(i.val).replace('.', ',');
-      let col = String(i.type).toLowerCase().includes('начисл') || valStr.includes('+') ? 'detail-plus' : 'detail-minus';
-      if(String(i.type).toLowerCase().includes('штраф')) col = 'detail-fine';
-      
-      let typeColor = "#95a5a6";
-      let typeDisplay = i.type;
-      let srcColor = getSourceColor(i.source);
-      
-      if (String(i.type).toLowerCase() === "начисление") typeColor = "#27ae60";
-      else if (String(i.type).toLowerCase().includes('использ')) typeColor = "#f39c12";
-      else if (String(i.type).toLowerCase().includes('штраф')) typeColor = "#e74c3c";
-
-      let inner = `
-          <div>
-              <b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br>
-              <span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
-              <b style="color:${srcColor}; font-size:10px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span>
-          </div>
-          <span class="${col}">${valStr}</span>
-      `;
-      
-      if (isCompact) {
-          return `<div class="req-item" style="border-left-color: ${typeColor}; border-left-width: 2px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`;
-      }
+      let valStr = String(i.val).replace('.', ','); let col = String(i.type).toLowerCase().includes('начисл') || valStr.includes('+') ? 'detail-plus' : 'detail-minus'; if(String(i.type).toLowerCase().includes('штраф')) col = 'detail-fine';
+      let typeColor = "#95a5a6"; let typeDisplay = i.type; let srcColor = getSourceColor(i.source);
+      if (String(i.type).toLowerCase() === "начисление") typeColor = "#27ae60"; else if (String(i.type).toLowerCase().includes('использ')) typeColor = "#f39c12"; else if (String(i.type).toLowerCase().includes('штраф')) typeColor = "#e74c3c";
+      let inner = `<div><b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><b style="color:${srcColor}; font-size:10px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span></div><span class="${col}">${valStr}</span>`;
+      if (isCompact) return `<div class="req-item" style="border-left-color: ${typeColor}; border-left-width: 2px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`;
       return `<div class="detail-item">${inner}</div>`;
     }
 
     function renderMoneyFineItem(i) {
-      let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0";
-      let formatted = formatNumberWithSpaces(moneyVal);
-      return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-              <b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br>
-              <span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br>
-              <span style="color:gray;font-size:10px;">${i.date}</span>
-          </div>
-          <span class="detail-fine">${formatted} ₸</span>
-      </div>`;
+      let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0"; let formatted = formatNumberWithSpaces(moneyVal);
+      return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div><b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><span style="color:gray;font-size:10px;">${i.date}</span></div><span class="detail-fine">${formatted} ₸</span></div>`;
     }
 
     function openDetails(type) {
-      switchTab('details');
-      document.getElementById("btn-details-back").onclick = () => switchTab('create');
-      document.getElementById("details-kpi-circle-container").innerHTML = ""; 
-      
+      switchTab('details'); document.getElementById("btn-details-back").onclick = () => switchTab('create'); document.getElementById("details-kpi-circle-container").innerHTML = ""; 
       let listHtml = "";
       
       if (type === 'sc') {
-        document.getElementById("details-title").innerText = "Детали СЦ | BRZY";
-        listHtml = "<div class='card' style='padding:0;'>";
-        if (myScHistory.length > 0) {
-           listHtml += myScHistory.map((i, idx) => {
-              let srcColor = getSourceColor(i.source);
-              return `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px;">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:10px; display:inline-block; margin-top:3px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span></div></div>`;
-           }).join("");
-        } else {
-           listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
-        }
+        document.getElementById("details-title").innerText = "Детали СЦ | BRZY"; listHtml = "<div class='card' style='padding:0;'>";
+        if (myScHistory.length > 0) listHtml += myScHistory.map((i, idx) => { let srcColor = getSourceColor(i.source); return `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px;">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:10px; display:inline-block; margin-top:3px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span></div></div>`; }).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
         listHtml += "</div>";
       } 
       else if (type === 'points') {
-        document.getElementById("details-title").innerText = "История Баллов";
-        listHtml = "<div class='card' style='padding:0;'>";
-        if (myDisplayPointsHistory.length > 0) {
-           listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join("");
-        } else {
-           listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
-        }
+        document.getElementById("details-title").innerText = "История Баллов"; listHtml = "<div class='card' style='padding:0;'>";
+        if (myDisplayPointsHistory.length > 0) listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>";
         listHtml += "</div>";
       } 
       else if (type === 'kpi') {
-        document.getElementById("details-title").innerText = "Детали КФ. ЭФФ.";
-        listHtml = "<div class='card' style='padding:0;'>";
+        document.getElementById("details-title").innerText = "Детали КФ. ЭФФ."; listHtml = "<div class='card' style='padding:0;'>";
         myKpiDetails.forEach(k => {
-           let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val');
-           let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`;
-           let srcColor = getSourceColor(k.source);
-           
-           let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim();
-           if (!dispName) dispName = k.name;
-           if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
-           if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
+           let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; let srcColor = getSourceColor(k.source);
+           let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); if (!dispName) dispName = k.name; if (k.source === "База" || k.name === "Ошибки") dispName = k.name; if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
            let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : "";
-           
-           listHtml += `<div class="detail-item">
-              <div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div>
-              <span class="${col}">${valStr}</span>
-           </div>`;
+           listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`;
         });
         listHtml += "</div>";
       }
-      else if (type === 'report') {
-        document.getElementById("details-title").innerText = "Мои отчеты";
-        listHtml = "<div style='padding-top:5px;'>";
-        listHtml += myReports.map(generateHorizontalGrid).join('');
-        listHtml += "</div>";
-      }
-      else if (type === 'tabel') {
-        document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab);
-        document.getElementById("details-title").innerText = "Денежные штрафы";
-        listHtml = "<div style='padding-top:5px;'>";
-        if (myMoneyFinesHistory.length > 0) {
-           listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join("");
-        } else {
-           listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>";
-        }
-        listHtml += "</div>";
-      }
+      else if (type === 'report') { document.getElementById("details-title").innerText = "Мои отчеты"; listHtml = "<div style='padding-top:5px;'>"; listHtml += myReports.map(generateHorizontalGrid).join(''); listHtml += "</div>"; }
+      else if (type === 'tabel') { document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); document.getElementById("details-title").innerText = "Денежные штрафы"; listHtml = "<div style='padding-top:5px;'>"; if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; listHtml += "</div>"; }
       document.getElementById("details-list").innerHTML = listHtml;
     }
 
     function openEmpKpiDetails(iin) {
-      const emp = allEmployeesData.find(e => String(e.iin) === String(iin));
-      if(!emp) return;
-
-      document.getElementById("details-title").innerText = "КФ. ЭФФ: " + emp.name;
-      document.getElementById("details-kpi-circle-container").innerHTML = ""; 
-      document.getElementById("btn-details-back").onclick = () => openEmpDetails(iin); 
-
+      const emp = allEmployeesData.find(e => String(e.iin) === String(iin)); if(!emp) return;
+      document.getElementById("details-title").innerText = "КФ. ЭФФ: " + emp.name; document.getElementById("details-kpi-circle-container").innerHTML = ""; document.getElementById("btn-details-back").onclick = () => openEmpDetails(iin); 
       let listHtml = "<div class='card' style='padding:0;'>";
       emp.kpiDetails.forEach(k => {
-         let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val');
-         let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`;
-         let srcColor = getSourceColor(k.source);
-
-         let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim();
-         if (!dispName) dispName = k.name;
-         if (k.source === "База" || k.name === "Ошибки") dispName = k.name;
-         if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
+         let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; let srcColor = getSourceColor(k.source);
+         let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); if (!dispName) dispName = k.name; if (k.source === "База" || k.name === "Ошибки") dispName = k.name; if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; }
          let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : "";
-
-         listHtml += `<div class="detail-item">
-            <div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div>
-            <span class="${col}">${valStr}</span>
-         </div>`;
+         listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`;
       });
-      listHtml += "</div>";
-
-      document.getElementById("details-list").innerHTML = listHtml;
+      listHtml += "</div>"; document.getElementById("details-list").innerHTML = listHtml;
     }
 
     function openEmpDetails(iin) {
-      const emp = allEmployeesData.find(e => String(e.iin) === String(iin));
-      if(!emp) return;
+      const emp = allEmployeesData.find(e => String(e.iin) === String(iin)); if(!emp) return;
+      switchTab('details'); document.getElementById("btn-details-back").onclick = () => switchTab('admin'); document.getElementById("details-title").innerText = emp.name;
       
-      switchTab('details');
-      document.getElementById("btn-details-back").onclick = () => switchTab('admin');
-      document.getElementById("details-title").innerText = emp.name;
-      
-      document.getElementById("details-kpi-circle-container").innerHTML = `
-        <div class="circle-box" style="transform: scale(0.65); margin: -20px -10px; cursor: pointer;" onclick="openEmpKpiDetails('${emp.iin}')">
-          <div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);">
-            <div class="kpi-inner" style="width: 88%; height: 88%;">
-              <span style="font-size:20px; font-weight:normal; color:${setKpiColor(emp.kpi, null, null)};">${emp.kpi}%</span>
-            </div>
-          </div>
-        </div>
-      `;
+      document.getElementById("details-kpi-circle-container").innerHTML = `<div class="circle-box" style="transform: scale(0.65); margin: -20px -10px; cursor: pointer;" onclick="openEmpKpiDetails('${emp.iin}')"><div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);"><div class="kpi-inner" style="width: 88%; height: 88%;"><span style="font-size:20px; font-weight:normal; color:${setKpiColor(emp.kpi, null, null)};">${emp.kpi}%</span></div></div></div>`;
 
-      let listHtml = "<div style='padding-top:5px;'>";
-      listHtml += emp.reports.map(generateHorizontalGrid).join('');
+      let listHtml = "<div style='padding-top:5px;'>"; listHtml += emp.reports.map(generateHorizontalGrid).join('');
+      listHtml += `<div class="grid-details-container inner-block"><div class="grid-details-title">Баллы сотрудника</div><div style="display:flex; justify-content:space-around; text-align:center;"><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Начислено</div><b style="font-size:15px;">${emp.pts.acc}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Использ.</div><b style="font-size:15px;">${emp.pts.use}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Остаток</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штраф</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin}</b></div></div></div>`;
+      listHtml += `<div class="grid-details-container inner-block"><button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:8px; font-size:12px; width:100%; margin:0;">Выписать штраф</button><div id="fine-form-${emp.iin}" class="hidden" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);"><input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:36px; margin-top:0; margin-bottom:8px; font-size:13px; background:var(--card-bg);"><div style="display:flex; gap:8px; margin-bottom:8px;"><input type="number" id="fine-amount-${emp.iin}" placeholder="0 (Баллы)" value="" style="height:36px; margin:0; flex:1; font-size:14px; background:var(--card-bg);"><input type="number" id="fine-money-${emp.iin}" placeholder="0 (Сумма ₸)" value="" style="height:36px; margin:0; flex:1; font-size:14px; background:var(--card-bg);"></div><button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Подтвердить</button></div></div>`;
 
-      listHtml += `
-        <div class="grid-details-container inner-block">
-            <div class="grid-details-title">Баллы сотрудника</div>
-            <div style="display:flex; justify-content:space-around; text-align:center;">
-               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Начислено</div><b style="font-size:15px;">${emp.pts.acc}</b></div>
-               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Использ.</div><b style="font-size:15px;">${emp.pts.use}</b></div>
-               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Остаток</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem}</b></div>
-               <div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штраф</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin}</b></div>
-            </div>
-        </div>
-      `;
-
-      listHtml += `
-        <div class="grid-details-container inner-block">
-          <button class="btn-red" onclick="document.getElementById('fine-form-${emp.iin}').classList.toggle('hidden')" style="padding:8px; font-size:12px; width:100%; margin:0;">Выписать штраф</button>
-          <div id="fine-form-${emp.iin}" class="hidden" style="margin-top:8px; padding:10px; border:1px solid #e74c3c; border-radius:12px; background:rgba(231, 76, 60, 0.05); color:var(--text-color);">
-             <input type="text" id="fine-reason-${emp.iin}" placeholder="Причина штрафа..." style="height:36px; margin-top:0; margin-bottom:8px; font-size:13px; background:var(--card-bg);">
-             <div style="display:flex; gap:8px; margin-bottom:8px;">
-                <input type="number" id="fine-amount-${emp.iin}" placeholder="0 (Баллы)" value="" style="height:36px; margin:0; flex:1; font-size:14px; background:var(--card-bg);">
-                <input type="number" id="fine-money-${emp.iin}" placeholder="0 (Сумма ₸)" value="" style="height:36px; margin:0; flex:1; font-size:14px; background:var(--card-bg);">
-             </div>
-             <button class="btn-green" onclick="executeFine('${emp.iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Подтвердить</button>
-          </div>
-        </div>
-      `;
-
-      let finesHtml = "";
-      let pointsHtml = "";
-
+      let finesHtml = ""; let pointsHtml = "";
       emp.ptsHistory.filter(p => p.type !== "KPI").forEach(p => {
-          let moneyNum = parseFloat(String(p.moneyFine).replace(',', '.')) || 0;
-          let ptsNum = parseFloat(String(p.val).replace(',', '.')) || 0;
-
-          if (p.type === "Штраф") {
-              if (moneyNum !== 0) finesHtml += renderMoneyFineItem({...p, moneyFine: moneyNum});
-              if (ptsNum !== 0) pointsHtml += renderHistoryItem({...p, val: ptsNum}, true);
-          } else {
-              if (ptsNum !== 0) pointsHtml += renderHistoryItem({...p, val: ptsNum}, true);
-          }
+          let moneyNum = parseFloat(String(p.moneyFine).replace(',', '.')) || 0; let ptsNum = parseFloat(String(p.val).replace(',', '.')) || 0;
+          if (p.type === "Штраф") { if (moneyNum !== 0) finesHtml += renderMoneyFineItem({...p, moneyFine: moneyNum}); if (ptsNum !== 0) pointsHtml += renderHistoryItem({...p, val: ptsNum}, true); } 
+          else { if (ptsNum !== 0) pointsHtml += renderHistoryItem({...p, val: ptsNum}, true); }
       });
-
       listHtml += `<div class="grid-details-container inner-block" style="overflow:hidden;">`;
-      if (finesHtml !== "") {
-          listHtml += `<div class="grid-details-title" style="color:#e74c3c;">Штрафы (Сумма)</div>`;
-          listHtml += finesHtml;
-      }
-      
+      if (finesHtml !== "") { listHtml += `<div class="grid-details-title" style="color:#e74c3c;">Штрафы (Сумма)</div>`; listHtml += finesHtml; }
       listHtml += `<div class="grid-details-title">История баллов</div>`;
-      if(pointsHtml !== "") {
-         listHtml += pointsHtml;
-      } else {
-         listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:12px;">История баллов пуста</div>`;
-      }
-      listHtml += `</div>`;
-      listHtml += "</div>";
-      document.getElementById("details-list").innerHTML = listHtml;
+      if(pointsHtml !== "") listHtml += pointsHtml; else listHtml += `<div style="padding:15px; text-align:center; color:gray; font-size:12px;">История баллов пуста</div>`;
+      listHtml += `</div></div>`; document.getElementById("details-list").innerHTML = listHtml;
       
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller) scroller.scrollTop = 0;
+      let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
     async function executeFine(iin, name) {
-       let reason = document.getElementById(`fine-reason-${iin}`).value;
-       let amount = document.getElementById(`fine-amount-${iin}`).value || "0";
-       let moneyAmount = document.getElementById(`fine-money-${iin}`).value || "0";
-       
-       if (!reason) return showToast("Укажите причину штрафа!", true);
-       if (parseFloat(amount) >= 0 && parseFloat(moneyAmount) >= 0) return showToast("Укажите штраф (баллы или сумма) меньше 0!", true);
-       
-       vibrate(50);
-       showToast("Отправка...", false, 9999);
-       
+       let reason = document.getElementById(`fine-reason-${iin}`).value; let amount = document.getElementById(`fine-amount-${iin}`).value || "0"; let moneyAmount = document.getElementById(`fine-money-${iin}`).value || "0";
+       if (!reason) return showToast("Укажите причину штрафа!", true); if (parseFloat(amount) >= 0 && parseFloat(moneyAmount) >= 0) return showToast("Укажите штраф (баллы или сумма) меньше 0!", true);
+       vibrate(50); showToast("Отправка...", false, 9999);
        let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount, moneyAmount: moneyAmount });
-       
-       if (res.success) { showToast("Штраф выписан!"); loadDashboard(true); closeDetails(); }
-       else showToast(res.error, true);
+       if (res.success) { showToast("Штраф выписан!"); loadDashboard(true); closeDetails(); } else showToast(res.error, true);
     }
 
-    function closeDetails() {
-      switchTab('admin'); 
-    }
+    function closeDetails() { switchTab('admin'); }
 
     function toggleAdminView(view) {
-      document.getElementById("admin-list").classList.add("hidden");
-      document.getElementById("admin-history-list").classList.add("hidden");
-      document.getElementById("admin-emp-container").classList.add("hidden");
-      document.getElementById("admin-plan-list").classList.add("hidden");
-      document.getElementById("admin-sc-list").classList.add("hidden");
-      
-      document.querySelectorAll('.admin-flt').forEach(b => {
-          if(b.id && !b.id.startsWith("sc-tab") && !b.id.startsWith("flt-emp") && !b.id.startsWith("flt-")) {
-              b.classList.remove('active-flt');
-          }
-      });
+      document.getElementById("admin-list").classList.add("hidden"); document.getElementById("admin-history-list").classList.add("hidden"); document.getElementById("admin-emp-container").classList.add("hidden"); document.getElementById("admin-plan-list").classList.add("hidden"); document.getElementById("admin-sc-list").classList.add("hidden");
+      document.querySelectorAll('.admin-flt').forEach(b => { if(b.id && !b.id.startsWith("sc-tab") && !b.id.startsWith("flt-emp") && !b.id.startsWith("flt-")) b.classList.remove('active-flt'); });
 
-      if(view === 'pending') {
-        document.getElementById("admin-list").classList.remove("hidden");
-        document.getElementById("btn-adm-pend").classList.add("active-flt");
-      } else if(view === 'history') {
-        document.getElementById("admin-history-list").classList.remove("hidden");
-        document.getElementById("btn-adm-hist").classList.add("active-flt");
-      } else if(view === 'plan') {
-        document.getElementById("admin-plan-list").classList.remove("hidden");
-        document.getElementById("btn-adm-plan").classList.add("active-flt");
-      } else if(view === 'sc') {
-        document.getElementById("admin-sc-list").classList.remove("hidden");
-        document.getElementById("btn-adm-sc").classList.add("active-flt");
-        renderAdminScItems(currentAdminScDept, document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`)); 
-      } else {
-        document.getElementById("admin-emp-container").classList.remove("hidden");
-        document.getElementById("btn-adm-emp").classList.add("active-flt");
-        renderAdminEmps(currentEmpDept, document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`));
-      }
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller) scroller.scrollTop = 0;
+      if(view === 'pending') { document.getElementById("admin-list").classList.remove("hidden"); document.getElementById("btn-adm-pend").classList.add("active-flt"); } 
+      else if(view === 'history') { document.getElementById("admin-history-list").classList.remove("hidden"); document.getElementById("btn-adm-hist").classList.add("active-flt"); } 
+      else if(view === 'plan') { document.getElementById("admin-plan-list").classList.remove("hidden"); document.getElementById("btn-adm-plan").classList.add("active-flt"); } 
+      else if(view === 'sc') { document.getElementById("admin-sc-list").classList.remove("hidden"); document.getElementById("btn-adm-sc").classList.add("active-flt"); renderAdminScItems(currentAdminScDept, document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`)); } 
+      else { document.getElementById("admin-emp-container").classList.remove("hidden"); document.getElementById("btn-adm-emp").classList.add("active-flt"); renderAdminEmps(currentEmpDept, document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`)); }
+      let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
     function renderAdminEmps(dept, btnElement) {
        currentEmpDept = dept;
-       if (btnElement) {
-           document.getElementById('flt-emp-cifra').classList.remove('active-flt');
-           document.getElementById('flt-emp-mbt').classList.remove('active-flt');
-           document.getElementById('flt-emp-kbt').classList.remove('active-flt');
-           btnElement.classList.add('active-flt');
-       }
-
-       let container = document.getElementById("admin-emp-list");
-       let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase()));
-       
-       // Определяем текущий месяц и год
-       let currentMonth = new Date().getMonth() + 1;
-       let currentYear = new Date().getFullYear();
-       let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
+       if (btnElement) { document.getElementById('flt-emp-cifra').classList.remove('active-flt'); document.getElementById('flt-emp-mbt').classList.remove('active-flt'); document.getElementById('flt-emp-kbt').classList.remove('active-flt'); btnElement.classList.add('active-flt'); }
+       let container = document.getElementById("admin-emp-list"); let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase()));
+       let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
 
        container.innerHTML = filtered.map(e => {
-            // Вычисляем СЦ и Trade-In только за текущий месяц из истории
             let monthScHist = e.ptsHistory.filter(p => p.type === "Начисление" && typeof p.date === 'string' && p.date.includes(monthSuffix));
-            let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length;
-            let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length;
-
-            return `
-            <div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                 <div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
-                    <span>${e.name}</span>
-                 </div>
-              </div>
-              <div class="inner-block" style="font-size:10px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 2px; height: 32px; display:flex; align-items:center;">
-                 ${e.tabelStr}
-              </div>
-              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; margin-bottom:2px;">
-                <span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:gray; font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span>
-                <span>Ошибки по отчетам: <b>${e.reportErrors}</b></span>
-              </div>
-              <div style="display:flex; justify-content:flex-end; font-size:11px; align-items:center;">
-                <span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span>
-              </div>
-            </div>
-          `;
+            let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length; let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length;
+            return `<div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;"><span>${e.name}</span></div></div><div class="inner-block" style="font-size:10px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 2px; height: 32px; display:flex; align-items:center;">${e.tabelStr}</div><div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; margin-bottom:2px;"><span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:gray; font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span><span>Ошибки по отчетам: <b>${e.reportErrors}</b></span></div><div style="display:flex; justify-content:flex-end; font-size:11px; align-items:center;"><span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span></div></div>`;
        }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
     }
     
-// Глобальная переменная для отслеживания выбранной подвкладки
     let currentAdminScTabType = 'active'; 
-
-    // Функция переключения подвкладок
-    function switchScAdminTab(tabType) {
-        currentAdminScTabType = tabType;
-        // Перерисовываем список, используя текущий сохраненный отдел, 
-        // передаем null вместо кнопки, чтобы не сбить верхние фильтры (Цифра, МБТ...)
-        renderAdminScItems(currentAdminScDept, null);
-    }
+    function switchScAdminTab(tabType) { currentAdminScTabType = tabType; renderAdminScItems(currentAdminScDept, null); }
 
     function renderAdminScItems(dept, btnElement) {
-       // Запоминаем текущий отдел (если передали пустой - берем из памяти)
-       dept = dept || currentAdminScDept;
-       currentAdminScDept = dept;
-       
-       // Логика подсветки верхних кнопок отделов
-       if (btnElement) {
-           document.getElementById('flt-cifra').classList.remove('active-flt');
-           document.getElementById('flt-mbt').classList.remove('active-flt');
-           document.getElementById('flt-kbt').classList.remove('active-flt');
-           document.getElementById('flt-focus').classList.remove('active-flt');
-           btnElement.classList.add('active-flt');
-       }
+       dept = dept || currentAdminScDept; currentAdminScDept = dept;
+       if (btnElement) { document.getElementById('flt-cifra').classList.remove('active-flt'); document.getElementById('flt-mbt').classList.remove('active-flt'); document.getElementById('flt-kbt').classList.remove('active-flt'); document.getElementById('flt-focus').classList.remove('active-flt'); btnElement.classList.add('active-flt'); }
 
-       let container = document.getElementById("admin-sc-container");
-       let searchInput = document.getElementById("admin-sc-search");
-       let searchQ = searchInput ? searchInput.value.toLowerCase() : "";
-       container.innerHTML = "";
-
-       // ДОБАВЛЯЕМ КНОПКИ "В ПРОДАЖЕ / ПРОДАННЫЕ"
-       let tabsHtml = `
-           <div style="display: flex; gap: 8px; margin-bottom: 12px; padding: 0 4px;">
-               <button class="filter-btn ${currentAdminScTabType === 'active' ? 'active' : ''}" 
-                       style="flex:1; font-size:11px; padding:6px;" 
-                       onclick="switchScAdminTab('active')">В продаже</button>
-               <button class="filter-btn ${currentAdminScTabType === 'sold' ? 'active' : ''}" 
-                       style="flex:1; font-size:11px; padding:6px;" 
-                       onclick="switchScAdminTab('sold')">Проданные</button>
-           </div>
-       `;
+       let container = document.getElementById("admin-sc-container"); let searchInput = document.getElementById("admin-sc-search"); let searchQ = searchInput ? searchInput.value.toLowerCase() : ""; container.innerHTML = "";
+       let tabsHtml = `<div style="display: flex; gap: 8px; margin-bottom: 12px; padding: 0 4px;"><button class="filter-btn ${currentAdminScTabType === 'active' ? 'active' : ''}" style="flex:1; font-size:11px; padding:6px;" onclick="switchScAdminTab('active')">В продаже</button><button class="filter-btn ${currentAdminScTabType === 'sold' ? 'active' : ''}" style="flex:1; font-size:11px; padding:6px;" onclick="switchScAdminTab('sold')">Проданные</button></div>`;
        container.innerHTML = tabsHtml;
 
-       // ---------------------------------------------------------
-       // ВЕТКА 1: ТОВАРЫ В ПРОДАЖЕ (Твой оригинальный код)
-       // ---------------------------------------------------------
        if (currentAdminScTabType === 'active') {
            let filtered = adminScItemsGlobal.filter(i => (dept === "Фокус" ? i.type === "Фокус" : (i.dept === dept && i.type === "СЦ")));
            if (searchQ) filtered = filtered.filter(i => i.name.toLowerCase().includes(searchQ));
-           
-           if (filtered.length === 0) {
-               container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Пусто</p>";
-               return;
-           }
+           if (filtered.length === 0) { container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Пусто</p>"; return; }
 
            if (dept === "Фокус") {
-               let groups = {"Цифра": [], "МБТ": [], "КБТ": []};
-               filtered.forEach(i => { if(groups[i.dept]) groups[i.dept].push(i); });
-               
+               let groups = {"Цифра": [], "МБТ": [], "КБТ": []}; filtered.forEach(i => { if(groups[i.dept]) groups[i.dept].push(i); });
                for (const [dName, items] of Object.entries(groups)) {
                    if (items.length === 0) continue;
                    let headerText = items[0].focusHeader || `${dName} Фокус`;
                    let html = `<div class="inner-block" style="margin-bottom:8px; padding:8px;"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`;
-                   
-                   items.forEach((i, idx) => {
-                      let ptNoun = formatPointsNoun(i.pts);
-                      html += `
-                        <div style="padding:6px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;">
-                           <div>
-                             <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
-                             <div style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div>
-                           </div>
-                        </div>`;
-                   });
-                   html += `</div>`;
-                   container.innerHTML += html;
+                   items.forEach((i, idx) => { let ptNoun = formatPointsNoun(i.pts); html += `<div style="padding:6px 0; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between;"><div><div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div><div style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div></div></div>`; });
+                   html += `</div>`; container.innerHTML += html;
                }
            } else {
                filtered.forEach((i, idx) => {
                    let docBtn = i.docUrl ? `<a href="${i.docUrl}" target="_blank" style="text-decoration:none; background:var(--inner-bg); font-size:18px; padding:4px 8px; border-radius:8px; display:inline-block; transition:0.6s;">📄</a>` : '';
-                   let div = document.createElement("div");
-                   div.style = "padding:8px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
-                   div.innerHTML = `
-                     <div>
-                        <div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div>
-                        <div style="font-size:10px; color:#e67e22; font-weight:bold;">
-                           СЦ
-                           ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}
-                        </div>
-                     </div>
-                     <div>${docBtn}</div>
-                   `;
+                   let div = document.createElement("div"); div.style = "padding:8px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;";
+                   div.innerHTML = `<div><div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div><div style="font-size:10px; color:#e67e22; font-weight:bold;">СЦ${i.discount ? `<span style="color:#e74c3c; margin-left:10px;">-${i.discount.replace(/%/g, '% ')}</span>` : ''}</div></div><div>${docBtn}</div>`;
                    container.appendChild(div);
                });
            }
-       } 
-       // ---------------------------------------------------------
-       // ВЕТКА 2: ПРОДАННЫЕ ТОВАРЫ (Исправленная логика)
-       // ---------------------------------------------------------
-       else {
-           // ВАЖНО: В зависимости от того, как у тебя называется глобальная переменная 
-           // с историей заявок (allRequests или adminHistoryGlobal), берем нужную:
-           // Берем глобальную переменную, которую мы только что создали
-           let historyArray = window.adminHistoryGlobal || [];
+       } else {
+           let historyArray = window.adminHistoryGlobal || []; let sold = historyArray.filter(r => r.status === "approved" && r.type === "Продажа СЦ/Фокус");
+           if (dept === "Фокус") { sold = sold.filter(r => r.details.toLowerCase().includes("фокус")); } 
+           else { sold = sold.filter(r => { try { let metaObj = JSON.parse(r.meta); return metaObj.dept === dept && !r.details.toLowerCase().includes("фокус"); } catch(e) { return false; } }); }
 
-           // Берем все одобренные заявки по СЦ/Фокус
-           let sold = historyArray.filter(r => 
-               r.status === "approved" && 
-               r.type === "Продажа СЦ/Фокус"
-           );
+           if (searchQ) sold = sold.filter(r => r.details.toLowerCase().includes(searchQ) || r.authorName.toLowerCase().includes(searchQ));
+           if (sold.length === 0) { container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Нет проданных товаров</p>"; return; }
 
-           // Распределяем по выбранной вкладке (Цифра, МБТ, КБТ или Фокус)
-           if (dept === "Фокус") {
-               sold = sold.filter(r => r.details.toLowerCase().includes("фокус"));
-           } else {
-               sold = sold.filter(r => {
-                   try { 
-                       // ИСПРАВЛЕНО: используем r.meta вместо r.metadata
-                       let metaObj = JSON.parse(r.meta);
-                       // Для СЦ проверяем отдел и исключаем Фокус
-                       return metaObj.dept === dept && !r.details.toLowerCase().includes("фокус");
-                   } catch(e) { return false; }
-               });
-           }
-
-           // Работа поиска (ИСПРАВЛЕНО: r.authorName вместо r.userName)
-           if (searchQ) {
-               sold = sold.filter(r => r.details.toLowerCase().includes(searchQ) || r.authorName.toLowerCase().includes(searchQ));
-           }
-
-           if (sold.length === 0) {
-               container.innerHTML += "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Нет проданных товаров</p>";
-               return;
-           }
-           // Рисуем карточки проданных
            sold.forEach(r => {
-               const isFocus = r.details.toLowerCase().includes("фокус");
-               const tagColor = isFocus ? "#f39c12" : "#3390ec";
-               
-               // Пытаемся достать данные: сначала из столбцов K/L, если пусто - из JSON в J
+               const isFocus = r.details.toLowerCase().includes("фокус"); const tagColor = isFocus ? "#f39c12" : "#3390ec";
                let metaObj = {}; try { metaObj = JSON.parse(r.meta); } catch(e){}
-               let displayAct = r.actUrl || metaObj.docUrl || "";
-               let displayDisc = r.discount || metaObj.discount || "0%";
-
-               let div = document.createElement("div");
-               div.className = "inner-block";
-               div.style = `padding:8px; margin-bottom:8px; border-left: 3px solid ${tagColor};`;
-               div.innerHTML = `
-                   <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                       <span style="font-size:9px; font-weight:bold; color:${tagColor};">${isFocus ? 'ФОКУС' : 'СЦ'}</span>
-                       <span style="font-size:9px; color:gray;">${r.date}</span>
-                   </div>
-                   <div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div>
-                   <div style="font-size:11px; line-height:1.4;">
-                       👤 <span style="color:gray;">Продавец:</span> <b>${r.authorName}</b><br>
-                       ${displayDisc !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${displayDisc}</b><br>` : ''}
-                       ${displayAct ? `📄 <a href="${displayAct}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}
-                   </div>
-               `;
+               let displayAct = r.actUrl || metaObj.docUrl || ""; let displayDisc = r.discount || metaObj.discount || "0%";
+               let div = document.createElement("div"); div.className = "inner-block"; div.style = `padding:8px; margin-bottom:8px; border-left: 3px solid ${tagColor};`;
+               div.innerHTML = `<div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span style="font-size:9px; font-weight:bold; color:${tagColor};">${isFocus ? 'ФОКУС' : 'СЦ'}</span><span style="font-size:9px; color:gray;">${r.date}</span></div><div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div><div style="font-size:11px; line-height:1.4;">👤 <span style="color:gray;">Продавец:</span> <b>${r.authorName}</b><br>${displayDisc !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${displayDisc}</b><br>` : ''}${displayAct ? `📄 <a href="${displayAct}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;">Акт приемки</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}</div>`;
                container.appendChild(div);
            });
        }
     }
 
     function switchScDept(dept) {
-        currentScTabDept = dept;
-        document.getElementById('sc-tab-cifra').classList.remove('active-flt');
-        document.getElementById('sc-tab-mbt').classList.remove('active-flt');
-        document.getElementById('sc-tab-kbt').classList.remove('active-flt');
-        
-        let tabId = 'sc-tab-cifra';
-        if (dept === 'МБТ') tabId = 'sc-tab-mbt';
-        if (dept === 'КБТ') tabId = 'sc-tab-kbt';
-        document.getElementById(tabId).classList.add('active-flt');
-        
-        renderScItems();
+        currentScTabDept = dept; document.getElementById('sc-tab-cifra').classList.remove('active-flt'); document.getElementById('sc-tab-mbt').classList.remove('active-flt'); document.getElementById('sc-tab-kbt').classList.remove('active-flt');
+        let tabId = 'sc-tab-cifra'; if (dept === 'МБТ') tabId = 'sc-tab-mbt'; if (dept === 'КБТ') tabId = 'sc-tab-kbt'; document.getElementById(tabId).classList.add('active-flt'); renderScItems();
     }
 
     function openForm(type) {
-      document.getElementById("menu-list").classList.add("hidden");
-      
-      let dash = document.getElementById("info-dashboard");
-      dash.classList.add("hidden"); 
+      document.getElementById("menu-list").classList.add("hidden"); let dash = document.getElementById("info-dashboard"); dash.classList.add("hidden"); 
 
       if(type === 'sc') {
-        selectedScItem = null;
-        document.getElementById("sc-search").value = "";
-        document.getElementById("btn-act-doc").style.opacity = "0.3";
-        document.getElementById("btn-act-doc").style.pointerEvents = "none";
-        
-        let deptToSet = appState.dept || 'Цифра';
-        if (deptToSet !== 'Цифра' && deptToSet !== 'МБТ' && deptToSet !== 'КБТ') deptToSet = 'Цифра';
-        switchScDept(deptToSet);
-        
-        document.getElementById("form-sc").classList.remove("hidden");
-        document.getElementById("form-sc").classList.add("slide-up-fade");
+        selectedScItem = null; document.getElementById("sc-search").value = ""; document.getElementById("btn-act-doc").style.opacity = "0.3"; document.getElementById("btn-act-doc").style.pointerEvents = "none";
+        let deptToSet = appState.dept || 'Цифра'; if (deptToSet !== 'Цифра' && deptToSet !== 'МБТ' && deptToSet !== 'КБТ') deptToSet = 'Цифра'; switchScDept(deptToSet);
+        document.getElementById("form-sc").classList.remove("hidden"); document.getElementById("form-sc").classList.add("slide-up-fade");
       }
-      if(type === 'tradein') {
-        selectedTradeInModel = null;
-        renderTradeInList();
-        document.getElementById("form-tradein").classList.remove("hidden");
-        document.getElementById("form-tradein").classList.add("slide-up-fade");
-      }
+      if(type === 'tradein') { selectedTradeInModel = null; renderTradeInList(); document.getElementById("form-tradein").classList.remove("hidden"); document.getElementById("form-tradein").classList.add("slide-up-fade"); }
       if(type === 'points') {
-        let remVal = parseFloat(document.getElementById("pt-rem").innerText.replace(',','.'));
-        let isZero = isNaN(remVal) || remVal <= 0;
-        
-        let noticeBox = document.getElementById("fp-balance-notice");
-        if (isZero) {
-          noticeBox.innerHTML = "<b>У вас нет оставшихся баллов</b>";
-          noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 12px; border-radius: 12px; font-size: 13px; text-align: center; margin-bottom: 12px; border: 1px dashed #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
-          
-          document.getElementById("fp-action").classList.add("hidden");
-          document.getElementById("fp-time").classList.add("hidden");
-          document.getElementById("fp-date").classList.add("hidden");
-          document.getElementById("fp-date-label").classList.add("hidden");
-          document.getElementById("fp-submit-btn").disabled = true;
-          document.getElementById("fp-submit-btn").style.background = "#95a5a6";
-        } else {
-          noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:16px;">${document.getElementById("pt-rem").innerText}</b> баллов`;
-          noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 12px; border-radius: 12px; font-size: 13px; text-align: center; margin-bottom: 12px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03);";
-          
-          document.getElementById("fp-action").classList.remove("hidden");
-          document.getElementById("fp-time").classList.remove("hidden");
-          document.getElementById("fp-date").classList.remove("hidden");
-          document.getElementById("fp-date-label").classList.remove("hidden");
-          document.getElementById("fp-submit-btn").disabled = false;
-          document.getElementById("fp-submit-btn").style.background = "var(--btn-color)";
-        }
-        document.getElementById("form-points").classList.remove("hidden");
-        document.getElementById("form-points").classList.add("slide-up-fade");
+        let remVal = parseFloat(document.getElementById("pt-rem").innerText.replace(',','.')); let isZero = isNaN(remVal) || remVal <= 0; let noticeBox = document.getElementById("fp-balance-notice");
+        if (isZero) { noticeBox.innerHTML = "<b>У вас нет оставшихся баллов</b>"; noticeBox.style = "background: rgba(231, 76, 60, 0.1); color: #c0392b; padding: 12px; border-radius: 12px; font-size: 13px; text-align: center; margin-bottom: 12px; border: 1px dashed #e74c3c; box-shadow: 0 2px 8px rgba(0,0,0,0.03);"; document.getElementById("fp-action").classList.add("hidden"); document.getElementById("fp-time").classList.add("hidden"); document.getElementById("fp-date").classList.add("hidden"); document.getElementById("fp-date-label").classList.add("hidden"); document.getElementById("fp-submit-btn").disabled = true; document.getElementById("fp-submit-btn").style.background = "#95a5a6"; } 
+        else { noticeBox.innerHTML = `🔥 Вы можете использовать: <b style="font-size:16px;">${document.getElementById("pt-rem").innerText}</b> баллов`; noticeBox.style = "background: rgba(41, 128, 185, 0.1); color: #2980b9; padding: 12px; border-radius: 12px; font-size: 13px; text-align: center; margin-bottom: 12px; border: 1px dashed var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.03);"; document.getElementById("fp-action").classList.remove("hidden"); document.getElementById("fp-time").classList.remove("hidden"); document.getElementById("fp-date").classList.remove("hidden"); document.getElementById("fp-date-label").classList.remove("hidden"); document.getElementById("fp-submit-btn").disabled = false; document.getElementById("fp-submit-btn").style.background = "var(--btn-color)"; }
+        document.getElementById("form-points").classList.remove("hidden"); document.getElementById("form-points").classList.add("slide-up-fade");
       }
       if(type === 'swap') {
-        const select = document.getElementById("fs-target");
-        select.innerHTML = '<option value="" disabled selected>Выберите сменщика</option>' + 
-          globalSellers.map(s => `<option value="${s.iin}">${s.name}</option>`).join("");
-        document.getElementById("fs-extra").classList.add("hidden");
-        document.getElementById("form-swap").classList.remove("hidden");
-        document.getElementById("form-swap").classList.add("slide-up-fade");
+        const select = document.getElementById("fs-target"); select.innerHTML = '<option value="" disabled selected>Выберите сменщика</option>' + globalSellers.map(s => `<option value="${s.iin}">${s.name}</option>`).join("");
+        document.getElementById("fs-extra").classList.add("hidden"); document.getElementById("form-swap").classList.remove("hidden"); document.getElementById("form-swap").classList.add("slide-up-fade");
       }
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller) scroller.scrollTop = 0;
+      let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
     function closeForm() {
-      let roleStr = String(appState.role).toLowerCase();
-      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("Супервайзер");
-      let dash = document.getElementById("info-dashboard");
-      
-      if (!isUserPromoter && !isDir) {
-          dash.classList.remove("hidden");
-          dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade");
-          dash.classList.add("slide-down-fade");
-      }
-
-      ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => {
-          let el = document.getElementById(id);
-          el.classList.add("hidden");
-          el.classList.remove("slide-up-fade");
-      });
-      
-      let menu = document.getElementById("menu-list");
-      menu.classList.remove("hidden");
-      menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null;
-      menu.classList.add("fade-in");
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller) scroller.scrollTop = 0;
+      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("Супервайзер"); let dash = document.getElementById("info-dashboard");
+      if (!isUserPromoter && !isDir) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade"); dash.classList.add("slide-down-fade"); }
+      ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => { let el = document.getElementById(id); el.classList.add("hidden"); el.classList.remove("slide-up-fade"); });
+      let menu = document.getElementById("menu-list"); menu.classList.remove("hidden"); menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null; menu.classList.add("fade-in");
+      let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
-    function checkSwapFields() {
-      const target = document.getElementById("fs-target").value;
-      if (target) document.getElementById("fs-extra").classList.remove("hidden");
-    }
+    function checkSwapFields() { const target = document.getElementById("fs-target").value; if (target) document.getElementById("fs-extra").classList.remove("hidden"); }
 
     function renderScItems() {
-      const q = document.getElementById("sc-search").value.toLowerCase();
-      const list = document.getElementById("sc-list");
-      list.innerHTML = "";
-      
-      // Фильтруем СЦ по текущему отделу
-      let scList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'СЦ');
-      if (q) scList = scList.filter(i => i.name.toLowerCase().includes(q));
-
-      // ИСПРАВЛЕНИЕ ЗДЕСЬ: Фильтруем Фокус тоже по текущему отделу (currentScTabDept)
-      let focusList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'Фокус');
-      if (q) focusList = focusList.filter(i => i.name.toLowerCase().includes(q));
-
+      const q = document.getElementById("sc-search").value.toLowerCase(); const list = document.getElementById("sc-list"); list.innerHTML = "";
+      let scList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'СЦ'); if (q) scList = scList.filter(i => i.name.toLowerCase().includes(q));
+      let focusList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'Фокус'); if (q) focusList = focusList.filter(i => i.name.toLowerCase().includes(q));
       let sortedFiltered = [...scList, ...focusList];
 
-      if (sortedFiltered.length === 0) {
-          list.innerHTML = "<p style='padding:12px; color:gray; font-size:12px; text-align:center;'>Ничего не найдено</p>";
-          return;
-      }
-
+      if (sortedFiltered.length === 0) { list.innerHTML = "<p style='padding:12px; color:gray; font-size:12px; text-align:center;'>Ничего не найдено</p>"; return; }
       sortedFiltered.forEach(i => {
-        let div = document.createElement("div");
-        let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type && selectedScItem.dept === i.dept);
-        div.className = "sc-item" + (isSelected ? " selected" : "");
-        let typeCol = i.type === 'СЦ' ? '#e67e22' : '#e74c3c'; 
-        let ptNoun = formatPointsNoun(i.pts);
-        let ptsText = i.type === 'СЦ' ? '2 балла' : `${String(i.pts).replace('.', ',')} ${ptNoun}`; 
-        
-        let deptLabel = i.type === 'Фокус' ? `<span style="color:gray; font-weight:normal;"> (${i.dept})</span>` : '';
-
-        div.innerHTML = `
-          <div>
-             <div style="margin-bottom:4px; font-size:13px;">${i.name}${deptLabel}</div>
-             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div class="type-label" style="font-size:10px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>
-                ${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:11px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}
-             </div>
-          </div>`;
-          
-        div.onclick = () => { 
-            selectedScItem = i; 
-            let docBtn = document.getElementById("btn-act-doc");
-            if (i.docUrl) {
-                docBtn.style.opacity = "1";
-                docBtn.style.pointerEvents = "auto";
-            } else {
-                docBtn.style.opacity = "0.3";
-                docBtn.style.pointerEvents = "none";
-            }
-            renderScItems(); 
-        };
-        list.appendChild(div);
+        let div = document.createElement("div"); let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type && selectedScItem.dept === i.dept);
+        div.className = "sc-item" + (isSelected ? " selected" : ""); let typeCol = i.type === 'СЦ' ? '#e67e22' : '#e74c3c'; let ptNoun = formatPointsNoun(i.pts); let ptsText = i.type === 'СЦ' ? '2 балла' : `${String(i.pts).replace('.', ',')} ${ptNoun}`; let deptLabel = i.type === 'Фокус' ? `<span style="color:gray; font-weight:normal;"> (${i.dept})</span>` : '';
+        div.innerHTML = `<div><div style="margin-bottom:4px; font-size:13px;">${i.name}${deptLabel}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="type-label" style="font-size:10px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:11px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}</div></div>`;
+        div.onclick = () => { selectedScItem = i; let docBtn = document.getElementById("btn-act-doc"); if (i.docUrl) { docBtn.style.opacity = "1"; docBtn.style.pointerEvents = "auto"; } else { docBtn.style.opacity = "0.3"; docBtn.style.pointerEvents = "none"; } renderScItems(); }; list.appendChild(div);
       });
     }
 
-    function openScDoc() {
-       if (selectedScItem && selectedScItem.docUrl) {
-           if (tg && tg.openLink) tg.openLink(selectedScItem.docUrl);
-           else window.open(selectedScItem.docUrl, '_blank');
-       }
-    }
-
-    function showToast(msg, isError = false, duration = 3000) {
-      const t = document.getElementById("toast");
-      t.innerText = msg;
-      t.style.background = isError ? "#e74c3c" : "#34495e";
-      t.classList.add("show");
-      if (duration !== 9999) setTimeout(() => t.classList.remove("show"), duration);
-    }
+    function openScDoc() { if (selectedScItem && selectedScItem.docUrl) { if (tg && tg.openLink) tg.openLink(selectedScItem.docUrl); else window.open(selectedScItem.docUrl, '_blank'); } }
+    function showToast(msg, isError = false, duration = 3000) { const t = document.getElementById("toast"); t.innerText = msg; t.style.background = isError ? "#e74c3c" : "#34495e"; t.classList.add("show"); if (duration !== 9999) setTimeout(() => t.classList.remove("show"), duration); }
 
     async function executeSubmit(type, details, targetIin = null, meta = "", customMsg = null) {
-      vibrate(50);
-      showToast("Отправка...", false, 9999);
-      
+      vibrate(50); showToast("Отправка...", false, 9999);
       let res = await callBackend('submitRequest', { token: appState.token, type: type, details: details, targetIin: targetIin, metadata: meta });
-      
-      if(res.success) {
-        showToast(customMsg || "Запрос успешно отправлен!");
-        closeForm();
-        loadDashboard(true);
-      } else showToast("Ошибка: " + res.error, true);
+      if(res.success) { showToast(customMsg || "Запрос успешно отправлен!"); closeForm(); loadDashboard(true); } else showToast("Ошибка: " + res.error, true);
     }
 
-    function getFormattedDate(dateStr) {
-      const today = new Date().toISOString().split('T')[0];
-      
-      // Если дата пустая или пришел текст "Сегодня", принудительно ставим системную дату
-      if (!dateStr || dateStr === "Сегодня") {
-          dateStr = today;
-      }
-      
-      const d = new Date(dateStr);
-      return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear();
-    }
+    function getFormattedDate(dateStr) { const today = new Date().toISOString().split('T')[0]; if (!dateStr || dateStr === "Сегодня") { dateStr = today; } const d = new Date(dateStr); return ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); }
 
-    function submitScForm() {
-      if(!selectedScItem) return showToast("Выберите товар из списка", true);
-      let scDateVal = document.getElementById("sc-date").dataset.realdate;
-      selectedScItem.date = getFormattedDate(scDateVal);
-      executeSubmit("Продажа СЦ/Фокус", selectedScItem.name, null, JSON.stringify(selectedScItem));
-    }
-
-    function submitTradeIn() {
-      if(!selectedTradeInModel) return showToast("Выберите модель!", true);
-      const dateVal = document.getElementById("ft-date").dataset.realdate;
-      let meta = JSON.stringify({ date: getFormattedDate(dateVal), text: selectedTradeInModel });
-      executeSubmit("Продажа Trade-In", selectedTradeInModel, null, meta);
-    }
-
-    function submitPoints() {
-      const act = document.getElementById("fp-action").value;
-      const time = document.getElementById("fp-time").value;
-      const dateVal = document.getElementById("fp-date").dataset.realdate;
-      let meta = JSON.stringify({ date: getFormattedDate(dateVal) });
-      executeSubmit("Баллы мотивации", `${act} на ${time}`, null, meta);
-    }
-
-    function submitFixShift() {
-      const shiftStr = document.getElementById("fs-fix-shift").value;
-      if (!shiftStr) return showToast("Выберите новую смену", true);
-      const dateVal = new Date().toISOString().split('T')[0];
-      executeSubmit("Исправление смены", shiftStr, null, getFormattedDate(dateVal), "Запрос на исправление отправлен");
-    }
-
-    function submitSwap() {
-      const select = document.getElementById("fs-target");
-      const targetIin = select.value;
-      if(!targetIin) return showToast("Выберите сменщика", true);
-      
-      const dateVal = document.getElementById("fs-date").dataset.realdate;
-      const shiftStr = document.getElementById("fs-shift").value;
-      const targetName = select.options[select.selectedIndex].text;
-      
-      const details = `Дата: ${getFormattedDate(dateVal)}, Смена: ${shiftStr}`;
-      executeSubmit("Обмен сменами", details, targetIin, "", "Запрос отправлен: " + targetName);
-    }
-
-    function submitHotCheck(typeText) {
-      let promptMsg = `Вы подтверждаете продажу: ${typeText}?`;
-      let dateVal = new Date().toISOString().split('T')[0]; 
-      
-      if (typeof tg !== 'undefined' && tg && tg.showPopup) {
-        try {
-          tg.showPopup({ title: 'Горячий чек', message: promptMsg, buttons: [{id: 'yes', type: 'ok', text: 'Да'}, {type: 'cancel', text: 'Отмена'}] }, 
-          function(btnId) { if (btnId === 'yes') executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal)); });
-        } catch(e) {
-          if (confirm(promptMsg)) executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal));
-        }
-      } else {
-        if (confirm(promptMsg)) executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal));
-      }
-    }
+    function submitScForm() { if(!selectedScItem) return showToast("Выберите товар из списка", true); let scDateVal = document.getElementById("sc-date").dataset.realdate; selectedScItem.date = getFormattedDate(scDateVal); executeSubmit("Продажа СЦ/Фокус", selectedScItem.name, null, JSON.stringify(selectedScItem)); }
+    function submitTradeIn() { if(!selectedTradeInModel) return showToast("Выберите модель!", true); const dateVal = document.getElementById("ft-date").dataset.realdate; let meta = JSON.stringify({ date: getFormattedDate(dateVal), text: selectedTradeInModel }); executeSubmit("Продажа Trade-In", selectedTradeInModel, null, meta); }
+    function submitPoints() { const act = document.getElementById("fp-action").value; const time = document.getElementById("fp-time").value; const dateVal = document.getElementById("fp-date").dataset.realdate; let meta = JSON.stringify({ date: getFormattedDate(dateVal) }); executeSubmit("Баллы мотивации", `${act} на ${time}`, null, meta); }
+    function submitFixShift() { const shiftStr = document.getElementById("fs-fix-shift").value; if (!shiftStr) return showToast("Выберите новую смену", true); const dateVal = new Date().toISOString().split('T')[0]; executeSubmit("Исправление смены", shiftStr, null, getFormattedDate(dateVal), "Запрос на исправление отправлен"); }
+    function submitSwap() { const select = document.getElementById("fs-target"); const targetIin = select.value; if(!targetIin) return showToast("Выберите сменщика", true); const dateVal = document.getElementById("fs-date").dataset.realdate; const shiftStr = document.getElementById("fs-shift").value; const targetName = select.options[select.selectedIndex].text; const details = `Дата: ${getFormattedDate(dateVal)}, Смена: ${shiftStr}`; executeSubmit("Обмен сменами", details, targetIin, "", "Запрос отправлен: " + targetName); }
+    function submitHotCheck(typeText) { let promptMsg = `Вы подтверждаете продажу: ${typeText}?`; let dateVal = new Date().toISOString().split('T')[0]; if (typeof tg !== 'undefined' && tg && tg.showPopup) { try { tg.showPopup({ title: 'Горячий чек', message: promptMsg, buttons: [{id: 'yes', type: 'ok', text: 'Да'}, {type: 'cancel', text: 'Отмена'}] }, function(btnId) { if (btnId === 'yes') executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal)); }); } catch(e) { if (confirm(promptMsg)) executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal)); } } else { if (confirm(promptMsg)) executeSubmit("Горячий чек", typeText, null, getFormattedDate(dateVal)); } }
 
     async function processReq(id, action) {
-      vibrate(50);
-      showToast("Обработка...", false, 9999);
-      
-      processedReqIds.add(String(id));
-      let el = document.getElementById("req-" + id);
-      if (el) { el.style.display = 'none'; }
-      
+      vibrate(50); showToast("Обработка...", false, 9999); processedReqIds.add(String(id));
+      let el = document.getElementById("req-" + id); if (el) { el.style.display = 'none'; }
       let res = await callBackend('processRequest', { token: appState.token, reqId: id, reqAction: action });
-      
-      if(res.success) { showToast(res.msg); loadDashboard(true); } 
-      else { showToast(res.error, true); loadDashboard(true); }
+      if(res.success) { showToast(res.msg); loadDashboard(true); } else { showToast(res.error, true); loadDashboard(true); }
     }
   </script>
 </body>
