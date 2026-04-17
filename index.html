@@ -260,13 +260,35 @@
     function initSmartDates() { const today = new Date().toISOString().split('T')[0]; document.querySelectorAll('.smart-date').forEach(el => { el.dataset.realdate = today; el.value = "Сегодня"; el.addEventListener('focus', function() { this.type = 'date'; this.value = this.dataset.realdate; if(this.showPicker) this.showPicker(); }); el.addEventListener('blur', function() { if(!this.value) this.value = today; this.dataset.realdate = this.value; if (this.value === today) { this.type = 'text'; this.value = "Сегодня"; } else { this.type = 'text'; const d = new Date(this.value); this.value = ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); } }); el.addEventListener('change', function() { this.blur(); }); }); }
     function initAutoScroll() { const scroller = document.getElementById("scroll-container"); let scrollDir = 1; let scrollTimer = setInterval(() => { if (!autoScrollAnimation || !scroller || scroller.closest('.hidden')) return; scroller.scrollLeft += 1 * scrollDir; if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1; else if (scroller.scrollLeft <= 0) scrollDir = 1; }, 40); if(scroller) { scroller.addEventListener('touchstart', () => autoScrollAnimation = false, {passive: true}); scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); }, {passive: true}); } }
 
-    async function openAdminPanel() { switchTab('admin'); toggleAdminView('plan'); await loadDashboard(true); }
-    async function loadDashboard(isSilent = false) { let cachedData = localStorage.getItem("dashData_" + appState.iin); if (!isSilent) { if (cachedData) { try { renderDashboardData(JSON.parse(cachedData), true); let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); if (isDir) { switchTab('admin'); toggleAdminView('plan'); } else { switchTab('time'); } hideLoader(); isSilent = true; } catch(e) { localStorage.removeItem("dashData_" + appState.iin); showLoader(); } } else showLoader(); } let data = await callBackend('getDashboardData', { token: appState.token }); if (!data || data.error === "Оффлайн режим") { if (!isSilent) hideLoader(); return; } if (data.authorized === false) { forceLogout(); return; } localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data)); renderDashboardData(data, isSilent); if (!isSilent) hideLoader(); let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
+    async function openAdminPanel() { switchTab('adm-main'); toggleAdminMain('plan'); await loadDashboard(true); }
+    
+    async function loadDashboard(isSilent = false) { 
+      let cachedData = localStorage.getItem("dashData_" + appState.iin); 
+      if (!isSilent) { 
+        if (cachedData) { 
+          try { 
+            renderDashboardData(JSON.parse(cachedData), true); 
+            let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+            if (isDir) { switchTab('adm-main'); toggleAdminMain('plan'); } else { switchTab('time'); } 
+            hideLoader(); isSilent = true; 
+          } catch(e) { localStorage.removeItem("dashData_" + appState.iin); showLoader(); } 
+        } else showLoader(); 
+      } 
+      let data = await callBackend('getDashboardData', { token: appState.token }); 
+      if (!data || data.error === "Оффлайн режим") { if (!isSilent) hideLoader(); return; } 
+      if (data.authorized === false) { forceLogout(); return; } 
+      localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data)); 
+      renderDashboardData(data, isSilent); 
+      if (!isSilent) hideLoader(); 
+      
+      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+      let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
       if(state && state.authorized !== false) { 
           globalActiveOuts = state.activeOuts || [];
           if (!isDir) { appState.currentAction = state.myActiveAction || ""; saveMemory("currentAction", appState.currentAction); renderTimeUI(); applyLimits(state); } 
           else { if (!document.getElementById("content-adm-outs").classList.contains("hidden")) renderAdminOuts(); }
       }
+    }
 
     function renderTradeInList() { let container = document.getElementById("tradein-list"); if (!container) return; container.innerHTML = tradeInModelsGlobal.map(m => { let isSel = (selectedTradeInModel === m); return `<div class="sc-item ${isSel ? 'selected' : ''}" onclick="selectTradeIn('${m}')"><div style="font-size:13px;">${m}</div></div>`; }).join(""); }
     function selectTradeIn(m) { selectedTradeInModel = m; renderTradeInList(); }
@@ -373,7 +395,7 @@
     async function executeRemark(iin, name) { let text = document.getElementById(`remark-text-${iin}`).value; if (!text) return showToast("Укажите текст замечания!", true); vibrate(50); showToast("Отправка...", false, 9999); let res = await callBackend('submitRemark', { token: appState.token, targetIin: iin, targetName: name, text: text }); if (res.success) { showToast("Замечание отправлено!"); loadDashboard(true); closeDetails(); } else showToast(res.error, true); }
 
     async function executeFine(iin, name) { let reason = document.getElementById(`fine-reason-${iin}`).value; let amount = document.getElementById(`fine-amount-${iin}`).value || "0"; let moneyAmount = document.getElementById(`fine-money-${iin}`).value || "0"; if (!reason) return showToast("Укажите причину штрафа!", true); if (parseFloat(amount) >= 0 && parseFloat(moneyAmount) >= 0) return showToast("Укажите штраф (баллы или сумма) меньше 0!", true); vibrate(50); showToast("Отправка...", false, 9999); let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount, moneyAmount: moneyAmount }); if (res.success) { showToast("Штраф выписан!"); loadDashboard(true); closeDetails(); } else showToast(res.error, true); }
-    function closeDetails() { switchTab('admin'); }
+    function closeDetails() { switchTab('adm-main'); }
 
     function toggleAdminMain(view) {
       document.getElementById("admin-plan-list").classList.add("hidden"); document.getElementById("admin-sc-list").classList.add("hidden"); document.getElementById("admin-emp-container").classList.add("hidden");
