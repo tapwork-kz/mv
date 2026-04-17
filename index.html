@@ -59,8 +59,8 @@
           <div id="nav-time-icon" class="icon-btn active-tab hidden" onclick="switchTab('time');">⏱️</div>
           <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');">📤</div>
           <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">📩<span id="user-badge" class="badge hidden"></span></div>
-          <div id="nav-adm-outs" class="icon-btn hidden" onclick="switchTab('adm-outs');">👥</div>
-          <div id="nav-adm-main" class="icon-btn hidden" onclick="switchTab('adm-main');">🛠️</div>
+          <div id="nav-adm-outs" class="icon-btn hidden" onclick="switchTab('adm-outs');">⏱️</div>
+          <div id="nav-adm-main" class="icon-btn hidden" onclick="switchTab('adm-main');">📥</div>
           <div id="nav-adm-inbox" class="icon-btn hidden" onclick="switchTab('adm-inbox');">📩<span id="admin-badge" class="badge hidden"></span></div>
         </div>
       </div>
@@ -345,10 +345,10 @@
       document.getElementById("admin-list").innerHTML = aInbox.map(r => { 
           let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены"; 
           let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`; 
-          let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details; 
+          let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
           desc = formatRemarkText(desc);
-          let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName}`;
-          return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
+          let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
+          return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
 
       window.adminHistoryGlobal = data.adminHistory || [];
@@ -387,9 +387,9 @@
       
       if (tab === 'rep') { html = emp.reports.map(generateHorizontalGrid).join('') || "<p style='text-align:center;color:gray;font-size:12px;'>Отчетов нет</p>"; }
       else if (tab === 'pts') { 
-        html = `<div class="grid-details-container inner-block"><div style="display:flex; justify-content:space-around; text-align:center; margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:10px;"><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Нач.</div><b style="font-size:15px;">${emp.pts.acc}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Исп.</div><b style="font-size:15px;">${emp.pts.use}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Ост.</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штрф.</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin}</b></div></div><div class="grid-details-title">История баллов</div>`; 
+        html = `<div class="grid-details-container inner-block"><div style="display:flex; justify-content:space-around; text-align:center; margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:10px;"><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Нач.</div><b style="font-size:15px;">${emp.pts.acc || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Исп.</div><b style="font-size:15px;">${emp.pts.use || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Ост.</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штрф.</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin || 0}</b></div></div><div class="grid-details-title">История баллов</div>`; 
         let ptsHtml = ""; 
-        emp.ptsHistory.filter(p => p.type !== "KPI").forEach(p => { 
+        (emp.ptsHistory || []).filter(p => p.type !== "KPI").forEach(p => { 
             let ptsNum = parseFloat(String(p.val).replace(',', '.')) || 0; 
             if (ptsNum !== 0) ptsHtml += renderHistoryItem({...p, val: ptsNum}, true); 
         }); 
@@ -401,15 +401,16 @@
         html += `<div id="remark-form-${iin}" class="hidden inner-block slide-up-fade" style="border:1px solid #f39c12; background:rgba(243, 156, 18, 0.05);"><textarea id="remark-text-${iin}" placeholder="Текст замечания..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--card-bg); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="executeRemark('${iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Отправить замечание</button></div>`;
         
         let finesHtml = ""; 
-        emp.ptsHistory.filter(p => p.type === "Штраф").forEach(p => { 
+        (emp.ptsHistory || []).filter(p => p.type === "Штраф").forEach(p => { 
             let moneyNum = parseFloat(String(p.moneyFine).replace(',', '.')) || 0; 
             if (moneyNum !== 0) finesHtml += renderMoneyFineItem({...p, moneyFine: moneyNum}); 
         });
         let remarksHtml = ""; 
-        emp.remarks.forEach(r => { 
+        (emp.remarks || []).forEach(r => { 
             let desc = formatRemarkText(r.details);
             let authorStr = formatRemarkAuthor(r.authorName, r.adminDisplayName || r.authorName);
-            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="font-size:12px;">${authorStr} <span style="float:right; color:gray; font-size:10px;">${r.date.split(' ')[0]}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
+            let d = r.date ? String(r.date).split(' ')[0] : "";
+            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="font-size:12px;">${authorStr} <span style="float:right; color:gray; font-size:10px;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
         });
         if (finesHtml) html += `<div class="grid-details-title" style="color:#e74c3c; margin-top:10px;">Штрафы (Сумма)</div>${finesHtml}`;
         if (remarksHtml) html += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>${remarksHtml}`;
@@ -431,26 +432,32 @@
     }
     function formatRemarkAuthor(name, displayName) {
         let role = "Руководителя";
-        if (displayName && displayName.includes(" — ")) {
-            let r = displayName.split(" — ")[1].toLowerCase();
-            if (r.includes("директор")) role = "Директора";
-            else if (r.includes("управляющ")) role = "Управляющего";
-            else if (r.includes("супервайзер")) role = "Супервайзера";
-            else if (r.includes("админ")) role = "Администратора";
+        let n = name ? String(name) : "";
+        if (displayName && String(displayName).includes(" — ")) {
+            let parts = String(displayName).split(" — ");
+            if (parts.length > 1) {
+                let r = parts[1].toLowerCase();
+                if (r.includes("директор")) role = "Директора";
+                else if (r.includes("управляющ")) role = "Управляющего";
+                else if (r.includes("супервайзер")) role = "Супервайзера";
+                else if (r.includes("админ")) role = "Администратора";
+            }
         }
-        return `<b style="color:#f39c12;">От: ${role} ${name}</b>`;
+        return `<b style="color:#f39c12;">От: ${role} ${n}</b>`;
     }
 
     function formatRemarkText(text) {
+        if (!text) return "";
+        let str = String(text);
         let splitRegex = /(Ответ.*?:\s*)/i;
-        let parts = text.split(splitRegex);
+        let parts = str.split(splitRegex);
         if (parts.length >= 3) {
             let main = parts[0];
             let authorLabel = parts[1];
             let quote = parts.slice(2).join("");
             return `${main}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid var(--btn-color); border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:var(--btn-color); font-style:normal;">${authorLabel}</b><br>${quote}</div>`;
         }
-        return text;
+        return str;
     }
 
     let currentHistFilter = 'all';
@@ -474,19 +481,19 @@
 
       document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
         let stColor = r.status === "approved" ? "#27ae60" : (r.status === "rejected" || r.status === "rejected_by_user" || r.status === "rejected_notify_user" ? "#e74c3c" : "#95a5a6"); 
-        let stText = r.status === "approved" ? "Одобрен" : (r.status.includes("rejected") ? "Отклонен" : "Просмотрен"); 
+        let stText = r.status === "approved" ? "Одобрен" : (String(r.status).includes("rejected") ? "Отклонен" : "Просмотрен"); 
         if(r.status === "rejected_by_user") stText = "Отклонен сменщиком"; 
         
-        let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName}<br>${r.details}` : r.details; 
+        let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
         desc = formatRemarkText(desc);
 
         let approverLabel = r.approver ? `<span style="color:gray; font-size:10px; font-weight:normal;">${r.approver}</span>` : ''; 
         let titleColor = getSourceColor(r.type); 
-        if (r.type === "Продажа СЦ/Фокус" && r.details.toLowerCase().includes("фокус")) titleColor = '#e74c3c'; 
+        if (r.type === "Продажа СЦ/Фокус" && String(r.details).toLowerCase().includes("фокус")) titleColor = '#e74c3c'; 
         
-        let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName}`;
+        let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
 
-        return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:${titleColor};">${r.type} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
+        return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:${titleColor};">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
     }
     function renderAdminOuts() {
