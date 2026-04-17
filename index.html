@@ -302,59 +302,166 @@
     function selectTradeIn(m) { selectedTradeInModel = m; renderTradeInList(); }
 
     function renderDashboardData(data, isSilent = false) {
-      isUserPromoter = data.isPromoter; appState.role = data.role || "Продавец"; appState.dept = data.info?.dept || "Цифра"; saveMemory("userRole", appState.role); saveMemory("userDept", appState.dept); let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let isSeller = !isUserPromoter && !isDir; let isCreateTabActive = !document.getElementById("content-create").classList.contains("hidden"); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden"); let dash = document.getElementById("info-dashboard");
-      if (isUserPromoter) { document.getElementById("nav-create-icon").classList.add("hidden"); document.getElementById("inbox-icon").classList.add("hidden"); document.getElementById("desc-break").innerText = "15 мин"; document.getElementById("desc-lunch").innerText = "1 час"; document.getElementById("desc-snack").innerText = "30 мин"; dash.classList.add("hidden"); } 
-      else { document.getElementById("desc-break").innerText = "10 мин"; document.getElementById("desc-lunch").innerText = "40 мин"; document.getElementById("desc-snack").innerText = "30 мин"; if (isSeller && document.querySelectorAll("#content-admin:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) { if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } } else { dash.classList.add("hidden"); } }
+      if (!data) return;
+      isUserPromoter = data.isPromoter || false; 
+      appState.role = data.role || "Продавец"; 
+      appState.dept = (data.info && data.info.dept) ? data.info.dept : "Цифра"; 
+      saveMemory("userRole", appState.role); 
+      saveMemory("userDept", appState.dept); 
+      
+      let roleStr = String(appState.role).toLowerCase(); 
+      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+      let isSeller = !isUserPromoter && !isDir; 
+      
+      let elContentCreate = document.getElementById("content-create");
+      let isCreateTabActive = elContentCreate && !elContentCreate.classList.contains("hidden"); 
+      let elMenuList = document.getElementById("menu-list");
+      let isAnyFormActive = isCreateTabActive && elMenuList && elMenuList.classList.contains("hidden"); 
+      let dash = document.getElementById("info-dashboard");
+      
+      if (isUserPromoter) { 
+          document.getElementById("nav-create-icon")?.classList.add("hidden"); 
+          document.getElementById("inbox-icon")?.classList.add("hidden"); 
+          let db = document.getElementById("desc-break"); if(db) db.innerText = "15 мин"; 
+          let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "1 час"; 
+          let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
+          if(dash) dash.classList.add("hidden"); 
+      } else { 
+          let db = document.getElementById("desc-break"); if(db) db.innerText = "10 мин"; 
+          let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "40 мин"; 
+          let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
+          if (isSeller && document.querySelectorAll("#content-adm-main:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) { 
+              if (dash && dash.classList.contains("hidden")) { 
+                  dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); 
+              } 
+          } else { 
+              if(dash) dash.classList.add("hidden"); 
+          } 
+      }
 
-      document.getElementById("pt-acc").innerText = data.info?.ptsAccrued ?? '-'; document.getElementById("pt-use").innerText = data.info?.ptsUsed ?? '-'; const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; const ptRemEl = document.getElementById("pt-rem"); ptRemEl.innerText = data.info?.ptsLeft ?? '-'; ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; document.getElementById("pt-fin").innerText = data.info?.ptsFine ?? '-'; let kpiValue = data.info?.kpiValue ?? data.baseKpi; document.getElementById("kpi-val").innerText = kpiValue + '%'; setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val")); myKpiDetails = data.info?.kpiDetails || [];
-      document.getElementById("info-tabel").innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
+      let pAcc = document.getElementById("pt-acc"); if(pAcc) pAcc.innerText = data.info?.ptsAccrued ?? '-'; 
+      let pUse = document.getElementById("pt-use"); if(pUse) pUse.innerText = data.info?.ptsUsed ?? '-'; 
+      const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; 
+      const ptRemEl = document.getElementById("pt-rem"); 
+      if(ptRemEl) {
+          ptRemEl.innerText = data.info?.ptsLeft ?? '-'; 
+          ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
+      }
+      let pFin = document.getElementById("pt-fin"); if(pFin) pFin.innerText = data.info?.ptsFine ?? '-'; 
+      
+      let kpiValue = data.info?.kpiValue ?? data.baseKpi ?? 0; 
+      let kValEl = document.getElementById("kpi-val"); if(kValEl) kValEl.innerText = kpiValue + '%'; 
+      setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val")); 
+      myKpiDetails = data.info?.kpiDetails || [];
+      
+      let infoTabel = document.getElementById("info-tabel");
+      if(infoTabel) {
+          infoTabel.innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
+      }
 
-      myReports = data.info?.reports || []; myPointsHistory = data.info?.myPtsHistory || []; myMoneyFinesHistory = myPointsHistory.filter(p => p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); myScHistory = myPointsHistory.filter(p => p.type === "Начисление");
-      myDisplayPointsHistory = myPointsHistory.filter(p => { if (p.type === "KPI") return false; let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; return ptsVal !== 0; });
+      myReports = data.info?.reports || []; 
+      myPointsHistory = data.info?.myPtsHistory || []; 
+      myMoneyFinesHistory = myPointsHistory.filter(p => p && p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); 
+      myScHistory = myPointsHistory.filter(p => p && p.type === "Начисление");
+      myDisplayPointsHistory = myPointsHistory.filter(p => { if (!p || p.type === "KPI") return false; let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; return ptsVal !== 0; });
 
-      let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; let monthSc = myScHistory.filter(p => typeof p.date === 'string' && p.date.includes(monthSuffix)); let countSc = monthSc.filter(p => !p.source.toLowerCase().includes("trade-in")).length; let countTrade = monthSc.filter(p => p.source.toLowerCase().includes("trade-in")).length; let scEl = document.getElementById("info-sc-val"); scEl.innerText = `${countSc} | ${countTrade}`; if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; 
+      let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
+      let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
+      
+      /* ЗАЩИТА ОТ КРАША */
+      let countSc = monthSc.filter(p => p && p.source && !String(p.source).toLowerCase().includes("trade-in")).length; 
+      let countTrade = monthSc.filter(p => p && p.source && String(p.source).toLowerCase().includes("trade-in")).length; 
+      
+      let scEl = document.getElementById("info-sc-val"); 
+      if(scEl) {
+          scEl.innerText = `${countSc} | ${countTrade}`; 
+          if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; 
+      }
 
-      const uBadge = document.getElementById("user-badge"); const aBadge = document.getElementById("admin-badge"); const aDot = document.getElementById("admin-dot");
+      const uBadge = document.getElementById("user-badge"); 
+      const aBadge = document.getElementById("admin-badge"); 
+      
       if (isDir) {
-          document.getElementById("nav-time-icon").classList.add("hidden"); document.getElementById("nav-create-icon").classList.add("hidden"); document.getElementById("inbox-icon").classList.add("hidden");
-          document.getElementById("nav-adm-outs").classList.remove("hidden"); document.getElementById("nav-adm-main").classList.remove("hidden"); document.getElementById("nav-adm-inbox").classList.remove("hidden");
-          let filteredAdminInbox = data.adminInbox ? data.adminInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
-          if (filteredAdminInbox.length > 0) { aBadge.innerText = filteredAdminInbox.length; aBadge.classList.remove("hidden"); if (filteredAdminInbox.length > appState.lastInboxCount) showPushNotification("Новая заявка!", "Появилась заявка в админке"); appState.lastInboxCount = filteredAdminInbox.length; } else { aBadge.classList.add("hidden"); appState.lastInboxCount = 0; }
-          document.getElementById("admin-plan-list").innerHTML = data.adminPlan || "<p>План не загружен</p>"; adminScItemsGlobal = data.adminScItems || []; window.adminHistoryGlobal = data.adminHistory || [];
+          document.getElementById("nav-time-icon")?.classList.add("hidden"); 
+          document.getElementById("nav-create-icon")?.classList.add("hidden"); 
+          document.getElementById("inbox-icon")?.classList.add("hidden");
+          document.getElementById("nav-adm-outs")?.classList.remove("hidden"); 
+          document.getElementById("nav-adm-main")?.classList.remove("hidden"); 
+          document.getElementById("nav-adm-inbox")?.classList.remove("hidden");
+          
+          let filteredAdminInbox = data.adminInbox ? data.adminInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
+          if (filteredAdminInbox.length > 0) { 
+              if(aBadge) { aBadge.innerText = filteredAdminInbox.length; aBadge.classList.remove("hidden"); }
+              if (filteredAdminInbox.length > appState.lastInboxCount) showPushNotification("Новая заявка!", "Появилась заявка в админке"); 
+              appState.lastInboxCount = filteredAdminInbox.length; 
+          } else { 
+              if(aBadge) aBadge.classList.add("hidden"); 
+              appState.lastInboxCount = 0; 
+          }
+          let adminPlanList = document.getElementById("admin-plan-list");
+          if(adminPlanList) adminPlanList.innerHTML = data.adminPlan || "<p>План не загружен</p>"; 
+          
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); }
       } else {
-          if (!isUserPromoter) { document.getElementById("nav-time-icon").classList.remove("hidden"); document.getElementById("nav-create-icon").classList.remove("hidden"); document.getElementById("inbox-icon").classList.remove("hidden"); }
-          document.getElementById("nav-adm-outs").classList.add("hidden"); document.getElementById("nav-adm-main").classList.add("hidden"); document.getElementById("nav-adm-inbox").classList.add("hidden");
-          let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => !processedReqIds.has(String(r.id))) : [];
-          if (filteredUserInbox.length > 0) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Уведомление!", "Непрочитанные сообщения"); appState.lastInboxCount = filteredUserInbox.length; } else { uBadge.classList.add("hidden"); appState.lastInboxCount = 0;}
+          if (!isUserPromoter) { 
+              document.getElementById("nav-time-icon")?.classList.remove("hidden"); 
+              document.getElementById("nav-create-icon")?.classList.remove("hidden"); 
+              document.getElementById("inbox-icon")?.classList.remove("hidden"); 
+          }
+          document.getElementById("nav-adm-outs")?.classList.add("hidden"); 
+          document.getElementById("nav-adm-main")?.classList.add("hidden"); 
+          document.getElementById("nav-adm-inbox")?.classList.add("hidden");
+          
+          let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
+          if (filteredUserInbox.length > 0) { 
+              if(uBadge) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); }
+              if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Уведомление!", "Непрочитанные сообщения"); 
+              appState.lastInboxCount = filteredUserInbox.length; 
+          } else { 
+              if(uBadge) uBadge.classList.add("hidden"); 
+              appState.lastInboxCount = 0;
+          }
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) switchTab('time');
       }
         
-      let uInbox = data.userInbox ? data.userInbox.filter(r => !processedReqIds.has(String(r.id))) : []; 
+      let uInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
       let activeEl = document.activeElement; let isTyping = activeEl && activeEl.tagName === 'TEXTAREA' && activeEl.id.startsWith('remark-reply');
       if (!isTyping) {
-        document.getElementById("inbox-list").innerHTML = uInbox.map(r => { 
-          let desc = formatRemarkText(r.details);
-          let authorStr = formatRemarkAuthor(r.authorName, r.adminDisplayName || r.authorName);
-          if (r.type === "Замечание" && r.status === "pending_user_reply") { return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание</div><div class="req-desc" style="color:var(--text-color); font-size:13px;">${authorStr}<br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; }
-          if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
-        }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
+        let inboxList = document.getElementById("inbox-list");
+        if(inboxList) {
+            inboxList.innerHTML = uInbox.map(r => { 
+              let desc = formatRemarkText(r.details || "");
+              let authorStr = formatRemarkAuthor(r.authorName, r.adminDisplayName || r.authorName);
+              if (r.type === "Замечание" && r.status === "pending_user_reply") { return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание</div><div class="req-desc" style="color:var(--text-color); font-size:13px;">${authorStr}<br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; }
+              if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
+              return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
+            }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
+        }
       }
 
-      let aInbox = data.adminInbox ? data.adminInbox.filter(r => !processedReqIds.has(String(r.id))) : []; 
-      document.getElementById("admin-list").innerHTML = aInbox.map(r => { 
-          let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены"; 
-          let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`; 
-          let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
-          desc = formatRemarkText(desc);
-          let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
-          return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
-      }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
+      let aInbox = data.adminInbox ? data.adminInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
+      let adminList = document.getElementById("admin-list");
+      if(adminList) {
+          adminList.innerHTML = aInbox.map(r => { 
+              let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены"; 
+              let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`; 
+              let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
+              desc = formatRemarkText(desc);
+              let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
+              return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
+          }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
+      }
 
       window.adminHistoryGlobal = data.adminHistory || [];
-      renderAdminHistory();
+      if(isDir && typeof renderAdminHistory === "function") renderAdminHistory();
       
-      globalSellers = data.sellers || []; globalScItems = data.scItems || []; allEmployeesData = data.adminEmployees || []; tradeInModelsGlobal = data.tradeInModels || []; if (isDir) renderAdminEmps(currentEmpDept, null);
+      adminScItemsGlobal = data.adminScItems || []; 
+      globalSellers = data.sellers || []; 
+      globalScItems = data.scItems || []; 
+      allEmployeesData = data.adminEmployees || []; 
+      tradeInModelsGlobal = data.tradeInModels || []; 
+      
+      if (isDir && typeof renderAdminEmps === "function") renderAdminEmps(currentEmpDept, null);
     }
 
     function generateHorizontalGrid(dataObj) { if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:8px;text-align:center;color:gray;font-size:12px;'>Нет данных</div>"; let gridCols = `repeat(${dataObj.headers.length}, 1fr)`; let html = `<div class="grid-details-container inner-block"><div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div><div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`; dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; }); dataObj.values.forEach(v => { let displayVal = '-'; if (v === '✔') displayVal = '✅'; else if (v === '✖') displayVal = '❌'; else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>'; else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>'; else displayVal = v || '-'; html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; min-height:28px; width:100%; box-sizing:border-box;">${displayVal}</div>`; }); html += `</div></div>`; return html; }
