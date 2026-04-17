@@ -19,14 +19,27 @@
     html, body { height: 100%; overflow: hidden; margin: 0; padding: 0; overscroll-behavior-y: none; -webkit-overflow-scrolling: touch; -webkit-tap-highlight-color: transparent; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg-color); color: var(--text-color); user-select: none; -webkit-user-select: none; transition: background-color 0.6s ease, color 0.6s ease; padding-env(safe-area-inset-top); }
     .glass { background: rgba(var(--card-bg-rgb), 0.75) !important; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(150, 150, 150, 0.15); box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 20px; }
-    .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } .slide-up-fade { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } .slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } .slide-down-fade { animation: slideDownFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
-    @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.99); } 100% { opacity: 1; transform: scale(1); } } @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(25px); } 100% { opacity: 1; transform: translateY(0); } } @keyframes slideInRight { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } } @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 1; transform: translateX(0); } } @keyframes slideDownFade { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
+    
+    .fade-in { animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } 
+    .slide-up-fade { animation: slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } 
+    .slide-in-right { animation: slideInRight 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } 
+    .slide-in-left { animation: slideInLeft 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; } 
+    .slide-down-fade { animation: slideDownFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    .fade-out { animation: fadeOut 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; }
+
+    @keyframes fadeIn { 0% { opacity: 0; transform: scale(0.99); } 100% { opacity: 1; transform: scale(1); } } 
+    @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(25px); } 100% { opacity: 1; transform: translateY(0); } } 
+    @keyframes slideInRight { 0% { opacity: 0; transform: translateX(30px); } 100% { opacity: 1; transform: translateX(0); } } 
+    @keyframes slideInLeft { 0% { opacity: 0; transform: translateX(-20px); } 100% { opacity: 1; transform: translateX(0); } } 
+    @keyframes slideDownFade { 0% { opacity: 0; transform: translateY(-30px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.98); } }
+
     #loader-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: flex-start; justify-content: center; padding-top: 25vh; background: var(--bg-color); z-index: 1000; transition: opacity 0.6s ease, visibility 0.6s; }
     .sticky-header { position: sticky; top: 5px; z-index: 20; padding: 10px 12px; margin: 0 0 10px 0; border-radius: 16px; transition: 0.6s; }
     .fixed-header { padding: calc(env(safe-area-inset-top, 45px) + 15px) 12px 12px 12px; flex-shrink: 0; z-index: 100; border-radius: 0 0 24px 24px; margin-bottom: 12px; border-top: none; transition: 0.6s; }
     .hidden { display: none !important; } .scrollable-content { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 5px 12px calc(30px + env(safe-area-inset-bottom)) 12px; }
-    input, select { user-select: text; -webkit-user-select: text; transition: 0.6s; } input[type="text"], input[type="number"], input[type="date"], select { display: block; width: 100%; height: 46px; padding: 0 14px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; box-sizing: border-box; -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color); }
-    input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; } @media (prefers-color-scheme: dark) { input, select { border: 1px solid #444; } }
+    input, select, textarea { user-select: text; -webkit-user-select: text; transition: 0.6s; } input[type="text"], input[type="number"], input[type="date"], select { display: block; width: 100%; height: 46px; padding: 0 14px; margin: 8px 0; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; box-sizing: border-box; -webkit-appearance: none; appearance: none; background-color: var(--card-bg); color: var(--text-color); }
+    input[type="text"]:not(.smart-date), input[type="number"], select { text-align: left; } @media (prefers-color-scheme: dark) { input, select, textarea { border: 1px solid #444 !important; } }
     .smart-date { color: var(--btn-color); font-weight: 600; cursor: pointer; text-align: center; display: flex; align-items: center; justify-content: center; line-height: normal; }
     button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; color: var(--btn-text); background: var(--btn-color); transition: transform 0.1s, background-color 0.4s, opacity 0.4s; display: flex; flex-direction: column; align-items: center; justify-content: center; } button:disabled { cursor: not-allowed; opacity: 0.5; filter: grayscale(100%); } button:active:not(:disabled) { transform: scale(0.96); opacity: 0.9; }
     .btn-break { background-color: #f39c12; color: #fff; } .btn-lunch { background-color: #27ae60; color: #fff; } .btn-snack { background-color: #8e44ad; color: #fff; } .btn-return { background-color: #e74c3c; color: #fff; }
@@ -35,7 +48,16 @@
     .form-dark h3 { color: var(--form-title-color) !important; } .form-dark input, .form-dark select { color: var(--form-input-color) !important; }
     .btn-green { background: #27ae60; color: white; } .btn-orange { background: #f39c12; color: white;} .btn-gray { background: #95a5a6; color: white;} .btn-red { background: #e74c3c; color: white;}
     .nav-bar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; position: relative; } .badge { position: absolute; top: -5px; right: -5px; background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 10px; font-weight: bold; border: 2px solid var(--bg-color); transition: 0.6s; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-    .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; } .top-icons { display: flex; gap: 6px; align-items: center; background: rgba(150,150,150,0.1); padding: 4px; border-radius: 16px;} .icon-btn { font-size: 20px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.6s; padding: 6px 10px; border-radius: 12px; opacity: 0.6; filter: grayscale(100%); } .icon-btn:active { transform: scale(0.85); } .icon-btn.active-tab { opacity: 1; filter: grayscale(0%); background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.1); } @media (prefers-color-scheme: dark) { .icon-btn.active-tab { box-shadow: 0 2px 8px rgba(0,0,0,0.3); } }
+    .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; position: relative; } 
+    
+    .top-icons { display: flex; gap: 6px; align-items: center; background: rgba(150,150,150,0.1); padding: 4px; border-radius: 16px;} 
+    .icon-btn { font-size: 20px; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center; transition: 0.6s; padding: 6px 10px; border-radius: 12px; opacity: 0.5; } 
+    .icon-btn:active { transform: scale(0.85); } 
+    .icon-btn.active-tab { opacity: 1; background: var(--card-bg); box-shadow: 0 2px 8px rgba(0,0,0,0.1); } 
+    .icon-btn .ico { filter: grayscale(100%); transition: 0.6s; }
+    .icon-btn.active-tab .ico { filter: grayscale(0%); }
+    @media (prefers-color-scheme: dark) { .icon-btn.active-tab { box-shadow: 0 2px 8px rgba(0,0,0,0.3); } }
+    
     .banner-wrapper { background: var(--banner-bg); border-radius: 16px; padding: 8px; margin-bottom: 10px; border: 1px solid rgba(150,150,150,0.05); transition: 0.6s; } .info-wrapper { display: flex; gap: 6px; align-items: stretch; } .scrollable-blocks { display: flex; gap: 6px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 2px; flex: 1; scroll-snap-type: x mandatory; } .scrollable-blocks::-webkit-scrollbar { display: none; }
     .info-box { background: var(--card-bg); padding: 8px 6px; border-radius: 12px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.03); cursor: pointer; transition: 0.4s; display: flex; flex-direction: column; justify-content: center; flex-shrink: 0; min-width: 65px; scroll-snap-align: start; border: 1px solid rgba(150,150,150,0.05);} .info-box.pts-box { width: 100%; max-width: 150px; padding-left: 6px; padding-right: 6px; } .info-box:active { transform: scale(0.95); } .info-box.tabel-box { min-width: 120px; } 
     .circle-box { width: 62px; min-width: 62px; height: 62px; border-radius: 50%; padding: 0; align-items: center; justify-content: center; margin: auto 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); background: none; border:none;} .kpi-container { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.6s ease; } .kpi-inner { width: 84%; height: 84%; background: var(--card-bg); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -56,19 +78,27 @@
     <div class="fixed-header glass">
       <div class="header-container"><h2 id="user-greeting" style="margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;"></h2>
         <div class="top-icons" id="main-tabs">
-          <div id="nav-time-icon" class="icon-btn active-tab hidden" onclick="switchTab('time');">⏱️</div>
-          <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');">📤</div>
-          <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">📩<span id="user-badge" class="badge hidden"></span></div>
-          <div id="nav-adm-outs" class="icon-btn hidden" onclick="switchTab('adm-outs');">⏱️</div>
-          <div id="nav-adm-main" class="icon-btn hidden" onclick="switchTab('adm-main');">📥</div>
-          <div id="nav-adm-inbox" class="icon-btn hidden" onclick="switchTab('adm-inbox');">📩<span id="admin-badge" class="badge hidden"></span></div>
+          <div id="nav-time-icon" class="icon-btn active-tab hidden" onclick="switchTab('time');"><span class="ico">⏱️</span></div>
+          <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');"><span class="ico">📤</span></div>
+          <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');"><span class="ico">📩</span><span id="user-badge" class="badge hidden"></span></div>
+          <div id="nav-adm-outs" class="icon-btn hidden" onclick="switchTab('adm-outs');"><span class="ico">⏱️</span></div>
+          <div id="nav-adm-main" class="icon-btn hidden" onclick="switchTab('adm-main');"><span class="ico">📥</span></div>
+          <div id="nav-adm-inbox" class="icon-btn hidden" onclick="switchTab('adm-inbox');"><span class="ico">📩</span><span id="admin-badge" class="badge hidden"></span></div>
         </div>
       </div>
       <div class="banner-wrapper hidden fade-in" id="info-dashboard">
         <div class="info-wrapper">
           <div class="scrollable-blocks" id="scroll-container">
             <div class="info-box" onclick="openDetails('sc')"><div class="info-box-title">СЦ | Brzy</div><div class="info-box-value" id="info-sc-val">- | -</div></div>
-            <div class="info-box pts-box" onclick="openDetails('points')"><div class="info-box-title">Мои баллы</div><div class="pts-grid" style="display:flex; gap:3px; margin-top:4px; width:100%; justify-content:space-between;"><div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;"><div style="font-size:8px; color:gray;">Нач.</div><div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-acc">-</div></div><div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1;"><div style="font-size:8px; color:gray;">Исп.</div><div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-use">-</div></div><div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(41, 128, 185, 0.1);"><div style="font-size:8px; color:gray;">Ост.</div><div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div></div><div class="inner-block" style="border-radius:6px; padding:4px 2px; margin-bottom:0; flex:1; background:rgba(231, 76, 60, 0.1);"><div style="font-size:8px; color:gray;">Штрф.</div><div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div></div></div></div>
+            <div class="info-box pts-box" onclick="openDetails('points')">
+                <div class="info-box-title">Мои баллы</div>
+                <div class="pts-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; margin-top:4px; width:100%;">
+                    <div class="inner-block" style="border-radius:6px; padding:4px 0; margin-bottom:0;"><div style="font-size:8px; color:gray;">Нач.</div><div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-acc">-</div></div>
+                    <div class="inner-block" style="border-radius:6px; padding:4px 0; margin-bottom:0;"><div style="font-size:8px; color:gray;">Исп.</div><div style="font-size:12px; font-weight:bold; color:#4d4d4d;" id="pt-use">-</div></div>
+                    <div class="inner-block" style="border-radius:6px; padding:4px 0; margin-bottom:0; background:rgba(41, 128, 185, 0.1);"><div style="font-size:8px; color:gray;">Ост.</div><div style="font-size:12px; font-weight:bold; color:#27ae60;" id="pt-rem">-</div></div>
+                    <div class="inner-block" style="border-radius:6px; padding:4px 0; margin-bottom:0; background:rgba(231, 76, 60, 0.1);"><div style="font-size:8px; color:gray;">Штрф.</div><div style="font-size:12px; font-weight:bold; color:#e74c3c;" id="pt-fin">-</div></div>
+                </div>
+            </div>
             <div class="info-box" onclick="openDetails('report')"><div class="info-box-title">Мои отчеты</div><div class="info-box-value" style="font-size:12px; line-height: 24px;">См. детали</div></div>
             <div class="info-box tabel-box" onclick="openDetails('tabel')"><div class="info-box-title">Табель / Штрафы</div><div class="tabel-grid" id="info-tabel"></div></div>
           </div>
@@ -133,16 +163,16 @@
         </div>
         <div id="admin-history-list" class="req-list"></div>
       </div>
-
       <div id="content-details" class="hidden">
         <div class="sticky-header glass" style="display:flex; align-items:center; margin-top:0; margin-bottom: 12px;">
-          <button id="btn-details-back" class="icon-btn" style="background:transparent; border:none; color:var(--btn-color); font-size:24px; padding:0 10px 0 0; margin:0; box-shadow:none; width: auto;">←</button>
+          <button id="btn-details-back" class="icon-btn" style="background:transparent; border:none; color:var(--btn-color); font-size:24px; padding:0 10px 0 0; margin:0; box-shadow:none; width: auto;"><span class="ico">←</span></button>
           <h3 id="details-title" style="margin:0; flex:1; text-align:center; font-size: 16px; color:var(--btn-color);">Детали</h3>
-          <div style="width:34px;"></div> </div>
+          <div style="width:34px;"></div>
+        </div>
         <div id="details-kpi-circle-container" style="display:flex; justify-content:center; margin-bottom:15px;"></div>
         <div id="details-list" class="req-list"></div>
       </div>
-      </div>
+  </div>
 
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwbxkG4t-70Eoz9Hes44DP5C82F_lWHnBmrzoD_UIKCYVAP54hesdgz6CHVj4_CCzR6pw/exec";
@@ -242,14 +272,35 @@
       if(tab === 'adm-main') document.getElementById('nav-adm-main').classList.add('active-tab');
       if(tab === 'adm-inbox') document.getElementById('nav-adm-inbox').classList.add('active-tab');
 
-      document.querySelectorAll('#scrollable-body > div').forEach(el => el.classList.add("hidden"));
-      let sections = document.querySelectorAll('#scrollable-body > div'); let animClass = 'slide-up-fade'; if (direction === 'right') animClass = 'slide-in-right'; else if (direction === 'left') animClass = 'slide-in-left';
-      sections.forEach(s => { s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
+      let currentActive = document.querySelector('#scrollable-body > div:not(.hidden)');
+      if (currentActive && currentActive.id !== 'content-' + tab) {
+          currentActive.classList.add('fade-out');
+          setTimeout(() => {
+              currentActive.classList.remove('fade-out');
+              currentActive.classList.add('hidden');
+              showNewTab(tab, direction);
+          }, 200);
+      } else {
+          showNewTab(tab, direction);
+      }
+    }
+
+    function showNewTab(tab, direction) {
+      let animClass = 'slide-up-fade'; if (direction === 'right') animClass = 'slide-in-right'; else if (direction === 'left') animClass = 'slide-in-left';
+      let sections = document.querySelectorAll('#scrollable-body > div');
+      sections.forEach(s => { 
+          if(s.id !== 'content-' + tab) s.classList.add('hidden');
+          s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left', 'fade-out'); 
+          s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; 
+      });
+      
       let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let isSeller = !isUserPromoter && !isDir; let isCreateTabActive = (tab === 'create'); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
       let dash = document.getElementById("info-dashboard"); if (isSeller && tab !== 'details' && !tab.startsWith('adm') && !isAnyFormActive) { if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } } else { dash.classList.add("hidden"); }
+      
       let targetEl = document.getElementById("content-" + tab);
       if(targetEl) { targetEl.classList.remove("hidden"); targetEl.classList.add(animClass); }
-      if(tab === 'adm-outs') renderAdminOuts(); if(tab === 'adm-main') toggleAdminMain('plan'); ;if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
+      
+      if(tab === 'adm-outs') renderAdminOuts(); if(tab === 'adm-main') toggleAdminMain('plan'); if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
       let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
@@ -278,6 +329,43 @@
     function initAutoScroll() { const scroller = document.getElementById("scroll-container"); let scrollDir = 1; let scrollTimer = setInterval(() => { if (!autoScrollAnimation || !scroller || scroller.closest('.hidden')) return; scroller.scrollLeft += 1 * scrollDir; if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1; else if (scroller.scrollLeft <= 0) scrollDir = 1; }, 40); if(scroller) { scroller.addEventListener('touchstart', () => autoScrollAnimation = false, {passive: true}); scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); }, {passive: true}); } }
 
     async function openAdminPanel() { switchTab('adm-main'); toggleAdminMain('plan'); await loadDashboard(true); }
+
+    function getShortName(fullName) {
+        if (!fullName) return "";
+        let parts = String(fullName).trim().split(/\s+/);
+        if (parts.length >= 2) return `${parts[0]} ${parts[1].charAt(0)}.`;
+        return fullName;
+    }
+
+    function formatRemarkHeader(displayName) {
+        let role = "Руководителя";
+        if (displayName && String(displayName).includes(" — ")) {
+            let r = String(displayName).split(" — ")[1].toLowerCase();
+            if (r.includes("директор")) role = "Директора";
+            else if (r.includes("управляющ")) role = "Управляющего";
+            else if (r.includes("супервайзер")) role = "Супервайзера";
+            else if (r.includes("админ")) role = "Администратора";
+        }
+        return `Замечание от ${role}`;
+    }
+
+    function formatRemarkText(text, authorName, responderName) {
+        if (!text) return "";
+        let str = String(text);
+        let authorShort = getShortName(authorName);
+        let responderShort = getShortName(responderName);
+        
+        let splitRegex = /(Ответ.*?:\s*)/i;
+        let parts = str.split(splitRegex);
+        let mainText = parts[0].trim();
+        let formattedMain = `[${authorShort}]: ${mainText}`;
+
+        if (parts.length >= 3) {
+            let quote = parts.slice(2).join("").trim();
+            return `${formattedMain}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid var(--btn-color); border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:var(--btn-color); font-style:normal;">[${responderShort}]:</b><br>${quote}</div>`;
+        }
+        return formattedMain;
+    }
     
     async function loadDashboard(isSilent = false) { 
       let cachedData = localStorage.getItem("dashData_" + appState.iin); 
@@ -341,7 +429,7 @@
           let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
           if (isSeller && document.querySelectorAll("#content-adm-main:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) { 
               if (dash && dash.classList.contains("hidden")) { 
-                  dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); 
+                  dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade", "fade-out"); dash.classList.add("slide-down-fade"); 
               } 
           } else { 
               if(dash) dash.classList.add("hidden"); 
@@ -352,10 +440,7 @@
       let pUse = document.getElementById("pt-use"); if(pUse) pUse.innerText = data.info?.ptsUsed ?? '-'; 
       const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; 
       const ptRemEl = document.getElementById("pt-rem"); 
-      if(ptRemEl) {
-          ptRemEl.innerText = data.info?.ptsLeft ?? '-'; 
-          ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
-      }
+      if(ptRemEl) { ptRemEl.innerText = data.info?.ptsLeft ?? '-'; ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; }
       let pFin = document.getElementById("pt-fin"); if(pFin) pFin.innerText = data.info?.ptsFine ?? '-'; 
       
       let kpiValue = data.info?.kpiValue ?? data.baseKpi ?? 0; 
@@ -376,60 +461,38 @@
 
       let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
       let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
-      
-      /* ЗАЩИТА ОТ КРАША */
       let countSc = monthSc.filter(p => p && p.source && !String(p.source).toLowerCase().includes("trade-in")).length; 
       let countTrade = monthSc.filter(p => p && p.source && String(p.source).toLowerCase().includes("trade-in")).length; 
       
       let scEl = document.getElementById("info-sc-val"); 
-      if(scEl) {
-          scEl.innerText = `${countSc} | ${countTrade}`; 
-          if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; 
-      }
+      if(scEl) { scEl.innerText = `${countSc} | ${countTrade}`; if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; }
 
       const uBadge = document.getElementById("user-badge"); 
       const aBadge = document.getElementById("admin-badge"); 
       
       if (isDir) {
-          document.getElementById("nav-time-icon")?.classList.add("hidden"); 
-          document.getElementById("nav-create-icon")?.classList.add("hidden"); 
-          document.getElementById("inbox-icon")?.classList.add("hidden");
-          document.getElementById("nav-adm-outs")?.classList.remove("hidden"); 
-          document.getElementById("nav-adm-main")?.classList.remove("hidden"); 
-          document.getElementById("nav-adm-inbox")?.classList.remove("hidden");
+          document.getElementById("nav-time-icon")?.classList.add("hidden"); document.getElementById("nav-create-icon")?.classList.add("hidden"); document.getElementById("inbox-icon")?.classList.add("hidden");
+          document.getElementById("nav-adm-outs")?.classList.remove("hidden"); document.getElementById("nav-adm-main")?.classList.remove("hidden"); document.getElementById("nav-adm-inbox")?.classList.remove("hidden");
           
           let filteredAdminInbox = data.adminInbox ? data.adminInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
           if (filteredAdminInbox.length > 0) { 
               if(aBadge) { aBadge.innerText = filteredAdminInbox.length; aBadge.classList.remove("hidden"); }
               if (filteredAdminInbox.length > appState.lastInboxCount) showPushNotification("Новая заявка!", "Появилась заявка в админке"); 
               appState.lastInboxCount = filteredAdminInbox.length; 
-          } else { 
-              if(aBadge) aBadge.classList.add("hidden"); 
-              appState.lastInboxCount = 0; 
-          }
+          } else { if(aBadge) aBadge.classList.add("hidden"); appState.lastInboxCount = 0; }
           let adminPlanList = document.getElementById("admin-plan-list");
           if(adminPlanList) adminPlanList.innerHTML = data.adminPlan || "<p>План не загружен</p>"; 
-          
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); }
       } else {
-          if (!isUserPromoter) { 
-              document.getElementById("nav-time-icon")?.classList.remove("hidden"); 
-              document.getElementById("nav-create-icon")?.classList.remove("hidden"); 
-              document.getElementById("inbox-icon")?.classList.remove("hidden"); 
-          }
-          document.getElementById("nav-adm-outs")?.classList.add("hidden"); 
-          document.getElementById("nav-adm-main")?.classList.add("hidden"); 
-          document.getElementById("nav-adm-inbox")?.classList.add("hidden");
+          if (!isUserPromoter) { document.getElementById("nav-time-icon")?.classList.remove("hidden"); document.getElementById("nav-create-icon")?.classList.remove("hidden"); document.getElementById("inbox-icon")?.classList.remove("hidden"); }
+          document.getElementById("nav-adm-outs")?.classList.add("hidden"); document.getElementById("nav-adm-main")?.classList.add("hidden"); document.getElementById("nav-adm-inbox")?.classList.add("hidden");
           
           let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
           if (filteredUserInbox.length > 0) { 
               if(uBadge) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); }
               if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Уведомление!", "Непрочитанные сообщения"); 
               appState.lastInboxCount = filteredUserInbox.length; 
-          } else { 
-              if(uBadge) uBadge.classList.add("hidden"); 
-              appState.lastInboxCount = 0;
-          }
+          } else { if(uBadge) uBadge.classList.add("hidden"); appState.lastInboxCount = 0; }
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) switchTab('time');
       }
         
@@ -439,11 +502,13 @@
         let inboxList = document.getElementById("inbox-list");
         if(inboxList) {
             inboxList.innerHTML = uInbox.map(r => { 
-              let desc = formatRemarkText(r.details || "");
-              let authorStr = formatRemarkAuthor(r.authorName, r.adminDisplayName || r.authorName);
-              if (r.type === "Замечание" && r.status === "pending_user_reply") { return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание</div><div class="req-desc" style="color:var(--text-color); font-size:13px;">${authorStr}<br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; }
-              if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
-              return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
+              if (r.type === "Замечание" && r.status === "pending_user_reply") { 
+                  let headerStr = formatRemarkHeader(r.adminDisplayName || r.authorName);
+                  let desc = formatRemarkText(r.details || "", r.authorName, appState.firstName);
+                  return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12; font-size:13px; margin-bottom:6px;">⚠️ ${headerStr}</div><div class="req-desc" style="color:var(--text-color); font-size:13px;">${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." enterkeyhint="done" onkeydown="if(event.key==='Enter' && !event.shiftKey){ this.blur(); return false; }" style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; 
+              }
+              if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${r.details || ''}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
+              return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${r.details || ''}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
             }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
         }
       }
@@ -454,22 +519,23 @@
           adminList.innerHTML = aInbox.map(r => { 
               let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены"; 
               let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`; 
-              let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
-              desc = formatRemarkText(desc);
-              let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
-              return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
+              
+              if(r.type === "Замечание") {
+                  let headerStr = formatRemarkHeader(r.adminDisplayName || r.authorName);
+                  let desc = formatRemarkText(r.details || "", r.authorName, r.targetName || 'Сотрудник');
+                  return `<div class="req-item admin" id="req-${r.id}"><div class="req-title" style="color:#f39c12; font-size:13px; margin-bottom:6px;">${headerStr} <span style="font-size:10px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${desc}</div>${btns}</div>`;
+              } else {
+                  let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
+                  let authorStr = `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
+                  return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>`;
+              }
           }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
       }
 
       window.adminHistoryGlobal = data.adminHistory || [];
       if(isDir && typeof renderAdminHistory === "function") renderAdminHistory();
       
-      adminScItemsGlobal = data.adminScItems || []; 
-      globalSellers = data.sellers || []; 
-      globalScItems = data.scItems || []; 
-      allEmployeesData = data.adminEmployees || []; 
-      tradeInModelsGlobal = data.tradeInModels || []; 
-      
+      adminScItemsGlobal = data.adminScItems || []; globalSellers = data.sellers || []; globalScItems = data.scItems || []; allEmployeesData = data.adminEmployees || []; tradeInModelsGlobal = data.tradeInModels || []; 
       if (isDir && typeof renderAdminEmps === "function") renderAdminEmps(currentEmpDept, null);
     }
 
@@ -483,7 +549,18 @@
       else if (type === 'points') { document.getElementById("details-title").innerText = "История Баллов"; listHtml = "<div class='card' style='padding:0;'>"; if (myDisplayPointsHistory.length > 0) listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>"; listHtml += "</div>"; } 
       else if (type === 'kpi') { document.getElementById("details-title").innerText = "Детали КФ. ЭФФ."; listHtml = "<div class='card' style='padding:0;'>"; myKpiDetails.forEach(k => { let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; let srcColor = getSourceColor(k.source); let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); if (!dispName) dispName = k.name; if (k.source === "База" || k.name === "Ошибки") dispName = k.name; if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; } let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : ""; listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`; }); listHtml += "</div>"; }
       else if (type === 'report') { document.getElementById("details-title").innerText = "Мои отчеты"; listHtml = "<div style='padding-top:5px;'>"; listHtml += myReports.map(generateHorizontalGrid).join(''); listHtml += "</div>"; }
-      else if (type === 'tabel') { document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); document.getElementById("details-title").innerText = "Нарушения (Штрафы и Замечания)"; listHtml = "<div style='padding-top:5px;'>"; if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; let remarksHtml = ""; let myRemarks = JSON.parse(localStorage.getItem("dashData_" + appState.iin))?.info?.remarks || []; myRemarks.forEach(r => { remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:12px;">Замечание от: ${r.authorName} <span style="float:right; color:gray; font-size:10px;">${r.date.split(' ')[0]}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${r.details}</div></div>`; }); if (remarksHtml) listHtml += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>` + remarksHtml; listHtml += "</div>"; }
+      else if (type === 'tabel') { 
+          document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); document.getElementById("details-title").innerText = "Нарушения (Штрафы и Замечания)"; listHtml = "<div style='padding-top:5px;'>"; 
+          if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; 
+          let remarksHtml = ""; let myRemarks = JSON.parse(localStorage.getItem("dashData_" + appState.iin))?.info?.remarks || []; 
+          myRemarks.forEach(r => { 
+              let headerStr = formatRemarkHeader(r.adminDisplayName || r.authorName);
+              let desc = formatRemarkText(r.details || "", r.authorName, appState.firstName);
+              let d = r.date ? String(r.date).split(' ')[0] : ""; let time = r.date && r.date.includes(' ') ? r.date.split(' ')[1].substring(0,5) : "";
+              remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:13px; margin-bottom:6px;">${headerStr} <span style="float:right; color:gray; font-size:10px;">${d} ${time}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px; white-space:pre-wrap;">${desc}</div></div>`; 
+          }); 
+          if (remarksHtml) listHtml += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>` + remarksHtml; listHtml += "</div>"; 
+      }
       document.getElementById("details-list").innerHTML = listHtml;
     }
 
@@ -503,30 +580,22 @@
       
       if (tab === 'rep') { html = emp.reports.map(generateHorizontalGrid).join('') || "<p style='text-align:center;color:gray;font-size:12px;'>Отчетов нет</p>"; }
       else if (tab === 'pts') { 
-        html = `<div class="grid-details-container inner-block"><div style="display:flex; justify-content:space-around; text-align:center; margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:10px;"><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Нач.</div><b style="font-size:15px;">${emp.pts.acc || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Исп.</div><b style="font-size:15px;">${emp.pts.use || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Ост.</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штрф.</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin || 0}</b></div></div><div class="grid-details-title">История баллов</div>`; 
-        let ptsHtml = ""; 
-        (emp.ptsHistory || []).filter(p => p.type !== "KPI").forEach(p => { 
-            let ptsNum = parseFloat(String(p.val).replace(',', '.')) || 0; 
-            if (ptsNum !== 0) ptsHtml += renderHistoryItem({...p, val: ptsNum}, true); 
-        }); 
+        html = `<div class="grid-details-container inner-block"><div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; text-align:center; margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:10px;"><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Нач.</div><b style="font-size:15px;">${emp.pts.acc || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Исп.</div><b style="font-size:15px;">${emp.pts.use || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Ост.</div><b style="font-size:15px; color:#27ae60;">${emp.pts.rem || 0}</b></div><div><div style="color:gray; font-size:10px; margin-bottom:4px;">Штрф.</div><b style="font-size:15px; color:#e74c3c;">${emp.pts.fin || 0}</b></div></div><div class="grid-details-title">История баллов</div>`; 
+        let ptsHtml = ""; (emp.ptsHistory || []).filter(p => p.type !== "KPI").forEach(p => { let ptsNum = parseFloat(String(p.val).replace(',', '.')) || 0; if (ptsNum !== 0) ptsHtml += renderHistoryItem({...p, val: ptsNum}, true); }); 
         html += ptsHtml || `<div style="padding:15px; text-align:center; color:gray; font-size:12px;">История пуста</div>`; html += `</div>`; 
       }
       else if (tab === 'viol') {
         html = `<div style="display:flex; gap:8px; margin-bottom:12px;"><button class="btn-red" onclick="document.getElementById('fine-form-${iin}').classList.toggle('hidden')" style="padding:10px; font-size:12px; margin:0;">Выписать штраф</button><button class="btn-orange" onclick="document.getElementById('remark-form-${iin}').classList.toggle('hidden')" style="padding:10px; font-size:12px; margin:0;">Сделать замечание</button></div>`;
         html += `<div id="fine-form-${iin}" class="hidden inner-block slide-up-fade" style="border:1px solid #e74c3c; background:rgba(231, 76, 60, 0.05);"><input type="text" id="fine-reason-${iin}" placeholder="Причина штрафа..." style="box-sizing: border-box; width:100%; height:36px; margin-top:0; margin-bottom:8px; font-size:13px; background:var(--card-bg);"><div style="display:flex; gap:8px; margin-bottom:8px;"><input type="number" id="fine-amount-${iin}" placeholder="0 (Баллы)" style="box-sizing: border-box; height:36px; margin:0; flex:1; font-size:14px; background:var(--card-bg);"><input type="number" id="fine-money-${iin}" placeholder="0 (Сумма ₸)" style="box-sizing: border-box; height:36px; margin:0; flex:1; font-size:14px; background:var(--card-bg);"></div><button class="btn-red" onclick="executeFine('${iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Подтвердить штраф</button></div>`;
-        html += `<div id="remark-form-${iin}" class="hidden inner-block slide-up-fade" style="border:1px solid #f39c12; background:rgba(243, 156, 18, 0.05);"><textarea id="remark-text-${iin}" placeholder="Текст замечания..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--card-bg); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="executeRemark('${iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Отправить замечание</button></div>`;
+        html += `<div id="remark-form-${iin}" class="hidden inner-block slide-up-fade" style="border:1px solid #f39c12; background:rgba(243, 156, 18, 0.05);"><textarea id="remark-text-${iin}" placeholder="Текст замечания..." enterkeyhint="done" onkeydown="if(event.key==='Enter' && !event.shiftKey){ this.blur(); return false; }" style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--card-bg); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="executeRemark('${iin}', '${emp.name}')" style="padding:8px; font-size:12px; margin:0;">Отправить замечание</button></div>`;
         
-        let finesHtml = ""; 
-        (emp.ptsHistory || []).filter(p => p.type === "Штраф").forEach(p => { 
-            let moneyNum = parseFloat(String(p.moneyFine).replace(',', '.')) || 0; 
-            if (moneyNum !== 0) finesHtml += renderMoneyFineItem({...p, moneyFine: moneyNum}); 
-        });
+        let finesHtml = ""; (emp.ptsHistory || []).filter(p => p.type === "Штраф").forEach(p => { let moneyNum = parseFloat(String(p.moneyFine).replace(',', '.')) || 0; if (moneyNum !== 0) finesHtml += renderMoneyFineItem({...p, moneyFine: moneyNum}); });
         let remarksHtml = ""; 
         (emp.remarks || []).forEach(r => { 
-            let desc = formatRemarkText(r.details);
-            let authorStr = formatRemarkAuthor(r.authorName, r.adminDisplayName || r.authorName);
-            let d = r.date ? String(r.date).split(' ')[0] : "";
-            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="font-size:12px;">${authorStr} <span style="float:right; color:gray; font-size:10px;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
+            let headerStr = formatRemarkHeader(r.adminDisplayName || r.authorName);
+            let desc = formatRemarkText(r.details || "", r.authorName, emp.name);
+            let d = r.date ? String(r.date).split(' ')[0] : ""; let time = r.date && r.date.includes(' ') ? r.date.split(' ')[1].substring(0,5) : "";
+            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:13px; margin-bottom:6px;">${headerStr} <span style="float:right; color:gray; font-size:10px;">${d} ${time}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px; white-space:pre-wrap;">${desc}</div></div>`; 
         });
         if (finesHtml) html += `<div class="grid-details-title" style="color:#e74c3c; margin-top:10px;">Штрафы (Сумма)</div>${finesHtml}`;
         if (remarksHtml) html += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>${remarksHtml}`;
@@ -546,72 +615,35 @@
       document.getElementById("btn-adm-plan").classList.remove('active-flt'); document.getElementById("btn-adm-sc").classList.remove('active-flt'); document.getElementById("btn-adm-emp").classList.remove('active-flt');
       if(view === 'plan') { document.getElementById("admin-plan-list").classList.remove("hidden"); document.getElementById("admin-plan-list").classList.add("fade-in"); document.getElementById("btn-adm-plan").classList.add("active-flt"); } else if(view === 'sc') { document.getElementById("admin-sc-list").classList.remove("hidden"); document.getElementById("admin-sc-list").classList.add("fade-in"); document.getElementById("btn-adm-sc").classList.add("active-flt"); renderAdminScItems(currentAdminScDept, document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`)); } else { document.getElementById("admin-emp-container").classList.remove("hidden"); document.getElementById("admin-emp-container").classList.add("fade-in"); document.getElementById("btn-adm-emp").classList.add("active-flt"); renderAdminEmps(currentEmpDept, document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`)); }
     }
-    function formatRemarkAuthor(name, displayName) {
-        let role = "Руководителя";
-        let n = name ? String(name) : "";
-        if (displayName && String(displayName).includes(" — ")) {
-            let parts = String(displayName).split(" — ");
-            if (parts.length > 1) {
-                let r = parts[1].toLowerCase();
-                if (r.includes("директор")) role = "Директора";
-                else if (r.includes("управляющ")) role = "Управляющего";
-                else if (r.includes("супервайзер")) role = "Супервайзера";
-                else if (r.includes("админ")) role = "Администратора";
-            }
-        }
-        return `<b style="color:#f39c12;">От: ${role} ${n}</b>`;
-    }
-
-    function formatRemarkText(text) {
-        if (!text) return "";
-        let str = String(text);
-        let splitRegex = /(Ответ.*?:\s*)/i;
-        let parts = str.split(splitRegex);
-        if (parts.length >= 3) {
-            let main = parts[0];
-            let authorLabel = parts[1];
-            let quote = parts.slice(2).join("");
-            return `${main}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid var(--btn-color); border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:var(--btn-color); font-style:normal;">${authorLabel}</b><br>${quote}</div>`;
-        }
-        return str;
-    }
 
     let currentHistFilter = 'all';
     function renderAdminHistory(filterType) {
       if(filterType) currentHistFilter = filterType;
-      ['all', 'sales', 'pts', 'viol'].forEach(f => {
-        let el = document.getElementById('flt-hist-' + f);
-        if(el) el.classList.remove('active-flt');
-      });
-      let activeEl = document.getElementById('flt-hist-' + currentHistFilter);
-      if(activeEl) activeEl.classList.add('active-flt');
-
+      ['all', 'sales', 'pts', 'viol'].forEach(f => { let el = document.getElementById('flt-hist-' + f); if(el) el.classList.remove('active-flt'); });
+      let activeEl = document.getElementById('flt-hist-' + currentHistFilter); if(activeEl) activeEl.classList.add('active-flt');
       let aHist = window.adminHistoryGlobal || [];
-      if (currentHistFilter === 'sales') {
-          aHist = aHist.filter(r => ["Продажа СЦ/Фокус", "Продажа Trade-In", "Горячий чек"].includes(r.type));
-      } else if (currentHistFilter === 'pts') {
-          aHist = aHist.filter(r => r.type === "Баллы мотивации");
-      } else if (currentHistFilter === 'viol') {
-          aHist = aHist.filter(r => r.type === "Замечание" || r.type === "Штраф");
-      }
+      if (currentHistFilter === 'sales') { aHist = aHist.filter(r => ["Продажа СЦ/Фокус", "Продажа Trade-In", "Горячий чек"].includes(r.type)); } else if (currentHistFilter === 'pts') { aHist = aHist.filter(r => r.type === "Баллы мотивации"); } else if (currentHistFilter === 'viol') { aHist = aHist.filter(r => r.type === "Замечание" || r.type === "Штраф"); }
 
       document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
         let stColor = r.status === "approved" ? "#27ae60" : (r.status === "rejected" || r.status === "rejected_by_user" || r.status === "rejected_notify_user" ? "#e74c3c" : "#95a5a6"); 
-        let stText = r.status === "approved" ? "Одобрен" : (String(r.status).includes("rejected") ? "Отклонен" : "Просмотрен"); 
-        if(r.status === "rejected_by_user") stText = "Отклонен сменщиком"; 
+        let stText = r.status === "approved" ? "Одобрен" : (String(r.status).includes("rejected") ? "Отклонен" : "Просмотрен"); if(r.status === "rejected_by_user") stText = "Отклонен сменщиком"; 
         
-        let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
-        desc = formatRemarkText(desc);
-
+        let headerStr = formatRemarkHeader(r.adminDisplayName || r.authorName);
+        let titleColor = getSourceColor(r.type); if (r.type === "Продажа СЦ/Фокус" && String(r.details).toLowerCase().includes("фокус")) titleColor = '#e74c3c'; 
         let approverLabel = r.approver ? `<span style="color:gray; font-size:10px; font-weight:normal;">${r.approver}</span>` : ''; 
-        let titleColor = getSourceColor(r.type); 
-        if (r.type === "Продажа СЦ/Фокус" && String(r.details).toLowerCase().includes("фокус")) titleColor = '#e74c3c'; 
-        
-        let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.adminDisplayName) : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
+        let d = r.date ? String(r.date).split(' ')[0] : ""; let time = r.date && r.date.includes(' ') ? r.date.split(' ')[1].substring(0,5) : "";
 
-        return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:${titleColor};">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
+        if (r.type === "Замечание") {
+            let desc = formatRemarkText(r.details || "", r.authorName, r.targetName || 'Сотрудник');
+            return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:#f39c12;">${headerStr} <span style="font-size:10px; font-weight:normal; color:gray; float:right;">${d} ${time}</span></div><div class="req-desc" style="color:var(--text-color);">${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
+        } else {
+            let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
+            let authorStr = `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
+            return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:${titleColor};">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
+        }
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
     }
+    
     function renderAdminOuts() {
       let list = globalActiveOuts || []; const now = Date.now();
       document.getElementById('admin-outs-list').innerHTML = list.map(out => { let elapsedMin = Math.floor((now - out.leftAt) / 60000); let diffMin = out.limit - elapsedMin; let timeClass = ""; let timeText = ""; if (diffMin > 0) timeText = `Осталось ${diffMin} мин`; else { timeClass = "late"; timeText = `Опаздывает на ${Math.abs(diffMin)} мин!`; } let actionTitle = out.action; if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв"; let rRole = out.role ? String(out.role) : ""; let roleLabel = rRole.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${rRole}</div>` : ''; return `<div class="active-out-item" style="align-items: center;"><div><span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px; margin-left: 5px;">(${actionTitle})</span>${roleLabel}</div><span class="active-out-time ${timeClass}">${timeText}</span></div>`; }).join("") || "<p style='color:gray; font-size:13px; text-align:center;'>Все на местах</p>";
@@ -620,7 +652,7 @@
     function renderAdminEmps(dept, btnElement) {
        currentEmpDept = dept; if (btnElement) { document.getElementById('flt-emp-cifra').classList.remove('active-flt'); document.getElementById('flt-emp-mbt').classList.remove('active-flt'); document.getElementById('flt-emp-kbt').classList.remove('active-flt'); btnElement.classList.add('active-flt'); }
        let container = document.getElementById("admin-emp-list"); let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase())); let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
-       container.innerHTML = filtered.map(e => { let monthScHist = e.ptsHistory.filter(p => p.type === "Начисление" && typeof p.date === 'string' && p.date.includes(monthSuffix)); let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length; let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length; return `<div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;"><span>${e.name}</span></div></div><div class="inner-block" style="font-size:10px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 2px; height: 32px; display:flex; align-items:center;">${e.tabelStr}</div><div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; margin-bottom:2px;"><span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:gray; font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span><span>Ошибки по отчетам: <b>${e.reportErrors}</b></span></div><div style="display:flex; justify-content:flex-end; font-size:11px; align-items:center;"><span style="font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">KPI: ${e.kpi}%</span></div></div>`; }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
+       container.innerHTML = filtered.map(e => { let monthScHist = e.ptsHistory.filter(p => p.type === "Начисление" && typeof p.date === 'string' && p.date.includes(monthSuffix)); let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length; let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length; return `<div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:13px;"><span>${e.name}</span> <span style="font-size:12px; font-weight:bold; color:${setKpiColor(e.kpi, null, null)};">КФ. ЭФФ: ${e.kpi}%</span></div></div><div class="inner-block" style="font-size:10px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 2px; height: 32px; display:flex; align-items:center;">${e.tabelStr}</div><div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; margin-bottom:2px;"><span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:gray; font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span><span>Ошибки по отчетам: <b>${e.reportErrors}</b></span></div></div>`; }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
     }
     
     let currentAdminScTabType = 'active'; function switchScAdminTab(tabType) { currentAdminScTabType = tabType; renderAdminScItems(currentAdminScDept, null); }
@@ -649,7 +681,7 @@
       let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
-    function closeForm() { let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let dash = document.getElementById("info-dashboard"); if (!isUserPromoter && !isDir) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade"); dash.classList.add("slide-down-fade"); } ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => { let el = document.getElementById(id); el.classList.add("hidden"); el.classList.remove("slide-up-fade"); }); let menu = document.getElementById("menu-list"); menu.classList.remove("hidden"); menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null; menu.classList.add("fade-in"); let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0; }
+    function closeForm() { let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let dash = document.getElementById("info-dashboard"); if (!isUserPromoter && !isDir) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade", "fade-out"); dash.classList.add("slide-down-fade"); } ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => { let el = document.getElementById(id); el.classList.add("hidden"); el.classList.remove("slide-up-fade"); }); let menu = document.getElementById("menu-list"); menu.classList.remove("hidden"); menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null; menu.classList.add("fade-in"); let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0; }
     function checkSwapFields() { const target = document.getElementById("fs-target").value; if (target) document.getElementById("fs-extra").classList.remove("hidden"); }
 
     function renderScItems() {
