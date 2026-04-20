@@ -494,9 +494,9 @@
               if (sub) hcHtml += `<div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">${sub}</div>`;
               hcHtml += `<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">`;
               groups[sub].forEach(btn => {
-                  hcHtml += `<button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('${btn.name}', '${btn.val}')">${btn.name}</button>`;
-              });
-              hcHtml += `</div>`;
+                    let combinedName = sub ? `${sub} — ${btn.name}` : btn.name;
+                    hcHtml += `<button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`;
+                });
           }
           hcCard.innerHTML = hcHtml;
           hcCard.classList.remove("hidden");
@@ -568,7 +568,7 @@
       let prevTab = lastActiveTab;
       switchTab('details'); document.getElementById("btn-details-back").onclick = () => switchTab(prevTab); 
       // Кружок теперь интегрирован прямо в заголовок рядом с ФИО справа
-      document.getElementById("details-title").innerHTML = `<div style="display:flex; justify-content:center; align-items:center; gap:10px;"><span>${emp.name}</span><div class="circle-box" style="width:28px; min-width:28px; height:28px; margin:0; cursor:pointer; box-shadow:none;" onclick="openEmpKpiDetails('${emp.iin}')"><div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);"><div class="kpi-inner" style="width:22px; height:22px;"><span style="font-size:9px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)}">${emp.kpi}%</span></div></div></div></div>`;
+      document.getElementById("details-title").innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span style="flex:1; text-align:center; padding-left:28px;">${emp.name}</span><div class="circle-box" style="width:28px; min-width:28px; height:28px; margin:0; cursor:pointer; box-shadow:none;" onclick="openEmpKpiDetails('${emp.iin}')"><div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);"><div class="kpi-inner" style="width:22px; height:22px;"><span style="font-size:9px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)}">${emp.kpi}%</span></div></div></div></div>`;
       document.getElementById("details-kpi-circle-container").innerHTML = "";
       
       let tabsHtml = `<div style="display:flex; gap:6px; margin-bottom:12px; padding:0 4px;"><button id="emp-tab-rep" class="admin-flt active-flt" onclick="renderEmpDetailTab('rep', '${iin}')">Отчет</button><button id="emp-tab-pts" class="admin-flt" onclick="renderEmpDetailTab('pts', '${iin}')">Баллы</button><button id="emp-tab-viol" class="admin-flt" onclick="renderEmpDetailTab('viol', '${iin}')">Нарушения</button></div><div id="emp-detail-content" class="slide-up-fade"></div>`;
@@ -621,10 +621,45 @@
     function closeDetails() { switchTab('adm-main'); }
 
     function toggleAdminMain(view) {
+      window.currentAdminMainView = view;
       document.getElementById("admin-plan-list").classList.add("hidden"); document.getElementById("admin-sc-list").classList.add("hidden"); document.getElementById("admin-emp-container").classList.add("hidden");
       document.getElementById("admin-plan-list").classList.remove("fade-in"); document.getElementById("admin-sc-list").classList.remove("fade-in"); document.getElementById("admin-emp-container").classList.remove("fade-in");
       document.getElementById("btn-adm-plan").classList.remove('active-flt'); document.getElementById("btn-adm-sc").classList.remove('active-flt'); document.getElementById("btn-adm-emp").classList.remove('active-flt');
       if(view === 'plan') { document.getElementById("admin-plan-list").classList.remove("hidden"); document.getElementById("admin-plan-list").classList.add("fade-in"); document.getElementById("btn-adm-plan").classList.add("active-flt"); } else if(view === 'sc') { document.getElementById("admin-sc-list").classList.remove("hidden"); document.getElementById("admin-sc-list").classList.add("fade-in"); document.getElementById("btn-adm-sc").classList.add("active-flt"); renderAdminScItems(currentAdminScDept, document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`)); } else { document.getElementById("admin-emp-container").classList.remove("hidden"); document.getElementById("admin-emp-container").classList.add("fade-in"); document.getElementById("btn-adm-emp").classList.add("active-flt"); renderAdminEmps(currentEmpDept, document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`)); }
+    }
+
+    function switchTab(tab, direction = null) {
+      let scroller = document.getElementById("scrollable-body");
+      if (scroller && lastActiveTab) savedScrollPos[lastActiveTab] = scroller.scrollTop;
+
+      if (tab !== 'details') lastActiveTab = tab; if(appState.token) loadDashboard(true);
+      document.querySelectorAll('#main-tabs .icon-btn').forEach(btn => btn.classList.remove('active-tab')); 
+      if(tab === 'time') document.getElementById('nav-time-icon').classList.add('active-tab'); 
+      if(tab === 'create') document.getElementById('nav-create-icon').classList.add('active-tab'); 
+      if(tab === 'inbox') document.getElementById('inbox-icon').classList.add('active-tab');
+      if(tab === 'adm-outs') document.getElementById('nav-adm-outs').classList.add('active-tab');
+      if(tab === 'adm-main') document.getElementById('nav-adm-main').classList.add('active-tab');
+      if(tab === 'adm-inbox') document.getElementById('nav-adm-inbox').classList.add('active-tab');
+
+      document.querySelectorAll('#scrollable-body > div').forEach(el => el.classList.add("hidden"));
+      let sections = document.querySelectorAll('#scrollable-body > div'); let animClass = 'slide-up-fade'; if (direction === 'right') animClass = 'slide-in-right'; else if (direction === 'left') animClass = 'slide-in-left';
+      sections.forEach(s => { s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
+      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let isSeller = !isUserPromoter && !isDir; let isCreateTabActive = (tab === 'create'); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
+      let dash = document.getElementById("info-dashboard"); if (isSeller && tab !== 'details' && !tab.startsWith('adm') && !isAnyFormActive) { if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } } else { dash.classList.add("hidden"); }
+      let targetEl = document.getElementById("content-" + tab);
+      if(targetEl) { targetEl.classList.remove("hidden"); targetEl.classList.add(animClass); }
+      
+      if(tab === 'adm-outs') renderAdminOuts(); 
+      if(tab === 'adm-main') {
+          if (typeof window.currentAdminMainView === 'undefined') window.currentAdminMainView = 'plan';
+          toggleAdminMain(window.currentAdminMainView); 
+      }
+      if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
+      
+      if (scroller) {
+          // Восстанавливаем скролл с микрозадержкой, чтобы страница успела отрисоваться
+          setTimeout(() => { scroller.scrollTop = savedScrollPos[tab] || 0; }, 10);
+      }
     }
 
     let currentHistFilter = 'all';
