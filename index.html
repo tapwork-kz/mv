@@ -200,19 +200,39 @@
         setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
     }
 
+    function isSensitiveState() {
+        // Проверяем, открыта ли клавиатура (фокус на поле ввода)
+        let activeEl = document.activeElement;
+        let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
+        
+        // Проверяем, открыта ли хоть одна форма создания
+        let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
+        let isTradeInOpen = document.getElementById("form-tradein") && !document.getElementById("form-tradein").classList.contains("hidden");
+        let isPointsOpen = document.getElementById("form-points") && !document.getElementById("form-points").classList.contains("hidden");
+        let isSwapOpen = document.getElementById("form-swap") && !document.getElementById("form-swap").classList.contains("hidden");
+        
+        // Проверяем, открыты ли формы штрафов или замечаний внутри карточек
+        let isDetailsFormOpen = false;
+        document.querySelectorAll('[id^="fine-form-"], [id^="remark-form-"]').forEach(el => {
+            if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
+        });
+
+        // Если хоть одно условие совпадает, возвращаем true (обновлять экран нельзя)
+        return isTyping || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
+    }
+
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
             if(appState.token && !document.hidden) {
-                let activeEl = document.activeElement; 
-                let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT');
-                
                 let data = await callBackend('getDashboardData', { token: appState.token }); 
                 if (!data || data.error === "Оффлайн режим") return; 
                 if (data.authorized === false) { forceLogout(); return; } 
                 
-                // Если мы печатаем текст, замораживаем обновление экрана, чтобы текст не слетел
-                if (!isTyping) renderDashboardData(data, true);
+                // 🛑 ГЛАВНАЯ ЗАЩИТА: Обновляем экран ТОЛЬКО если мы не находимся в чувствительных местах
+                if (!isSensitiveState()) {
+                    renderDashboardData(data, true);
+                }
                 
                 let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
                 if(state && state.authorized !== false) { 
@@ -490,13 +510,22 @@
               if(!groups[hc.sub]) groups[hc.sub] = [];
               groups[hc.sub].push(hc);
           });
+          
           for(let sub in groups) {
-              if (sub) hcHtml += `<div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">${sub}</div>`;
-              hcHtml += `<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">`;
+              // Если есть заголовок (отдел или категория)
+              if (sub) {
+                  hcHtml += `<div style="margin-bottom: 8px; font-size:12px; font-weight:bold; color:gray; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 10px;">${sub}</div>`;
+              }
+              
+              // Определяем, сколько кнопок в ряду (растягиваем от 1 до 4)
+              let colsCount = Math.min(groups[sub].length, 4);
+              
+              hcHtml += `<div style="display: grid; grid-template-columns: repeat(${colsCount}, 1fr); gap: 6px; margin-bottom: 6px;">`;
               groups[sub].forEach(btn => {
-                    let combinedName = sub ? `${sub} ${btn.name}` : btn.name;
-                    hcHtml += `<button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`;
-                });
+                  let combinedName = sub ? `${sub} — ${btn.name}` : btn.name;
+                  hcHtml += `<button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`;
+              });
+              hcHtml += `</div>`;
           }
           hcCard.innerHTML = hcHtml;
           hcCard.classList.remove("hidden");
