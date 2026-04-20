@@ -494,7 +494,7 @@
               if (sub) hcHtml += `<div style="margin-bottom: 6px; font-size:12px; font-weight:bold; color:gray;">${sub}</div>`;
               hcHtml += `<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px;">`;
               groups[sub].forEach(btn => {
-                    let combinedName = sub ? `${sub} — ${btn.name}` : btn.name;
+                    let combinedName = sub ? `${sub} ${btn.name}` : btn.name;
                     hcHtml += `<button class="btn-green" style="padding:10px 0; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`;
                 });
           }
