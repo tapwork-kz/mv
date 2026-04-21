@@ -94,7 +94,7 @@
         <div id="form-points" class="card form-dark hidden"><h3 style="font-size:15px;">Баллы мотивации</h3><div id="fp-balance-notice"></div><select id="fp-action"><option value="Придти позже">Придти позже</option><option value="Уйти раньше">Уйти раньше</option></select><select id="fp-time"><option value="30 мин">30 мин</option><option value="1 час">1 час</option><option value="2 часа">2 часа</option><option value="3 часа">3 часа</option></select><p id="fp-date-label" style="margin: 12px 0 6px; font-size: 13px; color:gray;">Укажите дату:</p><input type="text" id="fp-date" class="smart-date" data-realdate=""><div class="grid-btns" style="margin-top: 15px;"><button class="btn-gray" onclick="closeForm()">Отмена</button><button id="fp-submit-btn" onclick="submitPoints()">Отправить</button></div></div>
         <div id="form-swap" class="card form-dark hidden"><div class="inner-block" style="border:1px dashed var(--btn-color); margin-bottom:15px;"><h3 style="margin-top:0; font-size:14px;">Исправить смену за сегодня</h3><select id="fs-fix-shift"><option value="" disabled selected>Выберите правильную смену</option><option value="09:00 - 19:00">09:00 - 19:00</option><option value="12:00 - 22:00">12:00 - 22:00</option></select><button class="btn-green" onclick="submitFixShift()" style="margin-top:10px; font-size:13px; padding:10px;">Отправить исправление</button></div><h3 style="padding-top:10px; border-top:1px solid var(--border-color); font-size:15px;">Обмен сменами</h3><select id="fs-target" onchange="checkSwapFields()"></select><div id="fs-extra" class="hidden"><p style="margin: 10px 0 6px; font-size: 13px; font-weight: bold; color:var(--form-title-color);">Укажите вашу новую смену:</p><input type="text" id="fs-date" class="smart-date" data-realdate=""><select id="fs-shift"><option value="09:00 - 19:00">09:00 - 19:00</option><option value="12:00 - 22:00">12:00 - 22:00</option></select></div><div class="grid-btns" style="margin-top: 15px;"><button class="btn-gray" onclick="closeForm()">Отмена</button><button onclick="submitSwap()">Запросить обмен</button></div></div>
       </div>
-      <div id="content-inbox" class="hidden"><div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;"><h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы / Уведомления</h3></div><div id="inbox-list" class="req-list"></div></div>
+      <div id="content-inbox" class="hidden"><div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;"><h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Входящие</h3></div><div id="inbox-list" class="req-list"></div></div>
       <div id="content-adm-outs" class="hidden">
         <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;"><h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Список отсутствующих</h3></div>
         <div id="admin-outs-list" class="active-outs-box inner-block" style="background:var(--card-bg);"></div>
@@ -163,7 +163,7 @@
     function clearMemory() { try { localStorage.clear(); } catch(e){} let cookies = document.cookie.split("; "); for (let c of cookies) document.cookie = c.split("=")[0] + "=; max-age=0; path=/"; }
 
     let appState = { token: getMemory("userToken"), iin: getMemory("userIIN"), firstName: getMemory("userName") || "", currentAction: getMemory("currentAction"), role: getMemory("userRole") || "Продавец", dept: getMemory("userDept") || "Цифра", lastInboxCount: 0 };
-    let savedScrollPos = {}; // Память для скролла вкладок
+    let savedScrollPos = {}; 
     function formatShortName(fullName) { if (!fullName) return ""; let p = String(fullName).trim().split(/\s+/); if (p.length > 1 && p[1]) return p[0] + " " + p[1].charAt(0).toUpperCase() + "."; return p[0]; }
     let globalSellers = []; let globalScItems = []; let adminScItemsGlobal = []; let selectedScItem = null; let myReports = []; let myPointsHistory = []; let myDisplayPointsHistory = []; let myScHistory = []; let myKpiDetails = []; let allEmployeesData = []; let myMoneyFinesHistory = [];
 
@@ -181,9 +181,12 @@
         scrollArea.addEventListener('touchend', e => {
             let endX = e.changedTouches[0].screenX; let endY = e.changedTouches[0].screenY; let diffX = endX - startX; let diffY = Math.abs(endY - startY);
             if (diffY < 60 && Math.abs(diffX) > 80) { 
-                let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер");
-                let isZav = roleStr.includes("заведующий");
-                let tabs = isDir ? ['adm-outs', 'adm-main', 'adm-inbox'] : (isZav ? ['adm-outs', 'adm-main', 'inbox'] : ['time', 'create', 'inbox']);
+                let roleStr = String(appState.role).toLowerCase(); 
+                let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер");
+                let isZavSklad = roleStr.includes("заведующий складом");
+                let tabs = isDir ? ['adm-outs', 'adm-main', 'adm-inbox'] : 
+                           isZavSklad ? ['adm-main', 'inbox'] : 
+                           ['time', 'create', 'inbox'];
                 let currentIdx = tabs.indexOf(lastActiveTab);
                 if (currentIdx !== -1) { 
                     if (diffX < 0 && currentIdx < tabs.length - 1) switchTab(tabs[currentIdx + 1], 'right'); 
@@ -191,21 +194,6 @@
                 }
             }
         }, {passive: true});
-    }
-
-    function formatRemarkAuthor(name, role) {
-        let r = String(role || "руководителя").toLowerCase();
-        let decl = "руководителя";
-        if (r.includes("директор")) decl = "директора";
-        else if (r.includes("супервайзер")) decl = "супервайзера";
-        else if (r.includes("управляющ")) decl = "управляющего";
-        else if (r.includes("админ")) decl = "администратора";
-        else if (r.includes("заведующ")) decl = "заведующего"; // Добавили склонение
-
-        let parts = String(name).trim().split(/\s+/);
-        let shortName = parts[0];
-        if (parts.length > 1 && parts[1]) shortName += " " + parts[1].charAt(0).toUpperCase() + ".";
-        return `От ${decl} ${shortName}`;
     }
 
     function hideLoader() { const loader = document.getElementById("loader-screen"); loader.style.opacity = '0'; setTimeout(() => loader.classList.add("hidden"), 600); }
@@ -217,23 +205,16 @@
     }
 
     function isSensitiveState() {
-        // Проверяем, открыта ли клавиатура (фокус на поле ввода)
         let activeEl = document.activeElement;
         let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
-        
-        // Проверяем, открыта ли хоть одна форма создания
         let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
         let isTradeInOpen = document.getElementById("form-tradein") && !document.getElementById("form-tradein").classList.contains("hidden");
         let isPointsOpen = document.getElementById("form-points") && !document.getElementById("form-points").classList.contains("hidden");
         let isSwapOpen = document.getElementById("form-swap") && !document.getElementById("form-swap").classList.contains("hidden");
-        
-        // Проверяем, открыты ли формы штрафов или замечаний внутри карточек
         let isDetailsFormOpen = false;
         document.querySelectorAll('[id^="fine-form-"], [id^="remark-form-"]').forEach(el => {
             if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
         });
-
-        // Если хоть одно условие совпадает, возвращаем true (обновлять экран нельзя)
         return isTyping || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
     }
 
@@ -245,7 +226,6 @@
                 if (!data || data.error === "Оффлайн режим") return; 
                 if (data.authorized === false) { forceLogout(); return; } 
                 
-                // 🛑 ГЛАВНАЯ ЗАЩИТА: Обновляем экран ТОЛЬКО если мы не находимся в чувствительных местах
                 if (!isSensitiveState()) {
                     renderDashboardData(data, true);
                 }
@@ -253,10 +233,12 @@
                 let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
                 if(state && state.authorized !== false) { 
                     globalActiveOuts = state.activeOuts || [];
-                    let roleStr = String(data.role || "").toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер");
-                    if(!isDir) { 
+                    let roleStr = String(data.role || "").toLowerCase(); 
+                    let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер");
+                    let isZavSklad = roleStr.includes("заведующий складом");
+                    if(!isDir && !isZavSklad) { 
                         appState.currentAction = state.myActiveAction || ""; saveMemory("currentAction", appState.currentAction); renderTimeUI(); applyLimits(state); 
-                    } else {
+                    } else if (isDir || isZavSklad) {
                         if (!document.getElementById("content-adm-outs").classList.contains("hidden")) renderAdminOuts();
                     }
                 }
@@ -295,13 +277,29 @@
       document.querySelectorAll('#scrollable-body > div').forEach(el => el.classList.add("hidden"));
       let sections = document.querySelectorAll('#scrollable-body > div'); let animClass = 'slide-up-fade'; if (direction === 'right') animClass = 'slide-in-right'; else if (direction === 'left') animClass = 'slide-in-left';
       sections.forEach(s => { s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
-      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let isSeller = !isUserPromoter && !isDir; let isCreateTabActive = (tab === 'create'); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
+      
+      let roleStr = String(appState.role).toLowerCase(); 
+      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+      let isZavSklad = roleStr.includes("заведующий складом");
+      let isSeller = !isUserPromoter && !isDir && !isZavSklad; 
+      
+      let isCreateTabActive = (tab === 'create'); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
       let dash = document.getElementById("info-dashboard"); if (isSeller && tab !== 'details' && !tab.startsWith('adm') && !isAnyFormActive) { if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } } else { dash.classList.add("hidden"); }
+      
       let targetEl = document.getElementById("content-" + tab);
       if(targetEl) { targetEl.classList.remove("hidden"); targetEl.classList.add(animClass); }
-      if(tab === 'adm-outs') renderAdminOuts(); if(tab === 'adm-main') toggleAdminMain('plan'); ;if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
       
-      if (scroller) scroller.scrollTop = savedScrollPos[tab] || 0;
+      if(tab === 'adm-outs') renderAdminOuts(); 
+      if(tab === 'adm-main') {
+          if (isZavSklad && window.currentAdminMainView === 'plan') window.currentAdminMainView = 'emps';
+          if (typeof window.currentAdminMainView === 'undefined') window.currentAdminMainView = isZavSklad ? 'emps' : 'plan';
+          toggleAdminMain(window.currentAdminMainView); 
+      }
+      if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
+      
+      if (scroller) {
+          setTimeout(() => { scroller.scrollTop = savedScrollPos[tab] || 0; }, 10);
+      }
     }
 
     function applyLimits(state) {
@@ -338,23 +336,13 @@
             renderDashboardData(JSON.parse(cachedData), true); 
             let roleStr = String(appState.role).toLowerCase(); 
             let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
-            let isZav = roleStr.includes("заведующий");
+            let isZavSklad = roleStr.includes("заведующий складом");
             
-            // Распределяем вкладки по умолчанию в зависимости от роли
-            if (isDir) { 
-                switchTab('adm-main'); 
-                toggleAdminMain('plan'); 
-            } else if (isZav) { 
-                switchTab('adm-outs'); 
-                toggleAdminMain('emps'); 
-            } else { 
-                switchTab('time'); 
-            } 
-            
+            if (isDir) { switchTab('adm-main'); toggleAdminMain('plan'); } 
+            else if (isZavSklad) { switchTab('adm-main'); toggleAdminMain('emps'); }
+            else { switchTab('time'); } 
             hideLoader(); isSilent = true; 
-          } catch(e) { 
-            localStorage.removeItem("dashData_" + appState.iin); showLoader(); 
-          } 
+          } catch(e) { localStorage.removeItem("dashData_" + appState.iin); showLoader(); } 
         } else showLoader(); 
       } 
       let data = await callBackend('getDashboardData', { token: appState.token }); 
@@ -366,17 +354,13 @@
       
       let roleStr = String(appState.role).toLowerCase(); 
       let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+      let isZavSklad = roleStr.includes("заведующий складом");
       let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
+      
       if(state && state.authorized !== false) { 
           globalActiveOuts = state.activeOuts || [];
-          if (!isDir) { 
-              appState.currentAction = state.myActiveAction || ""; 
-              saveMemory("currentAction", appState.currentAction); 
-              renderTimeUI(); 
-              applyLimits(state); 
-          } else { 
-              if (!document.getElementById("content-adm-outs").classList.contains("hidden")) renderAdminOuts(); 
-          }
+          if (!isDir && !isZavSklad) { appState.currentAction = state.myActiveAction || ""; saveMemory("currentAction", appState.currentAction); renderTimeUI(); applyLimits(state); } 
+          else { if (!document.getElementById("content-adm-outs").classList.contains("hidden")) renderAdminOuts(); }
       }
     }
 
@@ -390,6 +374,7 @@
         else if (r.includes("супервайзер")) decl = "супервайзера";
         else if (r.includes("управляющ")) decl = "управляющего";
         else if (r.includes("админ")) decl = "администратора";
+        else if (r.includes("заведующий складом") || r.includes("зав. складом")) decl = "заведующего";
 
         let parts = String(name).trim().split(/\s+/);
         let shortName = parts[0];
@@ -427,92 +412,57 @@
       
       let roleStr = String(appState.role).toLowerCase(); 
       let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
-      let isZav = data.isZav || roleStr.includes("заведующий");
-      let hasAdminRights = isDir || isZav;
-      let isSeller = !isUserPromoter && !hasAdminRights; 
+      let isZavSklad = roleStr.includes("заведующий складом");
+      let isSeller = !isUserPromoter && !isDir && !isZavSklad; 
       
-      window.isZavGlobal = isZav; // Сохраняем глобально для работы вкладок
-
       let elContentCreate = document.getElementById("content-create");
       let isCreateTabActive = elContentCreate && !elContentCreate.classList.contains("hidden"); 
       let elMenuList = document.getElementById("menu-list");
       let isAnyFormActive = isCreateTabActive && elMenuList && elMenuList.classList.contains("hidden"); 
       let dash = document.getElementById("info-dashboard");
       
-      if (isUserPromoter) { 
+      // Логика UI для Заведующих складом
+      if (isZavSklad) {
+          document.getElementById("nav-time-icon")?.classList.add("hidden"); 
           document.getElementById("nav-create-icon")?.classList.add("hidden"); 
-          document.getElementById("inbox-icon")?.classList.add("hidden"); 
-          let db = document.getElementById("desc-break"); if(db) db.innerText = "15 мин"; 
-          let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "1 час"; 
-          let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
-          if(dash) dash.classList.add("hidden"); 
-      } else { 
-          let db = document.getElementById("desc-break"); if(db) db.innerText = "10 мин"; 
-          let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "40 мин"; 
-          let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
-          if (isSeller && document.querySelectorAll("#content-adm-main:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) { 
-              if (dash && dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } 
+          document.getElementById("inbox-icon")?.classList.remove("hidden");
+          document.getElementById("nav-adm-outs")?.classList.add("hidden"); 
+          document.getElementById("nav-adm-main")?.classList.remove("hidden"); 
+          document.getElementById("nav-adm-inbox")?.classList.add("hidden");
+          
+          let btnPlan = document.getElementById("btn-adm-plan");
+          if (btnPlan) btnPlan.style.display = "none";
+          
+          let inboxTitle = document.querySelector("#content-inbox h3");
+          if (inboxTitle) inboxTitle.innerText = "Входящие";
+
+          if (window.currentAdminMainView === 'plan' || !window.currentAdminMainView) {
+              window.currentAdminMainView = 'emps';
+          }
+          
+          let match = roleStr.match(/заведующий складом\s+(цифра|мбт|кбт)/i);
+          if (match && !window.zavScDeptSet) {
+              let extracted = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
+              appState.dept = extracted;
+              currentAdminScDept = extracted;
+              currentEmpDept = extracted;
+              window.zavScDeptSet = true;
+          }
+          
+          let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
+          const uBadge = document.getElementById("user-badge"); 
+          if (filteredUserInbox.length > 0) { 
+              if(uBadge) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); }
+              if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Уведомление!", "У вас новое уведомление"); 
+              appState.lastInboxCount = filteredUserInbox.length; 
           } else { 
-              if(dash) dash.classList.add("hidden"); 
-          } 
-      }
-
-      let pAcc = document.getElementById("pt-acc"); if(pAcc) pAcc.innerText = data.info?.ptsAccrued ?? '-'; 
-      let pUse = document.getElementById("pt-use"); if(pUse) pUse.innerText = data.info?.ptsUsed ?? '-'; 
-      const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; 
-      const ptRemEl = document.getElementById("pt-rem"); 
-      if(ptRemEl) { ptRemEl.innerText = data.info?.ptsLeft ?? '-'; ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; }
-      let pFin = document.getElementById("pt-fin"); if(pFin) pFin.innerText = data.info?.ptsFine ?? '-'; 
-      
-      let kpiValue = data.info?.kpiValue ?? data.baseKpi ?? 0; 
-      let kValEl = document.getElementById("kpi-val"); if(kValEl) kValEl.innerText = kpiValue + '%'; 
-      setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val")); 
-      myKpiDetails = data.info?.kpiDetails || [];
-      
-      let infoTabel = document.getElementById("info-tabel");
-      if(infoTabel) infoTabel.innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
-
-      myReports = data.info?.reports || []; 
-      myPointsHistory = data.info?.myPtsHistory || []; 
-      
-      // ИСПРАВЛЕНИЕ: Показываем штрафы корректно, даже если там просто замечание (0 тенге и 0 баллов)
-      myMoneyFinesHistory = myPointsHistory.filter(p => p && p.type === "Штраф" && p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); 
-      myDisplayPointsHistory = myPointsHistory.filter(p => { 
-          if (!p || p.type === "KPI") return false; 
-          let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; 
-          let moneyVal = parseFloat(String(p.moneyFine).replace(',', '.')) || 0;
-          return ptsVal !== 0 || moneyVal !== 0 || p.type === "Штраф"; 
-      });
-      
-      myScHistory = myPointsHistory.filter(p => p && p.type === "Начисление");
-
-      let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
-      let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
-      let countSc = monthSc.filter(p => p && p.source && !String(p.source).toLowerCase().includes("trade-in")).length; 
-      let countTrade = monthSc.filter(p => p && p.source && String(p.source).toLowerCase().includes("trade-in")).length; 
-      
-      let scEl = document.getElementById("info-sc-val"); 
-      if(scEl) { scEl.innerText = `${countSc} | ${countTrade}`; if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; }
-
-      const uBadge = document.getElementById("user-badge"); 
-      const aBadge = document.getElementById("admin-badge"); 
-      
-      // ИСПРАВЛЕНИЕ: Меняем визуальный порядок вкладок с помощью CSS order
-      if (isDir) {
-          document.getElementById("nav-adm-outs").style.order = "1";
-          document.getElementById("nav-adm-main").style.order = "2";
-          document.getElementById("nav-adm-inbox").style.order = "3";
-      } else if (isZav) {
-          document.getElementById("nav-adm-outs").style.order = "1";
-          document.getElementById("nav-adm-main").style.order = "2";
-          document.getElementById("inbox-icon").style.order = "3";
-      } else {
-          document.getElementById("nav-time-icon").style.order = "1";
-          document.getElementById("nav-create-icon").style.order = "2";
-          document.getElementById("inbox-icon").style.order = "3";
-      }
-
-      if (isDir) {
+              if(uBadge) uBadge.classList.add("hidden"); 
+              appState.lastInboxCount = 0;
+          }
+          
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); toggleAdminMain('emps'); }
+      } 
+      else if (isDir) {
           document.getElementById("nav-time-icon")?.classList.add("hidden"); 
           document.getElementById("nav-create-icon")?.classList.add("hidden"); 
           document.getElementById("inbox-icon")?.classList.add("hidden");
@@ -520,7 +470,11 @@
           document.getElementById("nav-adm-main")?.classList.remove("hidden"); 
           document.getElementById("nav-adm-inbox")?.classList.remove("hidden");
           
+          let btnPlan = document.getElementById("btn-adm-plan");
+          if (btnPlan) btnPlan.style.display = "";
+          
           let filteredAdminInbox = data.adminInbox ? data.adminInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
+          const aBadge = document.getElementById("admin-badge"); 
           if (filteredAdminInbox.length > 0) { 
               if(aBadge) { aBadge.innerText = filteredAdminInbox.length; aBadge.classList.remove("hidden"); }
               if (filteredAdminInbox.length > appState.lastInboxCount) showPushNotification("Новая заявка!", "Появилась заявка в админке"); 
@@ -532,52 +486,36 @@
           let adminPlanList = document.getElementById("admin-plan-list");
           if(adminPlanList) adminPlanList.innerHTML = data.adminPlan || "<p>План не загружен</p>"; 
           
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); }
-      } else if (isZav) {
-          document.getElementById("nav-time-icon")?.classList.add("hidden"); 
-          document.getElementById("nav-create-icon")?.classList.add("hidden"); 
-          document.getElementById("nav-adm-inbox")?.classList.add("hidden"); 
-          
-          document.getElementById("nav-adm-outs")?.classList.remove("hidden");
-          document.getElementById("nav-adm-main")?.classList.remove("hidden");
-          document.getElementById("inbox-icon")?.classList.remove("hidden");
-          
-          document.getElementById("btn-adm-plan")?.classList.add("hidden");
-
-          if (!window.zavDeptSet) { 
-              currentAdminScDept = appState.dept; 
-              currentEmpDept = appState.dept; // ИСПРАВЛЕНИЕ: Задаем отдел сотрудников по умолчанию
-              window.zavDeptSet = true; 
-              setTimeout(() => {
-                  let scBtn = document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`);
-                  if (scBtn) { document.querySelectorAll('#admin-sc-list .sticky-header .admin-flt').forEach(b => b.classList.remove('active-flt')); scBtn.classList.add('active-flt'); }
-                  let empBtn = document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`);
-                  if (empBtn) { document.querySelectorAll('#admin-emp-container .sticky-header .admin-flt').forEach(b => b.classList.remove('active-flt')); empBtn.classList.add('active-flt'); }
-              }, 100);
-          }
-          
-          let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
-          if (filteredUserInbox.length > 0) { 
-              if(uBadge) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); }
-              if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Уведомление!", "Непрочитанные сообщения"); 
-              appState.lastInboxCount = filteredUserInbox.length; 
-          } else { 
-              if(uBadge) uBadge.classList.add("hidden"); 
-              appState.lastInboxCount = 0;
-          }
-          
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-outs'); }
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); toggleAdminMain('plan'); }
       } else {
-          if (!isUserPromoter) { 
+          if (isUserPromoter) { 
+              document.getElementById("nav-create-icon")?.classList.add("hidden"); 
+              document.getElementById("inbox-icon")?.classList.add("hidden"); 
+              let db = document.getElementById("desc-break"); if(db) db.innerText = "15 мин"; 
+              let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "1 час"; 
+              let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
+              if(dash) dash.classList.add("hidden"); 
+          } else { 
               document.getElementById("nav-time-icon")?.classList.remove("hidden"); 
               document.getElementById("nav-create-icon")?.classList.remove("hidden"); 
               document.getElementById("inbox-icon")?.classList.remove("hidden"); 
+              let db = document.getElementById("desc-break"); if(db) db.innerText = "10 мин"; 
+              let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "40 мин"; 
+              let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
+              if (isSeller && document.querySelectorAll("#content-adm-main:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) { 
+                  if (dash && dash.classList.contains("hidden")) { 
+                      dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); 
+                  } 
+              } else { 
+                  if(dash) dash.classList.add("hidden"); 
+              } 
           }
           document.getElementById("nav-adm-outs")?.classList.add("hidden"); 
           document.getElementById("nav-adm-main")?.classList.add("hidden"); 
           document.getElementById("nav-adm-inbox")?.classList.add("hidden");
           
           let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
+          const uBadge = document.getElementById("user-badge"); 
           if (filteredUserInbox.length > 0) { 
               if(uBadge) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); }
               if (filteredUserInbox.length > appState.lastInboxCount) showPushNotification("Уведомление!", "Непрочитанные сообщения"); 
@@ -589,20 +527,65 @@
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) switchTab('time');
       }
 
+      let pAcc = document.getElementById("pt-acc"); if(pAcc) pAcc.innerText = data.info?.ptsAccrued ?? '-'; 
+      let pUse = document.getElementById("pt-use"); if(pUse) pUse.innerText = data.info?.ptsUsed ?? '-'; 
+      const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; 
+      const ptRemEl = document.getElementById("pt-rem"); 
+      if(ptRemEl) {
+          ptRemEl.innerText = data.info?.ptsLeft ?? '-'; 
+          ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
+      }
+      let pFin = document.getElementById("pt-fin"); if(pFin) pFin.innerText = data.info?.ptsFine ?? '-'; 
+      
+      let kpiValue = data.info?.kpiValue ?? data.baseKpi ?? 0; 
+      let kValEl = document.getElementById("kpi-val"); if(kValEl) kValEl.innerText = kpiValue + '%'; 
+      setKpiColor(kpiValue, document.getElementById("kpi-circle"), document.getElementById("kpi-val")); 
+      myKpiDetails = data.info?.kpiDetails || [];
+      
+      let infoTabel = document.getElementById("info-tabel");
+      if(infoTabel) {
+          infoTabel.innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
+      }
+
+      myReports = data.info?.reports || []; 
+      myPointsHistory = data.info?.myPtsHistory || []; 
+      myMoneyFinesHistory = myPointsHistory.filter(p => p && p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); 
+      myScHistory = myPointsHistory.filter(p => p && p.type === "Начисление");
+      myDisplayPointsHistory = myPointsHistory.filter(p => { if (!p || p.type === "KPI") return false; let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; return ptsVal !== 0; });
+
+      let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
+      let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
+      
+      let countSc = monthSc.filter(p => p && p.source && !String(p.source).toLowerCase().includes("trade-in")).length; 
+      let countTrade = monthSc.filter(p => p && p.source && String(p.source).toLowerCase().includes("trade-in")).length; 
+      
+      let scEl = document.getElementById("info-sc-val"); 
+      if(scEl) {
+          scEl.innerText = `${countSc} | ${countTrade}`; 
+          if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; 
+      }
+
       let hcCard = document.getElementById("hot-check-card");
       if (hcCard && data.hotChecks && data.hotChecks.length > 0) {
           let hcHtml = `<h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>`;
           let groups = {};
           data.hotChecks.forEach(hc => { if(!groups[hc.sub]) groups[hc.sub] = []; groups[hc.sub].push(hc); });
+          
           for(let sub in groups) {
               if (sub) hcHtml += `<div style="margin-bottom: 8px; font-size:12px; font-weight:bold; color:gray; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 10px;">${sub}</div>`;
               let colsCount = Math.min(groups[sub].length, 4);
               hcHtml += `<div style="display: grid; grid-template-columns: repeat(${colsCount}, 1fr); gap: 6px; margin-bottom: 6px;">`;
-              groups[sub].forEach(btn => { let combinedName = sub ? `${sub} ${btn.name}` : btn.name; hcHtml += `<button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`; });
+              groups[sub].forEach(btn => {
+                  let combinedName = sub ? `${sub} ${btn.name}` : btn.name;
+                  hcHtml += `<button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`;
+              });
               hcHtml += `</div>`;
           }
-          hcCard.innerHTML = hcHtml; hcCard.classList.remove("hidden");
-      } else if (hcCard) { hcCard.classList.add("hidden"); }
+          hcCard.innerHTML = hcHtml;
+          hcCard.classList.remove("hidden");
+      } else if (hcCard) {
+          hcCard.classList.add("hidden");
+      }
         
       let uInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
       let activeEl = document.activeElement; let isTyping = activeEl && activeEl.tagName === 'TEXTAREA' && activeEl.id.startsWith('remark-reply');
@@ -613,17 +596,14 @@
               let desc = formatRemarkText(r.details || "");
               let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.authorRole) : `<b>От:</b> ${r.authorName}`;
               let d = r.date ? String(r.date) : "";
-              if (r.type === "Замечание" && r.status === "pending_user_reply") { return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; }
               
-              if (r.status === "rejected_notify_user") {
-                  if (r.type === "Запрос на штраф") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Штраф отклонен</div><div class="req-desc">Ваш запрос на штраф для <b>${r.targetName}</b> был отклонен администратором.<br>Причина: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`;
-                  return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
-              }
-              if (r.status === "approved_notify_user") {
-                  return `<div class="req-item" id="req-${r.id}" style="border-left-color: #27ae60;"><div class="req-title">✅ Штраф одобрен</div><div class="req-desc">Ваш запрос на штраф для <b>${r.targetName}</b> был одобрен администратором.<br>Причина: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`;
-              }
+              if (r.status === "rejected_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Штраф отклонен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> отклонен админом.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
+              if (r.status === "approved_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #27ae60;"><div class="req-title">✅ Штраф одобрен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> успешно одобрен администратором.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
+
+              if (r.type === "Замечание" && r.status === "pending_user_reply") { return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; }
+              if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
               return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
-            }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Запросов нет</p>";
+            }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Уведомлений нет</p>";
         }
       }
 
@@ -631,10 +611,16 @@
       let adminList = document.getElementById("admin-list");
       if(adminList) {
           adminList.innerHTML = aInbox.map(r => { 
-              let isViewOnly = r.status === "pending_admin_view"; 
+              let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены"; 
               let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`; 
               let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
               desc = formatRemarkText(desc);
+              
+              if (r.type === "Запрос на штраф") {
+                  let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){}
+                  desc = `Нарушитель: <b>${r.targetName}</b><br>Причина: ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`;
+              }
+              
               let authorStr = r.type === "Замечание" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
               return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
           }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
@@ -643,16 +629,21 @@
       window.adminHistoryGlobal = data.adminHistory || [];
       if(isDir && typeof renderAdminHistory === "function") renderAdminHistory();
       
-      adminScItemsGlobal = data.adminScItems || []; globalSellers = data.sellers || []; globalScItems = data.scItems || []; allEmployeesData = data.adminEmployees || []; tradeInModelsGlobal = data.tradeInModels || []; 
-      if (hasAdminRights && typeof renderAdminEmps === "function") renderAdminEmps(currentEmpDept, null);
+      adminScItemsGlobal = data.adminScItems || []; 
+      globalSellers = data.sellers || []; 
+      globalScItems = data.scItems || []; 
+      allEmployeesData = data.adminEmployees || []; 
+      tradeInModelsGlobal = data.tradeInModels || []; 
+      
+      if ((isDir || isZavSklad) && typeof renderAdminEmps === "function") renderAdminEmps(currentEmpDept, null);
     }
 
     function generateHorizontalGrid(dataObj) { if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:8px;text-align:center;color:gray;font-size:12px;'>Нет данных</div>"; let gridCols = `repeat(${dataObj.headers.length}, 1fr)`; let html = `<div class="grid-details-container inner-block"><div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div><div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`; dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; }); dataObj.values.forEach(v => { let displayVal = '-'; if (v === '✔') displayVal = '✅'; else if (v === '✖') displayVal = '❌'; else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>'; else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>'; else displayVal = v || '-'; html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; min-height:28px; width:100%; box-sizing:border-box;">${displayVal}</div>`; }); html += `</div></div>`; return html; }
-    function renderHistoryItem(i, isCompact = false) { let valStr = String(i.val).replace('.', ','); let col = String(i.type).toLowerCase().includes('начисл') || valStr.includes('+') ? 'detail-plus' : 'detail-minus'; if(String(i.type).toLowerCase().includes('штраф')) col = 'detail-fine'; let typeColor = "#95a5a6"; let typeDisplay = i.type; let srcColor = getSourceColor(i.source); if (String(i.type).toLowerCase() === "начисление") typeColor = "#27ae60"; else if (String(i.type).toLowerCase().includes('использ')) typeColor = "#f39c12"; else if (String(i.type).toLowerCase().includes('штраф')) typeColor = "#e74c3c"; let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let rightText = String(i.type).toLowerCase().includes('штраф') ? i.source : i.approver;  rightText = formatShortName(rightText); let approverHtml = (isDir && rightText) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${rightText}</span>` : ''; let sourceHtml = String(i.type).toLowerCase().includes('штраф') ? `<span style="color:gray;font-size:10px;">${i.date}</span>` : `<b style="color:${srcColor}; font-size:10px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span>`; let inner = `<div style="flex:1;"><b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div>${sourceHtml}</div>${approverHtml}</div></div><span class="${col}" style="margin-left:10px;">${valStr}</span>`; if (isCompact) return `<div class="req-item" style="border-left-color: ${typeColor}; border-left-width: 2px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`; return `<div class="detail-item">${inner}</div>`; }
-    function renderMoneyFineItem(i) { let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0"; let formatted = formatNumberWithSpaces(moneyVal); let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let issuerHtml = (isDir && i.source) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${formatShortName(i.source)}</span>` : ''; return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div style="flex:1;"><b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div><span style="color:gray;font-size:10px;">${i.date}</span></div>${issuerHtml}</div></div><span class="detail-fine" style="margin-left:10px;">${formatted} ₸</span></div>`; }
+    function renderHistoryItem(i, isCompact = false) { let valStr = String(i.val).replace('.', ','); let col = String(i.type).toLowerCase().includes('начисл') || valStr.includes('+') ? 'detail-plus' : 'detail-minus'; if(String(i.type).toLowerCase().includes('штраф')) col = 'detail-fine'; let typeColor = "#95a5a6"; let typeDisplay = i.type; let srcColor = getSourceColor(i.source); if (String(i.type).toLowerCase() === "начисление") typeColor = "#27ae60"; else if (String(i.type).toLowerCase().includes('использ')) typeColor = "#f39c12"; else if (String(i.type).toLowerCase().includes('штраф')) typeColor = "#e74c3c"; let rightText = String(i.type).toLowerCase().includes('штраф') ? i.source : i.approver;  rightText = formatShortName(rightText); let approverHtml = (rightText) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${rightText}</span>` : ''; let sourceHtml = String(i.type).toLowerCase().includes('штраф') ? `<span style="color:gray;font-size:10px;">${i.date}</span>` : `<b style="color:${srcColor}; font-size:10px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span>`; let inner = `<div style="flex:1;"><b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div>${sourceHtml}</div>${approverHtml}</div></div><span class="${col}" style="margin-left:10px;">${valStr}</span>`; if (isCompact) return `<div class="req-item" style="border-left-color: ${typeColor}; border-left-width: 2px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`; return `<div class="detail-item">${inner}</div>`; }
+    function renderMoneyFineItem(i) { let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0"; let formatted = formatNumberWithSpaces(moneyVal); let issuerHtml = (i.source) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${formatShortName(i.source)}</span>` : ''; return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div style="flex:1;"><b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div><span style="color:gray;font-size:10px;">${i.date}</span></div>${issuerHtml}</div></div><span class="detail-fine" style="margin-left:10px;">${formatted} ₸</span></div>`; }
 
     function openDetails(type) {
-      let prevTab = lastActiveTab; // Сохраняем предыдущий шаг
+      let prevTab = lastActiveTab; 
       switchTab('details'); document.getElementById("btn-details-back").onclick = () => switchTab(prevTab); 
       document.getElementById("details-kpi-circle-container").innerHTML = ""; let listHtml = "";
       if (type === 'sc') { document.getElementById("details-title").innerText = "Детали СЦ | BRZY"; listHtml = "<div class='card' style='padding:0;'>"; if (myScHistory.length > 0) listHtml += myScHistory.map((i, idx) => { let srcColor = getSourceColor(i.source); return `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px;">${idx + 1}. ${i.reason}</span><br><b style="color:${srcColor}; font-size:10px; display:inline-block; margin-top:3px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span></div></div>`; }).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>"; listHtml += "</div>"; } 
@@ -670,7 +661,6 @@
       switchTab('details'); 
       
       document.getElementById("btn-details-back").onclick = () => {
-          // Если кликнули изнутри карточки — возвращаем в карточку, иначе в общий список
           if (fromDetails) openEmpDetails(iin); 
           else switchTab(prevTab); 
       };
@@ -735,7 +725,7 @@
             let desc = formatRemarkText(r.details);
             let authorStr = formatRemarkAuthor(r.authorName, r.authorRole);
             let d = r.date ? String(r.date) : "";
-            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px; border-left-width: 2px; padding: 10px 8px;"><div class="req-title" style="font-size:12px;"><b style="color:#f39c12;">${authorStr}</b> <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
+            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="font-size:12px;"><b style="color:#f39c12;">${authorStr}</b> <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
         });
         if (finesHtml) html += `<div class="grid-details-title" style="color:#e74c3c; margin-top:10px;">Штрафы (Сумма)</div>${finesHtml}`;
         if (remarksHtml) html += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>${remarksHtml}`;
@@ -746,17 +736,7 @@
     
     async function executeRemark(iin, name) { let text = document.getElementById(`remark-text-${iin}`).value; if (!text) return showToast("Укажите текст замечания!", true); vibrate(50); showToast("Отправка...", false, 9999); let res = await callBackend('submitRemark', { token: appState.token, targetIin: iin, targetName: name, text: text }); if (res.success) { showToast("Замечание отправлено!"); loadDashboard(true); closeDetails(); } else showToast(res.error, true); }
 
-    async function executeFine(iin, name) { 
-        let reason = document.getElementById(`fine-reason-${iin}`).value; let amount = document.getElementById(`fine-amount-${iin}`).value || "0"; let moneyAmount = document.getElementById(`fine-money-${iin}`).value || "0"; 
-        if (!reason) return showToast("Укажите причину штрафа!", true); if (parseFloat(amount) >= 0 && parseFloat(moneyAmount) >= 0) return showToast("Укажите штраф (баллы или сумма) меньше 0!", true); 
-        vibrate(50); showToast("Отправка...", false, 9999); 
-        let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount, moneyAmount: moneyAmount }); 
-        if (res.success) { 
-            if (res.isRequest) showToast("Запрос на штраф отправлен админу!");
-            else showToast("Штраф выписан!"); 
-            loadDashboard(true); closeDetails(); 
-        } else showToast(res.error, true); 
-    }
+    async function executeFine(iin, name) { let reason = document.getElementById(`fine-reason-${iin}`).value; let amount = document.getElementById(`fine-amount-${iin}`).value || "0"; let moneyAmount = document.getElementById(`fine-money-${iin}`).value || "0"; if (!reason) return showToast("Укажите причину штрафа!", true); if (parseFloat(amount) >= 0 && parseFloat(moneyAmount) >= 0) return showToast("Укажите штраф (баллы или сумма) меньше 0!", true); vibrate(50); showToast("Отправка...", false, 9999); let res = await callBackend('submitFine', { token: appState.token, iin: iin, name: name, reason: reason, amount: amount, moneyAmount: moneyAmount }); if (res.success) { showToast("Штраф выписан/запрошен!"); loadDashboard(true); closeDetails(); } else showToast(res.error, true); }
     function closeDetails() { switchTab('adm-main'); }
 
     function toggleAdminMain(view) {
@@ -765,40 +745,6 @@
       document.getElementById("admin-plan-list").classList.remove("fade-in"); document.getElementById("admin-sc-list").classList.remove("fade-in"); document.getElementById("admin-emp-container").classList.remove("fade-in");
       document.getElementById("btn-adm-plan").classList.remove('active-flt'); document.getElementById("btn-adm-sc").classList.remove('active-flt'); document.getElementById("btn-adm-emp").classList.remove('active-flt');
       if(view === 'plan') { document.getElementById("admin-plan-list").classList.remove("hidden"); document.getElementById("admin-plan-list").classList.add("fade-in"); document.getElementById("btn-adm-plan").classList.add("active-flt"); } else if(view === 'sc') { document.getElementById("admin-sc-list").classList.remove("hidden"); document.getElementById("admin-sc-list").classList.add("fade-in"); document.getElementById("btn-adm-sc").classList.add("active-flt"); renderAdminScItems(currentAdminScDept, document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`)); } else { document.getElementById("admin-emp-container").classList.remove("hidden"); document.getElementById("admin-emp-container").classList.add("fade-in"); document.getElementById("btn-adm-emp").classList.add("active-flt"); renderAdminEmps(currentEmpDept, document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`)); }
-    }
-
-    function switchTab(tab, direction = null) {
-      let scroller = document.getElementById("scrollable-body");
-      if (scroller && lastActiveTab) savedScrollPos[lastActiveTab] = scroller.scrollTop;
-
-      if (tab !== 'details') lastActiveTab = tab; if(appState.token) loadDashboard(true);
-      document.querySelectorAll('#main-tabs .icon-btn').forEach(btn => btn.classList.remove('active-tab')); 
-      if(tab === 'time') document.getElementById('nav-time-icon').classList.add('active-tab'); 
-      if(tab === 'create') document.getElementById('nav-create-icon').classList.add('active-tab'); 
-      if(tab === 'inbox') document.getElementById('inbox-icon').classList.add('active-tab');
-      if(tab === 'adm-outs') document.getElementById('nav-adm-outs').classList.add('active-tab');
-      if(tab === 'adm-main') document.getElementById('nav-adm-main').classList.add('active-tab');
-      if(tab === 'adm-inbox') document.getElementById('nav-adm-inbox').classList.add('active-tab');
-
-      document.querySelectorAll('#scrollable-body > div').forEach(el => el.classList.add("hidden"));
-      let sections = document.querySelectorAll('#scrollable-body > div'); let animClass = 'slide-up-fade'; if (direction === 'right') animClass = 'slide-in-right'; else if (direction === 'left') animClass = 'slide-in-left';
-      sections.forEach(s => { s.classList.remove('fade-in', 'slide-up-fade', 'slide-in-right', 'slide-in-left'); s.style.animation = 'none'; s.offsetHeight; s.style.animation = null; });
-      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let isSeller = !isUserPromoter && !isDir; let isCreateTabActive = (tab === 'create'); let isAnyFormActive = isCreateTabActive && document.getElementById("menu-list").classList.contains("hidden");
-      let dash = document.getElementById("info-dashboard"); if (isSeller && tab !== 'details' && !tab.startsWith('adm') && !isAnyFormActive) { if (dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } } else { dash.classList.add("hidden"); }
-      let targetEl = document.getElementById("content-" + tab);
-      if(targetEl) { targetEl.classList.remove("hidden"); targetEl.classList.add(animClass); }
-      
-      if(tab === 'adm-outs') renderAdminOuts(); 
-      if(tab === 'adm-main') {
-          // ИСПРАВЛЕНИЕ: Заведующему по умолчанию открываем сотрудников, а не скрытый план
-          if (typeof window.currentAdminMainView === 'undefined') window.currentAdminMainView = window.isZavGlobal ? 'emps' : 'plan';
-          toggleAdminMain(window.currentAdminMainView); 
-      }
-      if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
-      
-      if (scroller) {
-          setTimeout(() => { scroller.scrollTop = savedScrollPos[tab] || 0; }, 10);
-      }
     }
 
     let currentHistFilter = 'all';
@@ -821,18 +767,23 @@
       }
 
       document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
-        let stColor = r.status === "approved" ? "#27ae60" : (r.status === "rejected" || r.status === "rejected_by_user" || r.status === "rejected_notify_user" ? "#e74c3c" : "#95a5a6"); 
-        let stText = r.status === "approved" ? "Одобрен" : (String(r.status).includes("rejected") ? "Отклонен" : "Просмотрен"); 
+        let stColor = r.status === "approved" || r.status === "approved_notify_zav" ? "#27ae60" : (r.status === "rejected" || r.status === "rejected_by_user" || r.status === "rejected_notify_user" || r.status === "rejected_notify_zav" ? "#e74c3c" : "#95a5a6"); 
+        let stText = r.status === "approved" || r.status === "approved_notify_zav" ? "Одобрен" : (String(r.status).includes("rejected") ? "Отклонен" : "Просмотрен"); 
         if(r.status === "rejected_by_user") stText = "Отклонен сменщиком"; 
         
         let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
         desc = formatRemarkText(desc);
 
+        if (r.type === "Запрос на штраф") {
+            let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){}
+            desc = `Нарушитель: <b>${r.targetName}</b><br>Причина: ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`;
+        }
+
         let approverLabel = r.approver ? `<span style="color:gray; font-size:10px; font-weight:normal;">${formatShortName(r.approver)}</span>` : ''; 
         let titleColor = getSourceColor(r.type); 
         if (r.type === "Продажа СЦ/Фокус" && String(r.details).toLowerCase().includes("фокус")) titleColor = '#e74c3c'; 
         
-        let authorStr = r.type === "Замечание" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
+        let authorStr = r.type === "Замечание" || r.type === "Запрос на штраф" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
 
         return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:${titleColor};">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
       }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
@@ -840,13 +791,7 @@
     
     function renderAdminOuts() {
       let list = globalActiveOuts || []; const now = Date.now();
-      let html = list.map(out => { let elapsedMin = Math.floor((now - out.leftAt) / 60000); let diffMin = out.limit - elapsedMin; let timeClass = ""; let timeText = ""; if (diffMin > 0) timeText = `Осталось ${diffMin} мин`; else { timeClass = "late"; timeText = `Опаздывает на ${Math.abs(diffMin)} мин!`; } let actionTitle = out.action; if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв"; let rRole = out.role ? String(out.role) : ""; let roleLabel = rRole.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${rRole}</div>` : ''; return `<div class="active-out-item" style="align-items: center;"><div><span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px; margin-left: 5px;">(${actionTitle})</span>${roleLabel}</div><span class="active-out-time ${timeClass}">${timeText}</span></div>`; }).join("") || "<p style='color:gray; font-size:13px; text-align:center;'>Все на местах</p>";
-      
-      let admOutsList = document.getElementById('admin-outs-list');
-      if (admOutsList) admOutsList.innerHTML = html;
-      
-      let zavOutsList = document.getElementById('zav-outs-container');
-      if (zavOutsList) zavOutsList.innerHTML = `<div class="active-outs-title" style="margin-top:0;">В отсутствии:</div>` + html;
+      document.getElementById('admin-outs-list').innerHTML = list.map(out => { let elapsedMin = Math.floor((now - out.leftAt) / 60000); let diffMin = out.limit - elapsedMin; let timeClass = ""; let timeText = ""; if (diffMin > 0) timeText = `Осталось ${diffMin} мин`; else { timeClass = "late"; timeText = `Опаздывает на ${Math.abs(diffMin)} мин!`; } let actionTitle = out.action; if(actionTitle.includes("Перерыв")) actionTitle = "Перерыв"; let rRole = out.role ? String(out.role) : ""; let roleLabel = rRole.toLowerCase().includes('промоутер') ? `<div style="font-size:11px; color:gray; font-weight:normal; margin-top:2px;">${rRole}</div>` : ''; return `<div class="active-out-item" style="align-items: center;"><div><span class="active-out-name">${out.name}</span> <span style="color:gray; font-weight:normal; font-size:11px; margin-left: 5px;">(${actionTitle})</span>${roleLabel}</div><span class="active-out-time ${timeClass}">${timeText}</span></div>`; }).join("") || "<p style='color:gray; font-size:13px; text-align:center;'>Все на местах</p>";
     }
 
     function renderAdminEmps(dept, btnElement) {
@@ -899,6 +844,7 @@
     }
 
     function switchScDept(dept) { currentScTabDept = dept; document.getElementById('sc-tab-cifra').classList.remove('active-flt'); document.getElementById('sc-tab-mbt').classList.remove('active-flt'); document.getElementById('sc-tab-kbt').classList.remove('active-flt'); let tabId = 'sc-tab-cifra'; if (dept === 'МБТ') tabId = 'sc-tab-mbt'; if (dept === 'КБТ') tabId = 'sc-tab-kbt'; document.getElementById(tabId).classList.add('active-flt'); renderScItems(); }
+    
     function openForm(type) {
       document.getElementById("menu-list").classList.add("hidden"); let dash = document.getElementById("info-dashboard"); dash.classList.add("hidden"); 
       if(type === 'sc') { selectedScItem = null; document.getElementById("sc-search").value = ""; document.getElementById("btn-act-doc").style.opacity = "0.3"; document.getElementById("btn-act-doc").style.pointerEvents = "none"; let deptToSet = appState.dept || 'Цифра'; if (deptToSet !== 'Цифра' && deptToSet !== 'МБТ' && deptToSet !== 'КБТ') deptToSet = 'Цифра'; switchScDept(deptToSet); document.getElementById("form-sc").classList.remove("hidden"); document.getElementById("form-sc").classList.add("slide-up-fade"); }
@@ -908,7 +854,8 @@
       let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0;
     }
 
-    function closeForm() { let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let dash = document.getElementById("info-dashboard"); if (!isUserPromoter && !isDir) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade"); dash.classList.add("slide-down-fade"); } ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => { let el = document.getElementById(id); el.classList.add("hidden"); el.classList.remove("slide-up-fade"); }); let menu = document.getElementById("menu-list"); menu.classList.remove("hidden"); menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null; menu.classList.add("fade-in"); let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0; }
+    function closeForm() { let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); let isZavSklad = roleStr.includes("заведующий складом"); let dash = document.getElementById("info-dashboard"); if (!isUserPromoter && !isDir && !isZavSklad) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade", "slide-down-fade"); dash.classList.add("slide-down-fade"); } ["form-sc", "form-tradein", "form-points", "form-swap"].forEach(id => { let el = document.getElementById(id); el.classList.add("hidden"); el.classList.remove("slide-up-fade"); }); let menu = document.getElementById("menu-list"); menu.classList.remove("hidden"); menu.style.animation = 'none'; menu.offsetHeight; menu.style.animation = null; menu.classList.add("fade-in"); let scroller = document.getElementById("scrollable-body"); if (scroller) scroller.scrollTop = 0; }
+    
     function checkSwapFields() { const target = document.getElementById("fs-target").value; if (target) document.getElementById("fs-extra").classList.remove("hidden"); }
 
     function renderScItems() {
@@ -931,7 +878,6 @@
     function submitFixShift() { const shiftStr = document.getElementById("fs-fix-shift").value; if (!shiftStr) return showToast("Выберите новую смену", true); const dateVal = new Date().toISOString().split('T')[0]; executeSubmit("Исправление смены", shiftStr, null, getFormattedDate(dateVal), "Запрос на исправление отправлен"); }
     function submitSwap() { const select = document.getElementById("fs-target"); const targetIin = select.value; if(!targetIin) return showToast("Выберите сменщика", true); const dateVal = document.getElementById("fs-date").dataset.realdate; const shiftStr = document.getElementById("fs-shift").value; const targetName = select.options[select.selectedIndex].text; const details = `Дата: ${getFormattedDate(dateVal)}, Смена: ${shiftStr}`; executeSubmit("Обмен сменами", details, targetIin, "", "Запрос отправлен: " + targetName); }
     
-    // Функция горячего чека обновлена: теперь принимает текст кнопки и сумму бонуса KPI
     function submitHotCheck(typeText, valText) { 
         let promptMsg = `Вы подтверждаете продажу: ${typeText}?`; 
         let dateVal = new Date().toISOString().split('T')[0]; 
@@ -952,14 +898,12 @@
     async function processReq(id, action, replyText = "") { vibrate(50); showToast("Обработка...", false, 9999); processedReqIds.add(String(id)); let el = document.getElementById("req-" + id); if (el) { el.style.display = 'none'; } let res = await callBackend('processRequest', { token: appState.token, reqId: id, reqAction: action, replyText: replyText }); if(res.success) { showToast(res.msg); loadDashboard(true); } else { showToast(res.error, true); loadDashboard(true); } }
 
     // ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛАВИАТУРЫ
-    // 1. Скрытие по кнопке Enter на мобильной клавиатуре
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' && document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
         document.activeElement.blur();
       }
     });
 
-    // 2. Скрытие при тапе в любое пустое место вне поля ввода
     document.addEventListener('touchstart', function(e) {
       if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
         if (!document.activeElement.contains(e.target)) {
