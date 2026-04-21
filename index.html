@@ -336,10 +336,25 @@
         if (cachedData) { 
           try { 
             renderDashboardData(JSON.parse(cachedData), true); 
-            let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
-            if (isDir) { switchTab('adm-main'); toggleAdminMain('plan'); } else { switchTab('time'); } 
+            let roleStr = String(appState.role).toLowerCase(); 
+            let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+            let isZav = roleStr.includes("заведующий");
+            
+            // Распределяем вкладки по умолчанию в зависимости от роли
+            if (isDir) { 
+                switchTab('adm-main'); 
+                toggleAdminMain('plan'); 
+            } else if (isZav) { 
+                switchTab('adm-outs'); 
+                toggleAdminMain('emps'); 
+            } else { 
+                switchTab('time'); 
+            } 
+            
             hideLoader(); isSilent = true; 
-          } catch(e) { localStorage.removeItem("dashData_" + appState.iin); showLoader(); } 
+          } catch(e) { 
+            localStorage.removeItem("dashData_" + appState.iin); showLoader(); 
+          } 
         } else showLoader(); 
       } 
       let data = await callBackend('getDashboardData', { token: appState.token }); 
@@ -349,12 +364,19 @@
       renderDashboardData(data, isSilent); 
       if (!isSilent) hideLoader(); 
       
-      let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
+      let roleStr = String(appState.role).toLowerCase(); 
+      let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
       let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
       if(state && state.authorized !== false) { 
           globalActiveOuts = state.activeOuts || [];
-          if (!isDir) { appState.currentAction = state.myActiveAction || ""; saveMemory("currentAction", appState.currentAction); renderTimeUI(); applyLimits(state); } 
-          else { if (!document.getElementById("content-adm-outs").classList.contains("hidden")) renderAdminOuts(); }
+          if (!isDir) { 
+              appState.currentAction = state.myActiveAction || ""; 
+              saveMemory("currentAction", appState.currentAction); 
+              renderTimeUI(); 
+              applyLimits(state); 
+          } else { 
+              if (!document.getElementById("content-adm-outs").classList.contains("hidden")) renderAdminOuts(); 
+          }
       }
     }
 
@@ -406,7 +428,8 @@
       let roleStr = String(appState.role).toLowerCase(); 
       let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
       let isZav = data.isZav || roleStr.includes("заведующий");
-      let isSeller = !isUserPromoter && !isDir && !isZav; 
+      let hasAdminRights = isDir || isZav; // <--- ДОБАВИЛИ ЭТУ СТРОКУ
+      let isSeller = !isUserPromoter && !hasAdminRights;
       
       let elContentCreate = document.getElementById("content-create");
       let isCreateTabActive = elContentCreate && !elContentCreate.classList.contains("hidden"); 
