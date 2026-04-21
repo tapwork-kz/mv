@@ -785,9 +785,9 @@
                  </div>
               </div>
               
-              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center;">
-                  <span><span style="color:#555555;">СЦ | Brzy:</span> <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:#555555; font-weight:normal; margin: 0 2px;">/</span> <b style="color:var(--text-color);">${e.sales.sc} | ${e.sales.trade}</b></  span>
-                  <span><span style="color:#555555;">Ошибки по отчетам:</span> <b style="color:var(--text-color);">${e.reportErrors}</b></span>
+              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; color:#555555;">
+                  <span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="font-weight:normal; margin: 0 2px;">/</span> <b style="color:var(--text-color);">${e.sales.sc} | ${e.sales.trade}</b></span>
+                  <span>Ошибки по отчетам: <b style="color:var(--text-color);">${e.reportErrors}</b></span>
               </div>
            </div>`; 
        }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
