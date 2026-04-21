@@ -590,19 +590,16 @@
       document.getElementById("details-list").innerHTML = listHtml;
     }
 
-    function openEmpKpiDetails(iin) { 
+    function openEmpKpiDetails(iin, fromDetails = false) { 
       const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; 
       
-      // Запоминаем откуда пришли, чтобы кнопка "Назад" работала правильно
-      let cameFromDetails = (lastActiveTab === 'details');
       let prevTab = lastActiveTab;
-      
-      // Вот здесь не хватало команды переключения экрана!
       switchTab('details'); 
       
       document.getElementById("btn-details-back").onclick = () => {
-          if (cameFromDetails) openEmpDetails(iin); // Возврат в карточку сотрудника
-          else switchTab(prevTab); // Возврат в общий список
+          // Если кликнули изнутри карточки — возвращаем в карточку, иначе в общий список
+          if (fromDetails) openEmpDetails(iin); 
+          else switchTab(prevTab); 
       };
       
       document.getElementById("details-title").innerText = "КФ. ЭФФ: " + emp.name; 
@@ -628,13 +625,11 @@
       const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; 
       let prevTab = lastActiveTab;
       switchTab('details'); document.getElementById("btn-details-back").onclick = () => switchTab(prevTab); 
-      // Кружок теперь интегрирован прямо в заголовок рядом с ФИО справа
-      document.getElementById("details-title").innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span style="flex:1; text-align:center; padding-left:28px;">${emp.name}</span><div class="circle-box" style="width:28px; min-width:28px; height:28px; margin:0; cursor:pointer; box-shadow:none;" onclick="openEmpKpiDetails('${emp.iin}')"><div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);"><div class="kpi-inner" style="width:22px; height:22px;"><span style="font-size:9px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)}">${emp.kpi}%</span></div></div></div></div>`;
+      document.getElementById("details-title").innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; width:100%;"><span style="flex:1; text-align:center; padding-left:28px;">${emp.name}</span><div class="circle-box" style="width:28px; min-width:28px; height:28px; margin:0; cursor:pointer; box-shadow:none;" onclick="openEmpKpiDetails('${emp.iin}', true)"><div class="kpi-container" style="background: conic-gradient(${setKpiColor(emp.kpi, null, null)} ${emp.kpi > 100 ? 100 : emp.kpi}%, var(--inner-bg) 0);"><div class="kpi-inner" style="width:22px; height:22px;"><span style="font-size:9px; font-weight:bold; color:${setKpiColor(emp.kpi, null, null)}">${emp.kpi}%</span></div></div></div></div>`;
       document.getElementById("details-kpi-circle-container").innerHTML = "";
       
       let tabsHtml = `<div style="display:flex; gap:6px; margin-bottom:12px; padding:0 4px;"><button id="emp-tab-rep" class="admin-flt active-flt" onclick="renderEmpDetailTab('rep', '${iin}')">Отчет</button><button id="emp-tab-pts" class="admin-flt" onclick="renderEmpDetailTab('pts', '${iin}')">Баллы</button><button id="emp-tab-viol" class="admin-flt" onclick="renderEmpDetailTab('viol', '${iin}')">Нарушения</button></div><div id="emp-detail-content" class="slide-up-fade"></div>`;
       document.getElementById("details-list").innerHTML = tabsHtml; renderEmpDetailTab('rep', iin); 
-      // Скролл восстановится автоматически в switchTab
     }
 
     function renderEmpDetailTab(tab, iin) {
