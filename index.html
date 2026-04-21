@@ -590,7 +590,39 @@
       document.getElementById("details-list").innerHTML = listHtml;
     }
 
-    function openEmpKpiDetails(iin) { const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; document.getElementById("details-title").innerText = "КФ. ЭФФ: " + emp.name; document.getElementById("details-kpi-circle-container").innerHTML = ""; document.getElementById("btn-details-back").onclick = () => openEmpDetails(iin); let listHtml = "<div class='card' style='padding:0;'>"; emp.kpiDetails.forEach(k => { let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; let srcColor = getSourceColor(k.source); let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); if (!dispName) dispName = k.name; if (k.source === "База" || k.name === "Ошибки") dispName = k.name; if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; } let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : ""; listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`; }); listHtml += "</div>"; document.getElementById("details-list").innerHTML = listHtml; }
+    function openEmpKpiDetails(iin) { 
+      const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; 
+      
+      // Запоминаем откуда пришли, чтобы кнопка "Назад" работала правильно
+      let cameFromDetails = (lastActiveTab === 'details');
+      let prevTab = lastActiveTab;
+      
+      // Вот здесь не хватало команды переключения экрана!
+      switchTab('details'); 
+      
+      document.getElementById("btn-details-back").onclick = () => {
+          if (cameFromDetails) openEmpDetails(iin); // Возврат в карточку сотрудника
+          else switchTab(prevTab); // Возврат в общий список
+      };
+      
+      document.getElementById("details-title").innerText = "КФ. ЭФФ: " + emp.name; 
+      document.getElementById("details-kpi-circle-container").innerHTML = ""; 
+      
+      let listHtml = "<div class='card' style='padding:0;'>"; 
+      emp.kpiDetails.forEach(k => { 
+        let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); 
+        let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; 
+        let srcColor = getSourceColor(k.source); 
+        let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); 
+        if (!dispName) dispName = k.name; 
+        if (k.source === "База" || k.name === "Ошибки") dispName = k.name; 
+        if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; } 
+        let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : ""; 
+        listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`; 
+      }); 
+      listHtml += "</div>"; 
+      document.getElementById("details-list").innerHTML = listHtml; 
+    }
 
     function openEmpDetails(iin) {
       const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; 
