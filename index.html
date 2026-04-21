@@ -185,7 +185,7 @@
                 let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер");
                 let isZavSklad = roleStr.includes("заведующий складом");
                 let tabs = isDir ? ['adm-outs', 'adm-main', 'adm-inbox'] : 
-                           isZavSklad ? ['adm-main', 'inbox'] : 
+                           isZavSklad ? ['adm-outs', 'adm-main', 'inbox'] : 
                            ['time', 'create', 'inbox'];
                 let currentIdx = tabs.indexOf(lastActiveTab);
                 if (currentIdx !== -1) { 
@@ -421,12 +421,11 @@
       let isAnyFormActive = isCreateTabActive && elMenuList && elMenuList.classList.contains("hidden"); 
       let dash = document.getElementById("info-dashboard");
       
-      // Логика UI для Заведующих складом
       if (isZavSklad) {
           document.getElementById("nav-time-icon")?.classList.add("hidden"); 
           document.getElementById("nav-create-icon")?.classList.add("hidden"); 
           document.getElementById("inbox-icon")?.classList.remove("hidden");
-          document.getElementById("nav-adm-outs")?.classList.add("hidden"); 
+          document.getElementById("nav-adm-outs")?.classList.remove("hidden"); 
           document.getElementById("nav-adm-main")?.classList.remove("hidden"); 
           document.getElementById("nav-adm-inbox")?.classList.add("hidden");
           
@@ -600,7 +599,13 @@
               if (r.status === "rejected_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Штраф отклонен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> отклонен админом.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
               if (r.status === "approved_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #27ae60;"><div class="req-title">✅ Штраф одобрен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> успешно одобрен администратором.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
 
-              if (r.type === "Замечание" && r.status === "pending_user_reply") { return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; }
+              if (r.type === "Замечание" && r.status === "pending_user_reply") { 
+                  if (r.targetIin === appState.iin) {
+                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; 
+                  } else {
+                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>Нарушитель: <b>${r.targetName}</b><br>${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" disabled style="opacity:0.7;">Ожидает ответа сотрудника</button></div></div>`;
+                  }
+              }
               if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
               return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
             }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Уведомлений нет</p>";
@@ -621,6 +626,11 @@
                   desc = `Нарушитель: <b>${r.targetName}</b><br>Причина: ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`;
               }
               
+              if (r.type === "Замечание") {
+                  desc = `Нарушитель: <b>${r.targetName}</b><br>${desc}`;
+                  btns = `<div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" disabled style="opacity:0.7;">Ожидает ответа сотрудника</button></div>`;
+              }
+
               let authorStr = r.type === "Замечание" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
               return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
           }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
@@ -763,7 +773,7 @@
       } else if (currentHistFilter === 'pts') {
           aHist = aHist.filter(r => r.type === "Баллы мотивации");
       } else if (currentHistFilter === 'viol') {
-          aHist = aHist.filter(r => r.type === "Замечание" || r.type === "Штраф");
+          aHist = aHist.filter(r => r.type === "Замечание" || r.type === "Штраф" || r.type === "Запрос на штраф");
       }
 
       document.getElementById("admin-history-list").innerHTML = aHist.map(r => {
