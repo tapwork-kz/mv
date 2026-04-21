@@ -522,7 +522,7 @@
               
               hcHtml += `<div style="display: grid; grid-template-columns: repeat(${colsCount}, 1fr); gap: 6px; margin-bottom: 6px;">`;
               groups[sub].forEach(btn => {
-                  let combinedName = sub ? `${sub} — ${btn.name}` : btn.name;
+                  let combinedName = sub ? `${sub} ${btn.name}` : btn.name;
                   hcHtml += `<button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`;
               });
               hcHtml += `</div>`;
