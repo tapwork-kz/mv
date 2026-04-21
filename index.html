@@ -428,9 +428,11 @@
       let roleStr = String(appState.role).toLowerCase(); 
       let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер"); 
       let isZav = data.isZav || roleStr.includes("заведующий");
-      let hasAdminRights = isDir || isZav; // <--- ДОБАВИЛИ ЭТУ СТРОКУ
-      let isSeller = !isUserPromoter && !hasAdminRights;
+      let hasAdminRights = isDir || isZav;
+      let isSeller = !isUserPromoter && !hasAdminRights; 
       
+      window.isZavGlobal = isZav; // Сохраняем глобально для работы вкладок
+
       let elContentCreate = document.getElementById("content-create");
       let isCreateTabActive = elContentCreate && !elContentCreate.classList.contains("hidden"); 
       let elMenuList = document.getElementById("menu-list");
@@ -472,9 +474,17 @@
 
       myReports = data.info?.reports || []; 
       myPointsHistory = data.info?.myPtsHistory || []; 
-      myMoneyFinesHistory = myPointsHistory.filter(p => p && p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); 
+      
+      // ИСПРАВЛЕНИЕ: Показываем штрафы корректно, даже если там просто замечание (0 тенге и 0 баллов)
+      myMoneyFinesHistory = myPointsHistory.filter(p => p && p.type === "Штраф" && p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); 
+      myDisplayPointsHistory = myPointsHistory.filter(p => { 
+          if (!p || p.type === "KPI") return false; 
+          let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; 
+          let moneyVal = parseFloat(String(p.moneyFine).replace(',', '.')) || 0;
+          return ptsVal !== 0 || moneyVal !== 0 || p.type === "Штраф"; 
+      });
+      
       myScHistory = myPointsHistory.filter(p => p && p.type === "Начисление");
-      myDisplayPointsHistory = myPointsHistory.filter(p => { if (!p || p.type === "KPI") return false; let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; return ptsVal !== 0; });
 
       let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
       let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
@@ -487,6 +497,21 @@
       const uBadge = document.getElementById("user-badge"); 
       const aBadge = document.getElementById("admin-badge"); 
       
+      // ИСПРАВЛЕНИЕ: Меняем визуальный порядок вкладок с помощью CSS order
+      if (isDir) {
+          document.getElementById("nav-adm-outs").style.order = "1";
+          document.getElementById("nav-adm-main").style.order = "2";
+          document.getElementById("nav-adm-inbox").style.order = "3";
+      } else if (isZav) {
+          document.getElementById("nav-adm-outs").style.order = "1";
+          document.getElementById("nav-adm-main").style.order = "2";
+          document.getElementById("inbox-icon").style.order = "3";
+      } else {
+          document.getElementById("nav-time-icon").style.order = "1";
+          document.getElementById("nav-create-icon").style.order = "2";
+          document.getElementById("inbox-icon").style.order = "3";
+      }
+
       if (isDir) {
           document.getElementById("nav-time-icon")?.classList.add("hidden"); 
           document.getElementById("nav-create-icon")?.classList.add("hidden"); 
@@ -509,7 +534,6 @@
           
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); }
       } else if (isZav) {
-          // ИСПРАВЛЕНИЕ 1 И 3: Три вкладки для заведующего (Отсутствия, Меню, Входящие)
           document.getElementById("nav-time-icon")?.classList.add("hidden"); 
           document.getElementById("nav-create-icon")?.classList.add("hidden"); 
           document.getElementById("nav-adm-inbox")?.classList.add("hidden"); 
@@ -522,10 +546,13 @@
 
           if (!window.zavDeptSet) { 
               currentAdminScDept = appState.dept; 
+              currentEmpDept = appState.dept; // ИСПРАВЛЕНИЕ: Задаем отдел сотрудников по умолчанию
               window.zavDeptSet = true; 
               setTimeout(() => {
                   let scBtn = document.getElementById(`flt-${currentAdminScDept.toLowerCase()}`);
                   if (scBtn) { document.querySelectorAll('#admin-sc-list .sticky-header .admin-flt').forEach(b => b.classList.remove('active-flt')); scBtn.classList.add('active-flt'); }
+                  let empBtn = document.getElementById(`flt-emp-${currentEmpDept.toLowerCase()}`);
+                  if (empBtn) { document.querySelectorAll('#admin-emp-container .sticky-header .admin-flt').forEach(b => b.classList.remove('active-flt')); empBtn.classList.add('active-flt'); }
               }, 100);
           }
           
@@ -539,7 +566,7 @@
               appState.lastInboxCount = 0;
           }
           
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-outs'); toggleAdminMain('emps'); }
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-outs'); }
       } else {
           if (!isUserPromoter) { 
               document.getElementById("nav-time-icon")?.classList.remove("hidden"); 
@@ -562,7 +589,6 @@
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) switchTab('time');
       }
 
-      // ИСПРАВЛЕНИЕ 2: Горячие чеки рендерятся всегда для вкладки Create (даже если юзер продавец)
       let hcCard = document.getElementById("hot-check-card");
       if (hcCard && data.hotChecks && data.hotChecks.length > 0) {
           let hcHtml = `<h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>`;
@@ -764,13 +790,13 @@
       
       if(tab === 'adm-outs') renderAdminOuts(); 
       if(tab === 'adm-main') {
-          if (typeof window.currentAdminMainView === 'undefined') window.currentAdminMainView = 'plan';
+          // ИСПРАВЛЕНИЕ: Заведующему по умолчанию открываем сотрудников, а не скрытый план
+          if (typeof window.currentAdminMainView === 'undefined') window.currentAdminMainView = window.isZavGlobal ? 'emps' : 'plan';
           toggleAdminMain(window.currentAdminMainView); 
       }
       if(tab === 'adm-inbox') renderAdminHistory(currentHistFilter);
       
       if (scroller) {
-          // Восстанавливаем скролл с микрозадержкой, чтобы страница успела отрисоваться
           setTimeout(() => { scroller.scrollTop = savedScrollPos[tab] || 0; }, 10);
       }
     }
