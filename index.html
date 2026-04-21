@@ -119,7 +119,7 @@
       </div>
       <div id="content-adm-inbox" class="hidden">
         <div class="sticky-header glass" style="margin-top:0; margin-bottom: 12px;">
-          <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Новые запросы</h3>
+          <h3 style="margin:0; color:var(--btn-color); text-align:center; font-size: 15px;">Запросы / Уведомления</h3>
         </div>
         <div id="admin-list" class="req-list" style="margin-bottom: 20px;"></div>
         
@@ -182,14 +182,30 @@
             let endX = e.changedTouches[0].screenX; let endY = e.changedTouches[0].screenY; let diffX = endX - startX; let diffY = Math.abs(endY - startY);
             if (diffY < 60 && Math.abs(diffX) > 80) { 
                 let roleStr = String(appState.role).toLowerCase(); let isDir = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер");
-                let tabs = isDir ? ['adm-outs', 'adm-main', 'adm-inbox'] : ['time', 'create', 'inbox'];
+                let isZav = roleStr.includes("заведующий");
+                let tabs = isDir ? ['adm-outs', 'adm-main', 'adm-inbox'] : (isZav ? ['adm-outs', 'adm-main', 'inbox'] : ['time', 'create', 'inbox']);
                 let currentIdx = tabs.indexOf(lastActiveTab);
                 if (currentIdx !== -1) { 
-                    if (diffX < 0 && currentIdx < 2) switchTab(tabs[currentIdx + 1], 'right'); 
+                    if (diffX < 0 && currentIdx < tabs.length - 1) switchTab(tabs[currentIdx + 1], 'right'); 
                     else if (diffX > 0 && currentIdx > 0) switchTab(tabs[currentIdx - 1], 'left'); 
                 }
             }
         }, {passive: true});
+    }
+
+    function formatRemarkAuthor(name, role) {
+        let r = String(role || "руководителя").toLowerCase();
+        let decl = "руководителя";
+        if (r.includes("директор")) decl = "директора";
+        else if (r.includes("супервайзер")) decl = "супервайзера";
+        else if (r.includes("управляющ")) decl = "управляющего";
+        else if (r.includes("админ")) decl = "администратора";
+        else if (r.includes("заведующ")) decl = "заведующего"; // Добавили склонение
+
+        let parts = String(name).trim().split(/\s+/);
+        let shortName = parts[0];
+        if (parts.length > 1 && parts[1]) shortName += " " + parts[1].charAt(0).toUpperCase() + ".";
+        return `От ${decl} ${shortName}`;
     }
 
     function hideLoader() { const loader = document.getElementById("loader-screen"); loader.style.opacity = '0'; setTimeout(() => loader.classList.add("hidden"), 600); }
@@ -410,9 +426,7 @@
           let dl = document.getElementById("desc-lunch"); if(dl) dl.innerText = "40 мин"; 
           let ds = document.getElementById("desc-snack"); if(ds) ds.innerText = "30 мин"; 
           if (isSeller && document.querySelectorAll("#content-adm-main:not(.hidden)").length === 0 && document.querySelectorAll("#content-details:not(.hidden)").length === 0 && !isAnyFormActive) { 
-              if (dash && dash.classList.contains("hidden")) { 
-                  dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); 
-              } 
+              if (dash && dash.classList.contains("hidden")) { dash.classList.remove("hidden"); dash.classList.remove("fade-in", "slide-up-fade"); dash.classList.add("slide-down-fade"); } 
           } else { 
               if(dash) dash.classList.add("hidden"); 
           } 
@@ -422,10 +436,7 @@
       let pUse = document.getElementById("pt-use"); if(pUse) pUse.innerText = data.info?.ptsUsed ?? '-'; 
       const remVal = parseFloat(String(data.info?.ptsLeft).replace(',','.')) || 0; 
       const ptRemEl = document.getElementById("pt-rem"); 
-      if(ptRemEl) {
-          ptRemEl.innerText = data.info?.ptsLeft ?? '-'; 
-          ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; 
-      }
+      if(ptRemEl) { ptRemEl.innerText = data.info?.ptsLeft ?? '-'; ptRemEl.style.color = remVal >= 0 ? "#27ae60" : "#e67e22"; }
       let pFin = document.getElementById("pt-fin"); if(pFin) pFin.innerText = data.info?.ptsFine ?? '-'; 
       
       let kpiValue = data.info?.kpiValue ?? data.baseKpi ?? 0; 
@@ -434,9 +445,7 @@
       myKpiDetails = data.info?.kpiDetails || [];
       
       let infoTabel = document.getElementById("info-tabel");
-      if(infoTabel) {
-          infoTabel.innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
-      }
+      if(infoTabel) infoTabel.innerHTML = `<div class="tabel-item" style="color:#f39c12"><span class="tabel-lbl">БС.</span>${data.info?.tabel?.bs ?? 0}</div><div class="tabel-item" style="color:#e67e22"><span class="tabel-lbl">БЛ.</span>${data.info?.tabel?.bl ?? 0}</div><div class="tabel-item" style="color:#e74c3c"><span class="tabel-lbl">ПР.</span>${data.info?.tabel?.pr ?? 0}</div><div class="tabel-item" style="color:#f1c40f"><span class="tabel-lbl">ОТ.</span>${data.info?.tabel?.ot ?? 0}</div><div class="tabel-item" style="color:#27ae60"><span class="tabel-lbl">РД.</span>${data.info?.tabel?.rd ?? 0}</div>`;
 
       myReports = data.info?.reports || []; 
       myPointsHistory = data.info?.myPtsHistory || []; 
@@ -446,15 +455,11 @@
 
       let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
       let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
-      
       let countSc = monthSc.filter(p => p && p.source && !String(p.source).toLowerCase().includes("trade-in")).length; 
       let countTrade = monthSc.filter(p => p && p.source && String(p.source).toLowerCase().includes("trade-in")).length; 
       
       let scEl = document.getElementById("info-sc-val"); 
-      if(scEl) {
-          scEl.innerText = `${countSc} | ${countTrade}`; 
-          if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; 
-      }
+      if(scEl) { scEl.innerText = `${countSc} | ${countTrade}`; if (countSc + countTrade > 0) scEl.style.color = "#27ae60"; else scEl.style.color = "#e74c3c"; }
 
       const uBadge = document.getElementById("user-badge"); 
       const aBadge = document.getElementById("admin-badge"); 
@@ -481,11 +486,12 @@
           
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); }
       } else if (isZav) {
+          // ИСПРАВЛЕНИЕ 1 И 3: Три вкладки для заведующего (Отсутствия, Меню, Входящие)
           document.getElementById("nav-time-icon")?.classList.add("hidden"); 
           document.getElementById("nav-create-icon")?.classList.add("hidden"); 
-          document.getElementById("nav-adm-outs")?.classList.add("hidden"); 
           document.getElementById("nav-adm-inbox")?.classList.add("hidden"); 
           
+          document.getElementById("nav-adm-outs")?.classList.remove("hidden");
           document.getElementById("nav-adm-main")?.classList.remove("hidden");
           document.getElementById("inbox-icon")?.classList.remove("hidden");
           
@@ -500,12 +506,6 @@
               }, 100);
           }
           
-          let admMain = document.getElementById("content-adm-main");
-          if (admMain && !document.getElementById("zav-outs-container")) {
-              let outsDiv = document.createElement("div"); outsDiv.id = "zav-outs-container"; outsDiv.className = "active-outs-box inner-block"; outsDiv.style.background = "var(--card-bg)"; outsDiv.style.marginTop = "0"; outsDiv.style.marginBottom = "12px";
-              admMain.insertBefore(outsDiv, admMain.firstChild);
-          }
-          
           let filteredUserInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : [];
           if (filteredUserInbox.length > 0) { 
               if(uBadge) { uBadge.innerText = filteredUserInbox.length; uBadge.classList.remove("hidden"); }
@@ -516,7 +516,7 @@
               appState.lastInboxCount = 0;
           }
           
-          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-main'); toggleAdminMain('emps'); }
+          if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) { switchTab('adm-outs'); toggleAdminMain('emps'); }
       } else {
           if (!isUserPromoter) { 
               document.getElementById("nav-time-icon")?.classList.remove("hidden"); 
@@ -539,14 +539,21 @@
           if(document.querySelectorAll("#scrollable-body > div:not(.hidden)").length === 0) switchTab('time');
       }
 
-      // Генерация динамического меню Горячий Чек ... (оставь свой код без изменений) ...
+      // ИСПРАВЛЕНИЕ 2: Горячие чеки рендерятся всегда для вкладки Create (даже если юзер продавец)
       let hcCard = document.getElementById("hot-check-card");
       if (hcCard && data.hotChecks && data.hotChecks.length > 0) {
-          // Твой код горячих чеков тут
-          hcCard.classList.remove("hidden");
-      } else if (hcCard) {
-          hcCard.classList.add("hidden");
-      }
+          let hcHtml = `<h3 style="margin-bottom: 10px; font-size: 14px;">Горячий чек</h3>`;
+          let groups = {};
+          data.hotChecks.forEach(hc => { if(!groups[hc.sub]) groups[hc.sub] = []; groups[hc.sub].push(hc); });
+          for(let sub in groups) {
+              if (sub) hcHtml += `<div style="margin-bottom: 8px; font-size:12px; font-weight:bold; color:gray; border-top: 1px solid var(--border-color); padding-top: 10px; margin-top: 10px;">${sub}</div>`;
+              let colsCount = Math.min(groups[sub].length, 4);
+              hcHtml += `<div style="display: grid; grid-template-columns: repeat(${colsCount}, 1fr); gap: 6px; margin-bottom: 6px;">`;
+              groups[sub].forEach(btn => { let combinedName = sub ? `${sub} ${btn.name}` : btn.name; hcHtml += `<button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}')">${btn.name}</button>`; });
+              hcHtml += `</div>`;
+          }
+          hcCard.innerHTML = hcHtml; hcCard.classList.remove("hidden");
+      } else if (hcCard) { hcCard.classList.add("hidden"); }
         
       let uInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
       let activeEl = document.activeElement; let isTyping = activeEl && activeEl.tagName === 'TEXTAREA' && activeEl.id.startsWith('remark-reply');
@@ -575,7 +582,7 @@
       let adminList = document.getElementById("admin-list");
       if(adminList) {
           adminList.innerHTML = aInbox.map(r => { 
-              let isViewOnly = r.status === "pending_admin_view" && r.type === "Исправление смены"; 
+              let isViewOnly = r.status === "pending_admin_view"; 
               let btns = isViewOnly ? `<button class="btn-gray" onclick="processReq('${r.id}', 'viewed')">Просмотрено</button>` : `<div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_admin')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_admin')">Одобрить</button></div>`; 
               let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
               desc = formatRemarkText(desc);
@@ -587,13 +594,8 @@
       window.adminHistoryGlobal = data.adminHistory || [];
       if(isDir && typeof renderAdminHistory === "function") renderAdminHistory();
       
-      adminScItemsGlobal = data.adminScItems || []; 
-      globalSellers = data.sellers || []; 
-      globalScItems = data.scItems || []; 
-      allEmployeesData = data.adminEmployees || []; 
-      tradeInModelsGlobal = data.tradeInModels || []; 
-      
-      if (isDir && typeof renderAdminEmps === "function") renderAdminEmps(currentEmpDept, null);
+      adminScItemsGlobal = data.adminScItems || []; globalSellers = data.sellers || []; globalScItems = data.scItems || []; allEmployeesData = data.adminEmployees || []; tradeInModelsGlobal = data.tradeInModels || []; 
+      if (hasAdminRights && typeof renderAdminEmps === "function") renderAdminEmps(currentEmpDept, null);
     }
 
     function generateHorizontalGrid(dataObj) { if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:8px;text-align:center;color:gray;font-size:12px;'>Нет данных</div>"; let gridCols = `repeat(${dataObj.headers.length}, 1fr)`; let html = `<div class="grid-details-container inner-block"><div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div><div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`; dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; }); dataObj.values.forEach(v => { let displayVal = '-'; if (v === '✔') displayVal = '✅'; else if (v === '✖') displayVal = '❌'; else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>'; else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>'; else displayVal = v || '-'; html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; min-height:28px; width:100%; box-sizing:border-box;">${displayVal}</div>`; }); html += `</div></div>`; return html; }
@@ -684,7 +686,7 @@
             let desc = formatRemarkText(r.details);
             let authorStr = formatRemarkAuthor(r.authorName, r.authorRole);
             let d = r.date ? String(r.date) : "";
-            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="font-size:12px;"><b style="color:#f39c12;">${authorStr}</b> <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
+            remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px; border-left-width: 2px; padding: 10px 8px;"><div class="req-title" style="font-size:12px;"><b style="color:#f39c12;">${authorStr}</b> <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${desc}</div></div>`; 
         });
         if (finesHtml) html += `<div class="grid-details-title" style="color:#e74c3c; margin-top:10px;">Штрафы (Сумма)</div>${finesHtml}`;
         if (remarksHtml) html += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>${remarksHtml}`;
