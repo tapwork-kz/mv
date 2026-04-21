@@ -778,14 +778,14 @@
                  
                  <div class="circle-box" style="width:34px; min-width:34px; height:34px; margin:0; cursor:pointer; box-shadow:none; flex-shrink:0;" onclick="event.stopPropagation(); openEmpKpiDetails('${e.iin}')">
                     <div class="kpi-container" style="background: conic-gradient(${setKpiColor(e.kpi, null, null)} ${e.kpi > 100 ? 100 : e.kpi}%, var(--inner-bg) 0);">
-                       <div class="kpi-inner" style="width:26px; height:26px;">
+                       <div class="kpi-inner" style="width:30px; height:30px;">
                           <span style="font-size:10px; font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">${e.kpi}%</span>
                        </div>
                     </div>
                  </div>
               </div>
               
-              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; color:#555555;">
+              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; color:#544444;">
                   <span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="font-weight:normal; margin: 0 2px;">/</span> <b style="color:var(--text-color);">${e.sales.sc} | ${e.sales.trade}</b></span>
                   <span>Ошибки по отчетам: <b style="color:var(--text-color);">${e.reportErrors}</b></span>
               </div>
