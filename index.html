@@ -307,7 +307,7 @@
     function renderTimeUI() { const standardBtns = document.getElementById("standard-buttons"); const returnContainer = document.getElementById("return-button-container"); let actStr = String(appState.currentAction); if (appState.currentAction && actStr !== "null" && actStr !== "undefined" && actStr !== "") { document.getElementById("btn-return").disabled = false; standardBtns.classList.add("hidden"); returnContainer.classList.remove("hidden"); const declension = getDeclension(appState.currentAction); document.getElementById("return-text").innerText = "Вернуться с " + declension; document.getElementById("action-hint").innerText = "Ожидаем возвращения:"; } else { standardBtns.classList.remove("hidden"); returnContainer.classList.add("hidden"); } }
     function formatPointsNoun(num) { let n = Math.abs(parseFloat(String(num).replace(',','.'))); if (isNaN(n)) return "баллов"; if (n % 1 !== 0) return "балла"; n = Math.floor(n) % 100; let n10 = n % 10; if (n >= 11 && n <= 19) return "баллов"; if (n10 === 1) return "балл"; if (n10 >= 2 && n10 <= 4) return "балла"; return "баллов"; }
     function formatNumberWithSpaces(x) { if (!x) return "0"; return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
-    function getSourceColor(src) { let s = String(src).toLowerCase(); if(s.includes('фокус')) return '#e74c3c'; if(s.includes('сц')) return '#e67e22'; if(s.includes('trade-in')) return '#8e44ad'; if(s.includes('горячий')) return '#e84393'; if(s.includes('обмен')) return '#f39c12'; if(s.includes('исправл')) return '#3498db'; if(s.includes('мотивац')) return '#27ae60'; return '#7f8c8d'; }
+    function getSourceColor(src) { let s = String(src).toLowerCase(); if(s.includes('фокус')) return '#e74c3c'; if(s.includes('сц')) return '#e67e22'; if(s.includes('trade-in')) return '#8e44ad'; if(s.includes('горячий')) return '#e84393'; if(s.includes('обмен')) return '#f39c12'; if(s.includes('исправл')) return '#3498db'; if(s.includes('мотивац')) return '#3390ec'; return '#7f8c8d'; }
 
     function initSmartDates() { const today = new Date().toISOString().split('T')[0]; document.querySelectorAll('.smart-date').forEach(el => { el.dataset.realdate = today; el.value = "Сегодня"; el.addEventListener('focus', function() { this.type = 'date'; this.value = this.dataset.realdate; if(this.showPicker) this.showPicker(); }); el.addEventListener('blur', function() { if(!this.value) this.value = today; this.dataset.realdate = this.value; if (this.value === today) { this.type = 'text'; this.value = "Сегодня"; } else { this.type = 'text'; const d = new Date(this.value); this.value = ("0" + d.getDate()).slice(-2) + "." + ("0" + (d.getMonth() + 1)).slice(-2) + "." + d.getFullYear(); } }); el.addEventListener('change', function() { this.blur(); }); }); }
     function initAutoScroll() { const scroller = document.getElementById("scroll-container"); let scrollDir = 1; let scrollTimer = setInterval(() => { if (!autoScrollAnimation || !scroller || scroller.closest('.hidden')) return; scroller.scrollLeft += 1 * scrollDir; if (scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1) scrollDir = -1; else if (scroller.scrollLeft <= 0) scrollDir = 1; }, 40); if(scroller) { scroller.addEventListener('touchstart', () => autoScrollAnimation = false, {passive: true}); scroller.addEventListener('touchend', () => { setTimeout(()=>autoScrollAnimation=true, 2000); }, {passive: true}); } }
@@ -736,7 +736,34 @@
     function renderAdminEmps(dept, btnElement) {
        currentEmpDept = dept; if (btnElement) { document.getElementById('flt-emp-cifra').classList.remove('active-flt'); document.getElementById('flt-emp-mbt').classList.remove('active-flt'); document.getElementById('flt-emp-kbt').classList.remove('active-flt'); btnElement.classList.add('active-flt'); }
        let container = document.getElementById("admin-emp-list"); let filtered = allEmployeesData.filter(e => e.dept.toLowerCase().includes(dept.toLowerCase())); let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear;
-       container.innerHTML = filtered.map(e => { let monthScHist = e.ptsHistory.filter(p => p.type === "Начисление" && typeof p.date === 'string' && p.date.includes(monthSuffix)); let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length; let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length; return `<div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 6px 8px; margin-bottom: 6px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;"><div class="req-title" style="margin:0; width:100%; display:flex; justify-content:space-between; align-items:center; font-size:12px;"><span>${e.name}</span><div style="width:34px; height:34px; border-radius:50%; background: conic-gradient(${setKpiColor(e.kpi, null, null)} ${e.kpi > 100 ? 100 : e.kpi}%, var(--inner-bg) 0); display:flex; align-items:center; justify-content:center; flex-shrink:0;"><div style="width:28px; height:28px; background:var(--card-bg); border-radius:50%; display:flex; align-items:center; justify-content:center;"><span style="font-size:10px; font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">${e.kpi}%</span></div></div></div></div><div class="inner-block" style="font-size:10px; margin-top:2px; margin-bottom:4px; color:var(--text-color); text-align:center; padding: 2px; height: 32px; display:flex; align-items:center;">${e.tabelStr}</div><div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; margin-bottom:2px;"><span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="color:gray; font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span><span>Ошибки по отчетам: <b>${e.reportErrors}</b></span></div></div>`; }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
+       container.innerHTML = filtered.map(e => { 
+           let monthScHist = e.ptsHistory.filter(p => p.type === "Начисление" && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
+           let curMonthSc = monthScHist.filter(p => !p.source.toLowerCase().includes("trade-in")).length; 
+           let curMonthTrade = monthScHist.filter(p => p.source.toLowerCase().includes("trade-in")).length; 
+           
+           return `<div class="req-item" style="border-left-color: var(--btn-color); border-left-width: 2px; padding: 10px 8px; margin-bottom: 8px; cursor:pointer;" onclick="openEmpDetails('${e.iin}')">
+              <div style="font-size:13px; font-weight:bold; margin-bottom:6px; color:var(--text-color);">${e.name}</div>
+              
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:8px;">
+                 <div class="inner-block" style="flex:1; margin:0; padding:2px; height:34px; display:flex; align-items:center;">
+                    ${e.tabelStr}
+                 </div>
+                 
+                 <div class="circle-box" style="width:34px; min-width:34px; height:34px; margin:0; cursor:pointer; box-shadow:none; flex-shrink:0;" onclick="event.stopPropagation(); openEmpKpiDetails('${e.iin}')">
+                    <div class="kpi-container" style="background: conic-gradient(${setKpiColor(e.kpi, null, null)} ${e.kpi > 100 ? 100 : e.kpi}%, var(--inner-bg) 0);">
+                       <div class="kpi-inner" style="width:26px; height:26px;">
+                          <span style="font-size:10px; font-weight:bold; color:${setKpiColor(e.kpi, null, null)}">${e.kpi}%</span>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+              
+              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; color:gray;">
+                 <span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="font-weight:normal; margin: 0 2px;">/</span> <b>${e.sales.sc} | ${e.sales.trade}</b></span>
+                 <span>Ошибки: <b>${e.reportErrors}</b></span>
+              </div>
+           </div>`; 
+       }).join("") || "<p style='color:gray; font-size:12px; text-align:center;'>Сотрудников нет</p>";
     }
     
     let currentAdminScTabType = 'active'; function switchScAdminTab(tabType) { currentAdminScTabType = tabType; renderAdminScItems(currentAdminScDept, null); }
