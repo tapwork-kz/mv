@@ -58,10 +58,10 @@
         <div class="top-icons" id="main-tabs">
           <div id="nav-time-icon" class="icon-btn active-tab hidden" onclick="switchTab('time');">⏱️</div>
           <div id="nav-create-icon" class="icon-btn hidden" onclick="switchTab('create');">📤</div>
+          <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">📩<span id="user-badge" class="badge hidden"></span></div>
           <div id="nav-adm-outs" class="icon-btn hidden" onclick="switchTab('adm-outs');">⏱️</div>
           <div id="nav-adm-main" class="icon-btn hidden" onclick="switchTab('adm-main');">📥</div>
           <div id="nav-adm-inbox" class="icon-btn hidden" onclick="switchTab('adm-inbox');">📩<span id="admin-badge" class="badge hidden"></span></div>
-          <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">📩<span id="user-badge" class="badge hidden"></span></div>
         </div>
       </div>
       <div class="banner-wrapper hidden fade-in" id="info-dashboard">
@@ -201,7 +201,7 @@
 
     function forceLogout() {
         if(pollingTimer) clearInterval(pollingTimer); clearMemory(); appState.token = null; appState.iin = null; document.getElementById("main-screen").style.opacity = '0';
-        setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; hideLoader(); }, 600);
+        setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
     }
 
     function isSensitiveState() {
@@ -593,10 +593,7 @@
         if(inboxList) {
             inboxList.innerHTML = uInbox.map(r => { 
               let desc = formatRemarkText(r.details || "");
-              let authorStr = "";
-              if (!isSeller) {
-                  authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.authorRole) : `<b>От:</b> ${r.authorName}`;
-              }
+              let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.authorRole) : `<b>От:</b> ${r.authorName}`;
               let d = r.date ? String(r.date) : "";
               
               if (r.status === "rejected_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Штраф отклонен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> отклонен админом.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
@@ -604,10 +601,9 @@
 
               if (r.type === "Замечание" && r.status === "pending_user_reply") { 
                   if (r.targetIin === appState.iin) {
-                      let authorDisp = !isSeller ? `<b style="color:#f39c12;">${authorStr}</b><br>` : "";
-                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;">${authorDisp}${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'view_remark')">Просмотрено</button></div></div>`; 
+                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; 
                   } else {
-                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>Нарушитель: <b>${r.targetName}</b><br>${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" disabled style="opacity:0.7;">Ожидает ознакомления</button></div></div>`;
+                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>Нарушитель: <b>${r.targetName}</b><br>${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" disabled style="opacity:0.7;">Ожидает ответа сотрудника</button></div></div>`;
                   }
               }
               if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
@@ -654,15 +650,7 @@
 
     function generateHorizontalGrid(dataObj) { if (!dataObj.headers || dataObj.headers.length === 0) return "<div style='padding:8px;text-align:center;color:gray;font-size:12px;'>Нет данных</div>"; let gridCols = `repeat(${dataObj.headers.length}, 1fr)`; let html = `<div class="grid-details-container inner-block"><div class="grid-details-title" style="margin-bottom: 6px;">${dataObj.title}</div><div class="grid-details-box" style="grid-template-columns: ${gridCols}; gap:3px;">`; dataObj.headers.forEach(h => { html += `<div class="grid-details-header">${h || '-'}</div>`; }); dataObj.values.forEach(v => { let displayVal = '-'; if (v === '✔') displayVal = '✅'; else if (v === '✖') displayVal = '❌'; else if (v === 'ПР') displayVal = '<span style="color:#e74c3c;font-weight:bold;">ПР</span>'; else if (v !== '' && v !== '-') displayVal = '<span style="color:#f39c12;font-weight:bold;">'+v+'</span>'; else displayVal = v || '-'; html += `<div class="grid-details-value" style="background:var(--bg-color); border:1px solid var(--border-color); border-radius:6px; padding:4px 0; display:flex; align-items:center; justify-content:center; min-height:28px; width:100%; box-sizing:border-box;">${displayVal}</div>`; }); html += `</div></div>`; return html; }
     function renderHistoryItem(i, isCompact = false) { let valStr = String(i.val).replace('.', ','); let col = String(i.type).toLowerCase().includes('начисл') || valStr.includes('+') ? 'detail-plus' : 'detail-minus'; if(String(i.type).toLowerCase().includes('штраф')) col = 'detail-fine'; let typeColor = "#95a5a6"; let typeDisplay = i.type; let srcColor = getSourceColor(i.source); if (String(i.type).toLowerCase() === "начисление") typeColor = "#27ae60"; else if (String(i.type).toLowerCase().includes('использ')) typeColor = "#f39c12"; else if (String(i.type).toLowerCase().includes('штраф')) typeColor = "#e74c3c"; let rightText = String(i.type).toLowerCase().includes('штраф') ? i.source : i.approver;  rightText = formatShortName(rightText); let approverHtml = (rightText) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${rightText}</span>` : ''; let sourceHtml = String(i.type).toLowerCase().includes('штраф') ? `<span style="color:gray;font-size:10px;">${i.date}</span>` : `<b style="color:${srcColor}; font-size:10px;">${i.source}</b> <span style="color:gray;font-size:10px;"> • ${i.date}</span>`; let inner = `<div style="flex:1;"><b style="font-size:12px; color:${typeColor}; display:inline-block; margin-bottom:3px;">${typeDisplay}</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div>${sourceHtml}</div>${approverHtml}</div></div><span class="${col}" style="margin-left:10px;">${valStr}</span>`; if (isCompact) return `<div class="req-item" style="border-left-color: ${typeColor}; border-left-width: 2px; padding: 8px 10px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">${inner}</div>`; return `<div class="detail-item">${inner}</div>`; }
-    function renderMoneyFineItem(i) { 
-        let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0"; 
-        let formatted = formatNumberWithSpaces(moneyVal); 
-        let roleStr = String(appState.role).toLowerCase();
-        let isSeller = !roleStr.includes("директор") && !roleStr.includes("управляющий") && !roleStr.includes("админ") && !roleStr.includes("супервайзер") && !roleStr.includes("заведующий складом");
-        
-        let issuerHtml = (!isSeller && i.source) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${formatShortName(i.source)}</span>` : ''; 
-        return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div style="flex:1;"><b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div><span style="color:gray;font-size:10px;">${i.date}</span></div>${issuerHtml}</div></div><span class="detail-fine" style="margin-left:10px;">${formatted} ₸</span></div>`; 
-    }
+    function renderMoneyFineItem(i) { let moneyVal = i.moneyFine ? String(i.moneyFine).replace('.',',') : "0"; let formatted = formatNumberWithSpaces(moneyVal); let issuerHtml = (i.source) ? `<span style="color:gray; font-size:10px; font-weight:normal;">${formatShortName(i.source)}</span>` : ''; return `<div class="req-item" style="border-left-color: #e74c3c; border-left-width: 2px; padding: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><div style="flex:1;"><b style="font-size:12px; color:#e74c3c; display:inline-block; margin-bottom:3px;">Штраф</b><br><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${i.reason}</span><br><div style="display:flex; justify-content:space-between; align-items:center;"><div><span style="color:gray;font-size:10px;">${i.date}</span></div>${issuerHtml}</div></div><span class="detail-fine" style="margin-left:10px;">${formatted} ₸</span></div>`; }
 
     function openDetails(type) {
       let prevTab = lastActiveTab; 
@@ -672,27 +660,9 @@
       else if (type === 'points') { document.getElementById("details-title").innerText = "История Баллов"; listHtml = "<div class='card' style='padding:0;'>"; if (myDisplayPointsHistory.length > 0) listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>"; listHtml += "</div>"; } 
       else if (type === 'kpi') { document.getElementById("details-title").innerText = "Детали КФ. ЭФФ."; listHtml = "<div class='card' style='padding:0;'>"; myKpiDetails.forEach(k => { let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; let srcColor = getSourceColor(k.source); let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); if (!dispName) dispName = k.name; if (k.source === "База" || k.name === "Ошибки") dispName = k.name; if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; } let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : ""; listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`; }); listHtml += "</div>"; }
       else if (type === 'report') { document.getElementById("details-title").innerText = "Мои отчеты"; listHtml = "<div style='padding-top:5px;'>"; listHtml += myReports.map(generateHorizontalGrid).join(''); listHtml += "</div>"; }
-      else if (type === 'tabel') { 
-          document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); 
-          document.getElementById("details-title").innerText = "Нарушения (Штрафы и Замечания)"; 
-          listHtml = "<div style='padding-top:5px;'>"; 
-          if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); 
-          else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; 
-          
-          let remarksHtml = ""; 
-          let myRemarks = JSON.parse(localStorage.getItem("dashData_" + appState.iin))?.info?.remarks || []; 
-          myRemarks.forEach(r => { 
-              let roleStr = String(appState.role).toLowerCase();
-              let isSeller = !roleStr.includes("директор") && !roleStr.includes("управляющий") && !roleStr.includes("админ") && !roleStr.includes("супервайзер") && !roleStr.includes("заведующий складом");
-              let authorStr = isSeller ? "" : formatRemarkAuthor(r.authorName, r.authorRole) + " <span style='color:gray; font-size:10px;'>•</span> "; 
-              remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:12px;">${authorStr}<span style="color:gray; font-size:10px;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${formatRemarkText(r.details)}</div></div>`; 
-          });
-          
-          if (remarksHtml) listHtml += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>` + remarksHtml;
-          listHtml += "</div>";
-          
-          document.getElementById("details-list").innerHTML = listHtml;
-      }
+      else if (type === 'tabel') { document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); document.getElementById("details-title").innerText = "Нарушения (Штрафы и Замечания)"; listHtml = "<div style='padding-top:5px;'>"; if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; let remarksHtml = ""; let myRemarks = JSON.parse(localStorage.getItem("dashData_" + appState.iin))?.info?.remarks || []; myRemarks.forEach(r => { let authorStr = formatRemarkAuthor(r.authorName, r.authorRole); remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:12px;">${authorStr} <span style="float:right; color:gray; font-size:10px;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${formatRemarkText(r.details)}</div></div>`; }); if (remarksHtml) listHtml += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>` + remarksHtml; listHtml += "</div>"; }
+      document.getElementById("details-list").innerHTML = listHtml;
+    }
 
     function openEmpKpiDetails(iin, fromDetails = false) { 
       const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; 
