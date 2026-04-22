@@ -368,9 +368,6 @@
     function selectTradeIn(m) { selectedTradeInModel = m; renderTradeInList(); }
 
     function formatRemarkAuthor(name, role) {
-        let roleStr = String(appState.role).toLowerCase(); 
-        let isDirOrZav = roleStr.includes("директор") || roleStr.includes("управляющий") || roleStr.includes("админ") || roleStr.includes("супервайзер") || roleStr.includes("заведующий складом");
-
         let r = String(role || "руководителя").toLowerCase();
         let decl = "руководителя";
         if (r.includes("директор")) decl = "директора";
@@ -378,8 +375,6 @@
         else if (r.includes("управляющ")) decl = "управляющего";
         else if (r.includes("админ")) decl = "администратора";
         else if (r.includes("заведующий складом") || r.includes("зав. складом")) decl = "заведующего";
-
-        if (!isDirOrZav) return `От ${decl}`; // Продавцам показываем только должность
 
         let parts = String(name).trim().split(/\s+/);
         let shortName = parts[0];
@@ -591,30 +586,32 @@
           hcCard.classList.add("hidden");
       }
         
-      let uInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
-      let activeEl = document.activeElement; let isTyping = activeEl && activeEl.tagName === 'TEXTAREA' && activeEl.id.startsWith('remark-reply');
-      if (!isTyping) {
-        let inboxList = document.getElementById("inbox-list");
-        if(inboxList) {
-            inboxList.innerHTML = uInbox.map(r => { 
-              let desc = formatRemarkText(r.details || "");
-              let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.authorRole) : `<b>От:</b> ${r.authorName}`;
-              let d = r.date ? String(r.date) : "";
-              
-              if (r.status === "rejected_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Штраф отклонен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> отклонен админом.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
-              if (r.status === "approved_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #27ae60;"><div class="req-title">✅ Штраф одобрен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> успешно одобрен администратором.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
+      let savedReplies = {};
+      document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { savedReplies[ta.id] = ta.value; });
 
-              if (r.type === "Замечание" && r.status === "pending_user_reply") { 
-                  if (r.targetIin === appState.iin) {
-                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; 
-                  } else {
-                      return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>Нарушитель: <b>${r.targetName}</b><br>${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Просмотрено</button></div></div>`;
-                  }
-              }
-              if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен администратором.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
-              return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
-            }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Уведомлений нет</p>";
-        }
+      let uInbox = data.userInbox ? data.userInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
+      let inboxList = document.getElementById("inbox-list");
+      if(inboxList) {
+          inboxList.innerHTML = uInbox.map(r => { 
+            let desc = formatRemarkText(r.details || "");
+            let authorStr = r.type === "Замечание" ? formatRemarkAuthor(r.authorName, r.authorRole) : `<b>От:</b> ${r.authorName}`;
+            let d = r.date ? String(r.date) : "";
+            
+            if (r.status === "rejected_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Штраф отклонен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> отклонен: <b>${formatShortName(r.approver) || 'Руководителем'}</b>.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
+            if (r.status === "approved_notify_zav") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #27ae60;"><div class="req-title">✅ Штраф одобрен</div><div class="req-desc">Ваш запрос на штраф сотрудника <b>${r.targetName}</b> одобрен: <b>${formatShortName(r.approver) || 'Руководителем'}</b>.<br>Причина штрафа: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
+
+            if (r.type === "Замечание" && r.status === "pending_user_reply") { 
+                if (r.targetIin === appState.iin) {
+                    return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br>${desc}</div><textarea id="remark-reply-${r.id}" placeholder="Ваша обратная связь..." style="box-sizing: border-box; width:100%; height:60px; margin-bottom:8px; border-radius:8px; padding:8px; border:1px solid var(--border-color); background:var(--bg-color); color:var(--text-color); font-family:inherit; resize:none;"></textarea><button class="btn-orange" onclick="processReq('${r.id}', 'reply_remark', document.getElementById('remark-reply-${r.id}').value)">Ответить</button></div>`; 
+                } else {
+                    return `<div class="req-item" id="req-${r.id}" style="border-left-color: #f39c12;"><div class="req-title" style="color:#f39c12;">⚠️ Замечание <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc" style="color:var(--text-color); font-size:13px;"><b style="color:#f39c12;">${authorStr}</b><br><b>${r.targetName}</b> — ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Просмотрено</button></div></div>`;
+                }
+            }
+            if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
+            return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
+          }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Уведомлений нет</p>";
+
+          Object.keys(savedReplies).forEach(id => { let ta = document.getElementById(id); if (ta) ta.value = savedReplies[id]; });
       }
 
       let aInbox = data.adminInbox ? data.adminInbox.filter(r => r && r.id && !processedReqIds.has(String(r.id))) : []; 
@@ -632,12 +629,14 @@
               }
               
               if (r.type === "Замечание") {
-                  desc = `Нарушитель: <b>${r.targetName}</b><br>${desc}`;
+                  desc = `<b>${r.targetName}</b> — ${desc}`;
                   btns = `<div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Просмотрено</button></div>`;
               }
 
               let authorStr = r.type === "Замечание" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
-              return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}</div>${btns}</div>` 
+              let finalDescHtml = r.type === "Замечание" ? desc : `<b>Суть:</b> ${desc}`;
+
+              return `<div class="req-item admin" id="req-${r.id}"><div class="req-title">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br>${finalDescHtml}</div>${btns}</div>` 
           }).join("") || "<p style='color:gray;text-align:center;font-size:13px;'>Новых запросов нет</p>";
       }
 
