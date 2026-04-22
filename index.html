@@ -63,7 +63,6 @@
           <div id="nav-adm-inbox" class="icon-btn hidden" onclick="switchTab('adm-inbox');">📩<span id="admin-badge" class="badge hidden"></span></div>
           <div id="inbox-icon" class="icon-btn hidden" onclick="switchTab('inbox');">📩<span id="user-badge" class="badge hidden"></span></div>
         </div>
-        </div>
       </div>
       <div class="banner-wrapper hidden fade-in" id="info-dashboard">
         <div class="info-wrapper">
@@ -202,7 +201,7 @@
 
     function forceLogout() {
         if(pollingTimer) clearInterval(pollingTimer); clearMemory(); appState.token = null; appState.iin = null; document.getElementById("main-screen").style.opacity = '0';
-        setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
+        setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; hideLoader(); }, 600);
     }
 
     function isSensitiveState() {
@@ -673,15 +672,27 @@
       else if (type === 'points') { document.getElementById("details-title").innerText = "История Баллов"; listHtml = "<div class='card' style='padding:0;'>"; if (myDisplayPointsHistory.length > 0) listHtml += myDisplayPointsHistory.map(i => renderHistoryItem(i, false)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>История пуста</div>"; listHtml += "</div>"; } 
       else if (type === 'kpi') { document.getElementById("details-title").innerText = "Детали КФ. ЭФФ."; listHtml = "<div class='card' style='padding:0;'>"; myKpiDetails.forEach(k => { let col = k.val > 0 ? 'detail-plus' : (k.val < 0 ? 'detail-minus' : 'detail-val'); let valStr = k.val > 0 ? `+${k.val}%` : `${k.val}%`; let srcColor = getSourceColor(k.source); let dispName = k.name.replace(/^(Фокус|Trade-In|СЦ|Горячий чек)[\s\|:]*/i, '').trim(); if (!dispName) dispName = k.name; if (k.source === "База" || k.name === "Ошибки") dispName = k.name; if (k.name === "Больничный" || k.name === "Прогул") { dispName = k.name; srcColor = "#7f8c8d"; } let dateStr = k.date ? `<span style="color:gray;font-size:10px; margin-left:5px;"> • ${k.date}</span>` : ""; listHtml += `<div class="detail-item"><div><span style="color:var(--text-color); font-size:12px; display:inline-block; margin-bottom:3px;">${dispName}</span><br><b style="color:${srcColor}; font-size:10px;">${k.source}</b>${dateStr}</div><span class="${col}">${valStr}</span></div>`; }); listHtml += "</div>"; }
       else if (type === 'report') { document.getElementById("details-title").innerText = "Мои отчеты"; listHtml = "<div style='padding-top:5px;'>"; listHtml += myReports.map(generateHorizontalGrid).join(''); listHtml += "</div>"; }
-      else if (type === 'tabel') { document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); document.getElementById("details-title").innerText = "Нарушения (Штрафы и Замечания)"; listHtml = "<div style='padding-top:5px;'>"; if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; let remarksHtml = ""; let myRemarks = JSON.parse(localStorage.getItem("dashData_" + appState.iin))?.info?.remarks || []; 
-      myRemarks.forEach(r => { 
-          let roleStr = String(appState.role).toLowerCase();
-          let isSeller = !roleStr.includes("директор") && !roleStr.includes("управляющий") && !roleStr.includes("админ") && !roleStr.includes("супервайзер") && !roleStr.includes("заведующий складом");
-          let authorStr = isSeller ? "" : formatRemarkAuthor(r.authorName, r.authorRole) + " <span style='color:gray; font-size:10px;'>•</span> "; 
-          remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:12px;">${authorStr}<span style="color:gray; font-size:10px;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${formatRemarkText(r.details)}</div></div>`; 
-      });
-      document.getElementById("details-list").innerHTML = listHtml;
-    }
+      else if (type === 'tabel') { 
+          document.getElementById("btn-details-back").onclick = () => switchTab(lastActiveTab); 
+          document.getElementById("details-title").innerText = "Нарушения (Штрафы и Замечания)"; 
+          listHtml = "<div style='padding-top:5px;'>"; 
+          if (myMoneyFinesHistory.length > 0) listHtml += myMoneyFinesHistory.map(i => renderMoneyFineItem(i)).join(""); 
+          else listHtml += "<div style='padding:15px;text-align:center;color:gray;font-size:13px;'>Штрафов нет</div>"; 
+          
+          let remarksHtml = ""; 
+          let myRemarks = JSON.parse(localStorage.getItem("dashData_" + appState.iin))?.info?.remarks || []; 
+          myRemarks.forEach(r => { 
+              let roleStr = String(appState.role).toLowerCase();
+              let isSeller = !roleStr.includes("директор") && !roleStr.includes("управляющий") && !roleStr.includes("админ") && !roleStr.includes("супервайзер") && !roleStr.includes("заведующий складом");
+              let authorStr = isSeller ? "" : formatRemarkAuthor(r.authorName, r.authorRole) + " <span style='color:gray; font-size:10px;'>•</span> "; 
+              remarksHtml += `<div class="req-item" style="border-left-color: #f39c12; margin-bottom:8px;"><div class="req-title" style="color:#f39c12; font-size:12px;">${authorStr}<span style="color:gray; font-size:10px;">${r.date}</span></div><div class="req-desc" style="color:var(--text-color); font-size:12px; white-space:pre-wrap;">${formatRemarkText(r.details)}</div></div>`; 
+          });
+          
+          if (remarksHtml) listHtml += `<div class="grid-details-title" style="color:#f39c12; margin-top:10px;">Замечания</div>` + remarksHtml;
+          listHtml += "</div>";
+          
+          document.getElementById("details-list").innerHTML = listHtml;
+      }
 
     function openEmpKpiDetails(iin, fromDetails = false) { 
       const emp = allEmployeesData.find(e => safeIin(e.iin) === safeIin(iin)); if(!emp) return; 
