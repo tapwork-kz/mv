@@ -129,7 +129,7 @@
         </div>
         <div id="admin-plan-list" class="hidden" style="font-size:13px; line-height: 1.4;"></div>
         <div id="admin-sc-list" class="hidden">
-          <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px; margin-top:0; padding-bottom: 12px;">
+          <div class="sticky-header glass" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px; margin-top:0; padding-bottom: 12px; top: 55px; z-index: 15;">
             <div style="display:flex; gap:6px;">
                <button id="flt-cifra" class="admin-flt active-flt" onclick="renderAdminScItems('Цифра', this)">Цифра</button>
                <button id="flt-mbt" class="admin-flt" onclick="renderAdminScItems('МБТ', this)">МБТ</button>
@@ -145,7 +145,7 @@
           <div id="admin-sc-container" style="padding:0; background: transparent; border: none; box-shadow: none;"></div>
         </div>
         <div id="admin-emp-container" class="hidden">
-          <div class="sticky-header glass" style="display:flex; gap:6px; margin-bottom:12px; margin-top:0; padding:6px;"><button id="flt-emp-cifra" class="admin-flt active-flt" onclick="renderAdminEmps('Цифра', this)">Цифра</button><button id="flt-emp-mbt" class="admin-flt" onclick="renderAdminEmps('МБТ', this)">МБТ</button><button id="flt-emp-kbt" class="admin-flt" onclick="renderAdminEmps('КБТ', this)">КБТ</button></div>
+          <div class="sticky-header glass" style="display:flex; gap:6px; margin-bottom:12px; margin-top:0; padding:6px; top: 55px; z-index: 15;"><button id="flt-emp-cifra" class="admin-flt active-flt" onclick="renderAdminEmps('Цифра', this)">Цифра</button><button id="flt-emp-mbt" class="admin-flt" onclick="renderAdminEmps('МБТ', this)">МБТ</button><button id="flt-emp-kbt" class="admin-flt" onclick="renderAdminEmps('КБТ', this)">КБТ</button></div>
           <div id="admin-emp-list" class="req-list"></div>
         </div>
       </div>
