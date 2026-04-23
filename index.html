@@ -180,9 +180,20 @@
         return String(dateStr).includes(m);
     }
 
+    function getMonthName(dateStr) {
+        if(!dateStr) return "Неизвестно";
+        let parts = dateStr.split('.');
+        if(parts.length < 2) return dateStr;
+        let m = parseInt(parts[0], 10);
+        let months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+        return (months[m-1] || parts[0]) + " " + (parts[1].length === 4 ? parts[1] : parts[2] || "");
+    }
+
     function groupAndRenderByMonth(itemsArray, renderItemFn) {
         if (!itemsArray || itemsArray.length === 0) return "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
         let grouped = {};
+        let currentMonthKey = ("0" + (new Date().getMonth() + 1)).slice(-2) + "." + new Date().getFullYear();
+        
         itemsArray.forEach(i => {
             let key = "Неизвестно";
             let dStr = i.date || "";
@@ -194,7 +205,10 @@
         });
         let html = "";
         for(let m in grouped) {
-            html += `<div style="text-align:center; color:gray; font-size:11px; font-weight:bold; margin: 15px 0 8px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">${m}</div>`;
+            // Рисуем линию и название только если это не текущий месяц
+            if (m !== currentMonthKey && m !== "Неизвестно") {
+                html += `<div style="text-align:center; color:var(--text-color); opacity: 0.6; font-size:11px; font-weight:bold; margin: 15px 0 8px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 4px;">${getMonthName(m)}</div>`;
+            }
             grouped[m].forEach(i => { html += renderItemFn(i); });
         }
         return html;
@@ -583,7 +597,13 @@
       myPointsHistory = data.info?.myPtsHistory || []; 
       myMoneyFinesHistory = myPointsHistory.filter(p => p && p.moneyFine && p.moneyFine !== "0" && p.moneyFine !== ""); 
       myScHistory = myPointsHistory.filter(p => p && p.type === "Начисление");
-      myDisplayPointsHistory = myPointsHistory.filter(p => { if (!p || p.type === "KPI") return false; let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; return ptsVal !== 0; });
+      myDisplayPointsHistory = myPointsHistory.filter(p => { 
+          let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; 
+          // Пропускаем KPI, КРОМЕ Горячих чеков (у которых есть баллы)
+          if (p.type === "KPI" && p.source !== "Горячий чек") return false; 
+          if (p.type === "KPI" && p.source === "Горячий чек" && ptsVal === 0) return false;
+          return ptsVal !== 0; 
+      });
 
       let currentMonth = new Date().getMonth() + 1; let currentYear = new Date().getFullYear(); let monthSuffix = ("0" + currentMonth).slice(-2) + "." + currentYear; 
       let monthSc = myScHistory.filter(p => p && typeof p.date === 'string' && p.date.includes(monthSuffix)); 
@@ -609,7 +629,12 @@
               hcHtml += `<div style="display: grid; grid-template-columns: repeat(${colsCount}, 1fr); gap: 6px; margin-bottom: 6px;">`;
               groups[sub].forEach(btn => {
                   let combinedName = sub ? `${sub} ${btn.name}` : btn.name;
-                  hcHtml += `<button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0;" onclick="submitHotCheck('${combinedName}', '${btn.val}', '${btn.pts || 0}')">${btn.name}</button>`;
+                  let badgeHtml = "";
+                  let ptsVal = parseFloat(String(btn.pts || "0").replace(',', '.'));
+                  if (ptsVal > 0) {
+                      badgeHtml = `<span style="position:absolute; top:-8px; right:-6px; background:#e74c3c; color:white; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:10px; border: 2px solid var(--card-bg); box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 5;">+${btn.pts}</span>`;
+                  }
+                  hcHtml += `<div style="position:relative; display:flex; flex:1;"><button class="btn-green" style="padding:10px 4px; font-size:12px; margin:0; width:100%;" onclick="submitHotCheck('${combinedName}', '${btn.val}', '${btn.pts || 0}')">${btn.name}</button>${badgeHtml}</div>`;
               });
               hcHtml += `</div>`;
           }
@@ -851,6 +876,19 @@
     }
 
     let currentHistFilter = 'all';
+
+    function markAsSeen(id, el) {
+        let stored = {};
+        try { stored = JSON.parse(localStorage.getItem("seenH_" + appState.iin) || "{}"); } catch(e){}
+        stored[id] = true;
+        localStorage.setItem("seenH_" + appState.iin, JSON.stringify(stored));
+        
+        let badge = el.querySelector('.new-badge');
+        if (badge) badge.style.display = 'none';
+        el.style.opacity = '0.9';
+        el.style.boxShadow = 'none';
+    }
+    
     function renderAdminHistory(filterType) {
       if(filterType) currentHistFilter = filterType;
       ['all', 'sales', 'pts', 'viol'].forEach(f => {
@@ -893,7 +931,18 @@
         
         let authorStr = r.type === "Замечание" || r.type === "Запрос на штраф" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.adminDisplayName || r.authorName || ''}`;
 
-        return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:${titleColor};">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div></div>`; 
+        let storedSeen = {};
+        try { storedSeen = JSON.parse(localStorage.getItem("seenH_" + appState.iin) || "{}"); } catch(e){}
+        
+        let isNewForMe = !storedSeen[r.id] && r.authorName !== appState.firstName;
+        let newBadge = isNewForMe ? `<span class="new-badge" style="background:#e74c3c; color:white; font-size:9px; padding:2px 5px; border-radius:6px; margin-left:6px; vertical-align:top;">НОВОЕ</span>` : '';
+        let opacityAndShadow = isNewForMe ? 'opacity: 1; box-shadow: 0 0 8px rgba(231,76,60,0.2); cursor: pointer;' : 'opacity: 0.9; cursor: pointer;';
+
+        return `<div class="req-item" style="border-left-color: ${stColor}; ${opacityAndShadow}" onclick="markAsSeen('${r.id}', this)">
+            <div class="req-title" style="color:${titleColor};">${r.type || 'Запрос'} ${newBadge} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div>
+            <div class="req-desc" style="color:var(--text-color);">${authorStr}<br><b>Суть:</b> ${desc}<br>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b>${approverLabel}</div></div>
+        </div>`; 
       });
     }
     
@@ -927,7 +976,7 @@
                  </div>
               </div>
               
-              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; color:#544444;">
+              <div style="display:flex; justify-content:space-between; font-size:11px; align-items:center; color:var(--desc-color);">
                   <span>СЦ | Brzy: <b style="color:var(--btn-color);">${curMonthSc} | ${curMonthTrade}</b> <span style="font-weight:normal; margin: 0 2px;">/</span> <b style="color:var(--text-color);">${e.sales.sc} | ${e.sales.trade}</b></span>
                   <span>Ошибки по отчетам: <b style="color:var(--text-color);">${e.reportErrors}</b></span>
               </div>
