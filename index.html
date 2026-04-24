@@ -1104,7 +1104,7 @@
                    let html = `<div class="inner-block card" style="margin-bottom:8px; padding:8px;"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`; 
                    items.forEach((i, idx) => { 
                        let ptNoun = formatPointsNoun(i.pts); 
-                       html += `<div class="sc-item" onclick="this.classList.toggle('selected')" style="padding:10px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; margin-bottom:4px;"><div><div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div><div class="type-label" style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div></div></div>`; 
+                       html += `<div class="sc-item" onclick="this.classList.toggle('selected')" style="padding:10px; border-bottom:1px solid rgba(130, 130, 130, 0.35); display:flex; justify-content:space-between; margin-bottom:4px;"><div><div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div><div class="type-label" style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div></div></div>`; 
                    }); 
                    html += `</div>`; 
                    container.innerHTML += html; 
