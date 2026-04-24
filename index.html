@@ -293,6 +293,8 @@
     function isSensitiveState() {
         let activeEl = document.activeElement;
         let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
+        let hasUnsavedText = false;
+        document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { if(ta.value.trim().length > 0) hasUnsavedText = true; });
         let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
         let isTradeInOpen = document.getElementById("form-tradein") && !document.getElementById("form-tradein").classList.contains("hidden");
         let isPointsOpen = document.getElementById("form-points") && !document.getElementById("form-points").classList.contains("hidden");
@@ -301,7 +303,7 @@
         document.querySelectorAll('[id^="fine-form-"], [id^="remark-form-"]').forEach(el => {
             if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
         });
-        return isTyping || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
+        return isTyping || hasUnsavedText || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
     }
 
     function startPolling() {
@@ -1101,7 +1103,7 @@
                for (const [dName, items] of Object.entries(groups)) { 
                    if (items.length === 0) continue; 
                    let headerText = items[0].focusHeader || `${dName} Фокус`; 
-                   let html = `<div class="inner-block card" style="margin-bottom:8px; padding:8px;"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`; 
+                   let html = `<div class="inner-block card" style="margin-bottom:8px; padding:8px; background: var(--card-bg);"><div style="font-size:13px; font-weight:bold; color:var(--text-color); margin-bottom:6px;">${headerText}</div>`; 
                    items.forEach((i, idx) => { 
                        let ptNoun = formatPointsNoun(i.pts); 
                        html += `<div class="sc-item" onclick="this.classList.toggle('selected')" style="padding:10px; border-bottom:1px solid rgba(130, 130, 130, 0.35); display:flex; justify-content:space-between; margin-bottom:4px;"><div><div style="font-size:12px; margin-bottom:2px;"><b>${idx+1}.</b> ${i.name}</div><div class="type-label" style="font-size:10px; color:#e74c3c; font-weight:bold;">Фокус — ${String(i.pts).replace('.',',')} ${ptNoun}</div></div></div>`; 
@@ -1145,7 +1147,7 @@
                let displayAct = r.actUrl || metaObj.docUrl || ""; 
                let displayDisc = r.discount || metaObj.discount || "0%"; 
                
-               return `<div class="inner-block sc-item card" onclick="this.classList.toggle('selected')" style="padding:10px; margin-bottom:8px; border-left: 3px solid ${tagColor}; cursor: pointer;"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span class="type-label" style="font-size:9px; font-weight:bold; color:${tagColor};">${isFocus ? 'ФОКУС' : 'СЦ'}</span><span style="font-size:9px; color:gray;">${r.date}</span></div><div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div><div style="font-size:11px; line-height:1.4;">👤 <span style="color:gray;">Продавец:</span> <b>${r.authorName}</b><br>${displayDisc !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${displayDisc}</b><br>` : ''}${displayAct ? `📄 <a href="${displayAct}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;" onclick="event.stopPropagation()">Акт товара</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}</div></div>`; 
+               return `<div class="inner-block sc-item card" onclick="this.classList.toggle('selected')" style="padding:10px; margin-bottom:8px; border-left: 3px solid ${tagColor}; cursor: pointer; background: var(--card-bg);"><div style="display:flex; justify-content:space-between; margin-bottom:4px;"><span class="type-label" style="font-size:9px; font-weight:bold; color:${tagColor};">${isFocus ? 'ФОКУС' : 'СЦ'}</span><span style="font-size:9px; color:gray;">${r.date}</span></div><div style="font-size:12px; font-weight:bold; margin-bottom:4px;">${r.details}</div><div style="font-size:11px; line-height:1.4;">👤 <span style="color:gray;">Продавец:</span> <b>${r.authorName}</b><br>${displayDisc !== "0%" ? `🏷️ <span style="color:gray;">Скидка:</span> <b style="color:#e74c3c;">${displayDisc}</b><br>` : ''}${displayAct ? `📄 <a href="${displayAct}" target="_blank" style="color:#3390ec; text-decoration:none; font-weight:bold;" onclick="event.stopPropagation()">Акт товара</a>` : '<span style="color:gray; font-size:10px;">(Акт не прикреплен)</span>'}</div></div>`; 
            });
        }
     }
