@@ -710,7 +710,6 @@
       myScHistory = myPointsHistory.filter(p => p && p.type === "Начисление");
       myDisplayPointsHistory = myPointsHistory.filter(p => { 
           let ptsVal = parseFloat(String(p.val).replace(',', '.')) || 0; 
-          // Пропускаем KPI, КРОМЕ Горячих чеков (у которых есть баллы)
           if (p.type === "KPI" && p.source !== "Горячий чек") return false; 
           if (p.type === "KPI" && p.source === "Горячий чек" && ptsVal === 0) return false;
           return ptsVal !== 0; 
@@ -779,10 +778,10 @@
             
             if (r.status === "rejected_notify_user") return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title">❌ Запрос отклонен</div><div class="req-desc">Ваш запрос на <b>${r.type || 'запрос'}</b> был отклонен.<br>Детали: ${desc}</div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_rejection')">Ознакомлен</button></div></div>`; 
             
-            // --- НОВОЕ: Обработка уведомления о штрафе для продавца ---
             if (r.status === "notify_user_fine") {
                 let metaObj = {}; try { metaObj = JSON.parse(r.meta || "{}"); } catch(e){}
-                return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title" style="color: #e74c3c;">⚠️ Вам выписан штраф</div><div class="req-desc"><b>Причина:</b> ${desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount || 0}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount || 0} ₸</b></div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
+                let authorDetails = formatRemarkAuthor(r.authorName, r.authorRole); // Создает От: Заведующего Иванова И.
+                return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title" style="color: #e74c3c;">⚠️ Вам выписан штраф <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc"><b style="color:#e74c3c;">${authorDetails}</b><br><b>Причина:</b> ${desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount || 0}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount || 0} ₸</b></div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
             }
 
             return `<div class="req-item" id="req-${r.id}"><div class="req-title">Обмен сменами</div><div class="req-desc">${r.authorName || 'Коллега'} просит поменяться.<br><b>${desc}</b></div><div class="grid-btns"><button class="btn-red" onclick="processReq('${r.id}', 'reject_user')">Отклонить</button><button class="btn-green" onclick="processReq('${r.id}', 'approve_user')">Одобрить</button></div></div>`; 
@@ -791,6 +790,10 @@
           Object.keys(savedReplies).forEach(id => { let ta = document.getElementById(id); if (ta) ta.value = savedReplies[id]; });
 
           let uHistory = data.userHistory || [];
+          
+          // Скрываем "Запрос на штраф" из истории того, кого штрафуют (он будет видеть только красивое "Уведомление о штрафе")
+          uHistory = uHistory.filter(r => !(r.type === "Запрос на штраф" && r.targetIin === appState.iin));
+
           let uHistList = document.getElementById("user-history-list");
           if (uHistList) {
               uHistList.innerHTML = groupAndRenderByMonth(uHistory, r => {
@@ -804,9 +807,25 @@
 
                   let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
                   desc = formatRemarkText(desc, r.type === 'Замечание' ? r.targetName : null);
-                  if (r.type === "Запрос на штраф") { let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){} desc = `Нарушитель: <b>${r.targetName}</b><br>Причина: ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`; }
-                  let authorStr = r.type === "Замечание" || r.type === "Запрос на штраф" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.authorName || ''}`;
                   let finalDescHtml = r.type === "Замечание" ? `<b>${r.targetName}</b> — ${desc}` : `<b>Суть:</b> ${desc}`;
+                  let authorStr = r.type === "Замечание" || r.type === "Запрос на штраф" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.authorName || ''}`;
+
+                  // Специфичный рендер для Уведомления о штрафе в истории
+                  if (r.type === "Уведомление о штрафе") {
+                      stColor = "#e74c3c"; // Красный бортик и текст
+                      stText = "Ознакомлен";
+                      let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){}
+                      desc = `<b>Причина:</b> ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`;
+                      authorStr = `<b style="color:#e74c3c;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>`; // Должность с склонением
+                      finalDescHtml = desc; // Убираем слово "Суть:"
+                      r.type = "Штраф"; // Меняем заголовок карточки в истории
+                  } 
+                  else if (r.type === "Запрос на штраф") { 
+                      let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){} 
+                      desc = `Нарушитель: <b>${r.targetName}</b><br>Причина: ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`; 
+                      finalDescHtml = `<b>Суть:</b> ${desc}`;
+                  }
+
                   return `<div class="req-item" style="border-left-color: ${stColor}; opacity: 0.9;"><div class="req-title" style="color:var(--btn-color);">${r.type || 'Запрос'} <span style="font-size:12px; font-weight:normal; color:gray; float:right;">${r.date || ''}</span></div><div class="req-desc" style="color:var(--text-color);">${authorStr}<br>${finalDescHtml}<br><div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;"><b style="color:${stColor}">Статус: ${stText}</b></div></div></div>`; 
               });
           }
