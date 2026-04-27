@@ -43,13 +43,12 @@
     .req-list { display: flex; flex-direction: column; gap: 8px; } .req-item { padding: 10px; border-radius: 12px; background: var(--card-bg); border-left: 4px solid var(--btn-color); box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.6s; border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);} .req-item.admin { border-left-color: #3498db; } .req-title { font-weight: bold; margin-bottom: 4px; font-size: 13px; } .req-desc { font-size: 12px; color: gray; margin-bottom: 8px; line-height: 1.3;} .grid-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .grid-btns button { padding: 10px; margin: 0; font-size: 12px; display:block; }
     .detail-item { padding: 10px 8px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 13px; transition: 0.6s;} .detail-item:last-child { border-bottom: none; } .detail-plus { color: #27ae60; font-weight: bold; font-size: 13px;} .detail-minus { color: #e74c3c; font-weight: bold; font-size: 13px;} .detail-fine { color: #c0392b; font-weight: bold; font-size: 13px;} .detail-val { font-weight: bold; font-size: 13px; color: var(--btn-color); }
     
-    /* --- ИЗМЕНЕНИЯ ЗДЕСЬ --- */
-    .sc-item { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; cursor: pointer; transition: all 0.6s ease; border-radius: 10px; background-color: transparent; }
-    .sc-item:active { background-color: var(--inner-bg); transition: 0s; }
-    .sc-item.selected { background-color: var(--btn-color) !important; font-weight: bold; color: #ffffff !important; border-color: transparent !important; }
-    .sc-item.selected *, .sc-item.selected div, .sc-item.selected span, .sc-item.selected .type-label { color: #ffffff !important; }
-    .sc-item div, .sc-item span, .type-label { transition: all 0.6s ease; }
-    /* ----------------------- */
+    /* ИСПРАВЛЕННЫЙ CSS ДЛЯ ПЛАВНОСТИ ЭЛЕМЕНТОВ */
+    .sc-item { padding: 10px; border-bottom: 1px solid var(--border-color); font-size: 14px; cursor: pointer; transition: all 0.6s ease; border-radius: 10px; background-color: transparent; color: var(--text-color); } 
+    .sc-item:active { background-color: var(--inner-bg); } 
+    .sc-item.selected { background-color: var(--btn-color) !important; font-weight: bold; color: #ffffff !important; border-color: transparent !important; } 
+    .sc-item.selected * { color: #ffffff !important; transition: all 0.6s ease; }
+    .type-label { transition: all 0.6s ease; }
 
     .grid-details-container { padding: 8px; background: var(--card-bg); border-radius: 12px; transition: 0.6s; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid var(--border-color);} .grid-details-title { text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 6px; color: var(--text-color); } .grid-details-box { display: grid; gap: 2px; text-align: center; align-items: center; justify-content: center; } .grid-details-header { font-size: 9px; color: gray; font-weight: bold; margin-bottom: 2px; text-transform: uppercase;} .grid-details-value { font-size: 12px; margin-top: 0; }
     .active-outs-box { border-radius: 14px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); text-align: left; margin-top: 15px; transition: 0.6s;} .active-outs-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; color: var(--text-color); } .active-out-item { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid var(--border-color); } .active-out-item:last-child { border-bottom: none; } .active-out-name { font-weight: bold; color: var(--text-color); } .active-out-time { color: var(--btn-color); font-weight: bold; } .active-out-time.late { color: #e74c3c; }
@@ -236,7 +235,6 @@
     function groupAndRenderByMonth(itemsArray, renderItemFn) {
         if (!itemsArray || itemsArray.length === 0) return "<p style='color:gray;text-align:center;font-size:13px;'>История пуста</p>";
         
-        // Сортируем массив по дате (от новых к старым), чтобы недавние даты прошлых месяцев уходили вниз
         let sortedArray = [...itemsArray].sort((a, b) => parseCustomDate(b.date) - parseCustomDate(a.date));
         
         let grouped = {};
@@ -297,10 +295,9 @@
         if(pollingTimer) clearInterval(pollingTimer); clearMemory(); appState.token = null; appState.iin = null; document.getElementById("main-screen").style.opacity = '0';
         setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
     }
-// Жесткая блокировка обновлений при взаимодействии с вводом
+
     window.typingLockTime = 0;
     
-    // Отслеживаем касание поля и сам процесс печати
     document.addEventListener('focusin', e => { 
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') window.typingLockTime = Date.now(); 
     });
@@ -309,8 +306,6 @@
     });
 
     function isSensitiveState() {
-        // ЯДЕРНОЕ РЕШЕНИЕ: Если открыта вкладка Входящие, полностью блокируем фоновое обновление.
-        // Это на 100% гарантирует, что innerHTML не перерисует DOM и не "убьет" поле ввода при поднятии клавиатуры.
         if (lastActiveTab === 'inbox') return true;
 
         let activeEl = document.activeElement;
@@ -321,8 +316,6 @@
             if(ta.value.length > 0) hasUnsavedText = true; 
         });
         
-        // ВАЖНО: Защита от "моргания" фокуса в Telegram WebApp
-        // Если юзер касался ввода или печатал в последние 10 секунд - блокируем фоновое обновление
         let isRecentlyTyping = (Date.now() - window.typingLockTime) < 10000;
         
         let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
@@ -334,13 +327,11 @@
             if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
         });
         
-        // Теперь даже если фокус пропадет на секунду, isRecentlyTyping спасет ситуацию на других вкладках
         return isTyping || isRecentlyTyping || hasUnsavedText || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
     }
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
-            // 🛑 ЖЕСТКАЯ БЛОКИРОВКА: Если открыты "Входящие", полностью отключаем опрос сервера
             if (lastActiveTab === 'inbox') return;
 
             if(appState.token && !document.hidden) {
@@ -350,7 +341,6 @@
                 if (!data || data.error === "Оффлайн режим") return; 
                 if (data.authorized === false) { forceLogout(); return; } 
                 
-                // Двойная проверка перед перерисовкой
                 if (!isSensitiveState() && lastActiveTab !== 'inbox') {
                     renderDashboardData(data, true);
                 }
@@ -483,25 +473,19 @@
       if (!data || data.error === "Оффлайн режим") { if (!isSilent) hideLoader(); return; } 
       if (data.authorized === false) { forceLogout(); return; } 
       
-      // --- ИСПРАВЛЕНИЕ ЗДЕСЬ: ЗАЩИТА ФОКУСА ---
-      // Проверяем, не нажал ли юзер на поле ввода, пока мы ждали ответ сервера
       let activeEl = document.activeElement;
       let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
       
-      // Проверяем, есть ли уже набранный, но не отправленный текст в полях обратной связи
       let hasUnsavedText = false;
       document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => {
           if (ta.value.length > 0) hasUnsavedText = true;
       });
 
-      // Сохраняем свежие данные в кэш в любом случае
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data)); 
       
-      // Вызываем перерисовку ТОЛЬКО если юзер не пишет текст в данный момент
       if (!isTyping && !hasUnsavedText) {
           renderDashboardData(data, isSilent); 
       }
-      // ----------------------------------------
       
       if (!isSilent) hideLoader(); 
       
@@ -522,7 +506,7 @@
         if (!container) return; 
         container.innerHTML = tradeInModelsGlobal.map(m => { 
             let isSel = (selectedTradeInModel === m); 
-            // Передаем this (сам элемент), чтобы менять класс напрямую
+            // Клик передает сам элемент для смены класса без перезагрузки
             return `<div class="sc-item ${isSel ? 'selected' : ''}" onclick="selectTradeIn('${m}', this)"><div style="font-size:13px;">${m}</div></div>`; 
         }).join(""); 
     }
@@ -530,7 +514,6 @@
     function selectTradeIn(m, el) { 
         selectedTradeInModel = m; 
         let container = document.getElementById("tradein-list");
-        // Снимаем выделение со всех и плавно подсвечиваем нажатый
         if(container) Array.from(container.children).forEach(c => c.classList.remove('selected')); 
         if(el) el.classList.add('selected'); 
     }
@@ -557,7 +540,6 @@
         let splitRegex = /\n\n>\s*(.*?)\n/i;
         let parts = str.split(splitRegex);
         
-        // Если уже есть ответ от сотрудника
         if (parts.length >= 3) {
             let main = parts[0];
             let authorLabel = parts[1];
@@ -571,7 +553,6 @@
             return `${oldParts[0]}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid var(--btn-color); border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:var(--btn-color); font-style:normal;">${oldParts[1]}</b><br>${oldParts.slice(2).join("")}</div>`;
         }
         
-        // НОВОЕ: Если ответа еще нет, но мы передали имя сотрудника (для Истории)
         if (targetName) {
             let targetShort = targetName;
             let tParts = String(targetName).trim().split(/\s+/);
@@ -803,7 +784,7 @@
             
             if (r.status === "notify_user_fine") {
                 let metaObj = {}; try { metaObj = JSON.parse(r.meta || "{}"); } catch(e){}
-                let authorDetails = formatRemarkAuthor(r.authorName, r.authorRole);
+                let authorDetails = formatRemarkAuthor(r.authorName, r.authorRole); 
                 return `<div class="req-item" id="req-${r.id}" style="border-left-color: #e74c3c;"><div class="req-title" style="color: #e74c3c;">⚠️ Вам выписан штраф <span style="float:right; color:gray; font-size:10px; font-weight:normal;">${d}</span></div><div class="req-desc"><b style="color:#e74c3c;">${authorDetails}</b><br><b>Причина:</b> ${desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount || 0}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount || 0} ₸</b></div><div class="grid-btns" style="grid-template-columns: 1fr;"><button class="btn-gray" onclick="processReq('${r.id}', 'dismiss_notification')">Ознакомлен</button></div></div>`;
             }
 
@@ -833,13 +814,13 @@
                   let authorStr = r.type === "Замечание" || r.type === "Запрос на штраф" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.authorName || ''}`;
 
                   if (r.type === "Уведомление о штрафе") {
-                      stColor = "#e74c3c";
+                      stColor = "#e74c3c"; 
                       stText = "Ознакомлен";
                       let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){}
                       desc = `<b>Причина:</b> ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`;
                       authorStr = `<b style="color:#e74c3c;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>`;
-                      finalDescHtml = desc;
-                      r.type = "Штраф";
+                      finalDescHtml = desc; 
+                      r.type = "Штраф"; 
                   } 
                   else if (r.type === "Запрос на штраф") { 
                       let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){} 
@@ -911,19 +892,18 @@
         } else if (String(i.type).toLowerCase() === "kpi" && i.source === "Горячий чек") { 
             typeColor = "#27ae60"; 
             typeDisplay = "Начисление"; 
-            col = "detail-plus"; // Убеждаемся, что цифра баллов зеленая
+            col = "detail-plus"; 
             i.approver = ""; 
         }
         
         let rightText = String(i.type).toLowerCase().includes('штраф') ? (isDirOrZav ? i.source : "") : i.approver; 
         rightText = formatShortName(rightText); 
 
-        // Скрываем автора в прошлых месяцах для продавцов
         let isCurrent = isCurrentMonth(i.date);
         if (!isDirOrZav && !isCurrent) {
-            rightText = ""; // Скрываем одобряющего
+            rightText = ""; 
             if (String(i.type).toLowerCase().includes('штраф')) {
-                i.source = ""; // Скрываем автора штрафа
+                i.source = ""; 
             }
         }
         
@@ -947,7 +927,6 @@
           document.getElementById("details-title").innerText = "Детали СЦ | BRZY"; 
           listHtml = "<div class='card' style='padding:0;'>"; 
           let currentSc = myScHistory.filter(i => isCurrentMonth(i.date));
-          // Сортируем внутри текущего месяца
           currentSc.sort((a, b) => parseCustomDate(b.date) - parseCustomDate(a.date));
           
           if (currentSc.length > 0) {
@@ -1208,7 +1187,7 @@
        let searchInput = document.getElementById("admin-sc-search"); 
        let searchQ = searchInput ? searchInput.value.toLowerCase() : ""; 
        
-       container.innerHTML = ""; // Очищаем контейнер
+       container.innerHTML = ""; 
        
        if (currentAdminScTabType === 'active') { 
            let filtered = adminScItemsGlobal.filter(i => (dept === "Фокус" ? i.type === "Фокус" : (i.dept === dept && i.type === "СЦ"))); 
@@ -1257,7 +1236,6 @@
            if (searchQ) sold = sold.filter(r => r.details.toLowerCase().includes(searchQ) || r.authorName.toLowerCase().includes(searchQ)); 
            if (sold.length === 0) { container.innerHTML = "<p style='text-align:center; color:gray; padding:15px; font-size:12px;'>Нет проданных товаров</p>"; return; }
            
-           // Отрисовка с разделением по месяцам
            container.innerHTML = groupAndRenderByMonth(sold, r => {
                const isFocus = dept === "Фокус"; 
                const tagColor = isFocus ? "#f39c12" : "#3390ec"; 
@@ -1291,15 +1269,14 @@
       let focusList = globalScItems.filter(i => i.dept === currentScTabDept && i.type === 'Фокус'); if (q) focusList = focusList.filter(i => i.name.toLowerCase().includes(q)); let sortedFiltered = [...scList, ...focusList];
       if (sortedFiltered.length === 0) { list.innerHTML = "<p style='padding:12px; color:gray; font-size:12px; text-align:center;'>Ничего не найдено</p>"; return; }
       sortedFiltered.forEach(i => { 
-        let div = document.createElement("div"); let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type && selectedScItem.dept === i.dept); div.className = "sc-item" + (isSelected ? " selected" : ""); let typeCol = i.type === 'СЦ' ? '#e67e22' : '#e74c3c'; let ptNoun = formatPointsNoun(i.pts); let ptsText = i.type === 'СЦ' ? '2 балла' : `${String(i.pts).replace('.', ',')} ${ptNoun}`; let deptLabel = i.type === 'Фокус' ? `<span style="color:gray; font-weight:normal; transition:0.6s;"> (${i.dept})</span>` : ''; 
-        div.innerHTML = `<div><div style="margin-bottom:4px; font-size:13px; transition:0.6s;">${i.name}${deptLabel}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="type-label" style="font-size:10px; color:${typeCol}; font-weight:bold; transition:0.6s;">${i.type} — ${ptsText}</div>${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:11px; transition:0.6s;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}</div></div>`; 
+        let div = document.createElement("div"); let isSelected = (selectedScItem && selectedScItem.row === i.row && selectedScItem.type === i.type && selectedScItem.dept === i.dept); div.className = "sc-item" + (isSelected ? " selected" : ""); let typeCol = i.type === 'СЦ' ? '#e67e22' : '#e74c3c'; let ptNoun = formatPointsNoun(i.pts); let ptsText = i.type === 'СЦ' ? '2 балла' : `${String(i.pts).replace('.', ',')} ${ptNoun}`; let deptLabel = i.type === 'Фокус' ? `<span style="color:gray; font-weight:normal;"> (${i.dept})</span>` : ''; 
+        div.innerHTML = `<div><div style="margin-bottom:4px; font-size:13px;">${i.name}${deptLabel}</div><div style="display:flex; justify-content:space-between; align-items:center;"><div class="type-label" style="font-size:10px; color:${typeCol}; font-weight:bold;">${i.type} — ${ptsText}</div>${i.discount ? `<div style="font-weight:bold; color:#e74c3c; font-size:11px;">-${i.discount.replace(/%/g, '% ')}</div>` : ''}</div></div>`; 
         div.onclick = function() { 
             selectedScItem = i; 
             let docBtn = document.getElementById("btn-act-doc"); 
             if (i.docUrl) { docBtn.style.opacity = "1"; docBtn.style.pointerEvents = "auto"; } 
             else { docBtn.style.opacity = "0.3"; docBtn.style.pointerEvents = "none"; } 
             
-            // Плавно переключаем класс без перезагрузки всего списка
             Array.from(list.children).forEach(c => c.classList.remove('selected'));
             this.classList.add('selected');
         }; 
@@ -1338,16 +1315,11 @@
     
     async function processReq(id, action, replyText = "") { vibrate(50); showToast("Обработка...", false, 9999); processedReqIds.add(String(id)); let el = document.getElementById("req-" + id); if (el) { el.style.display = 'none'; } let res = await callBackend('processRequest', { token: appState.token, reqId: id, reqAction: action, replyText: replyText }); if(res.success) { showToast(res.msg); loadDashboard(true); } else { showToast(res.error, true); loadDashboard(true); } }
 
-    // ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛАВИАТУРЫ
     document.addEventListener('keydown', function(e) {
-      // Убираем TEXTAREA из условия, чтобы Enter делал перенос строки, а не скрывал клавиатуру
       if (e.key === 'Enter' && document.activeElement && document.activeElement.tagName === 'INPUT') {
         document.activeElement.blur();
       }
     });
-
-    // Агрессивный сброс фокуса по touchstart удален.
-    // Теперь клавиатура не будет дергаться при случайном касании экрана или попытке скролла.
 
   </script>
 </body>
