@@ -290,11 +290,19 @@
         setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
     }
 
+    // Жесткая блокировка обновлений при фокусе на полях ввода
+    let focusLock = false;
+    document.addEventListener('focusin', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') focusLock = true; });
+    document.addEventListener('focusout', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') focusLock = false; });
+
     function isSensitiveState() {
+        if (focusLock) return true; // Блокируем, если клавиатура поднята
+        
         let activeEl = document.activeElement;
         let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
         let hasUnsavedText = false;
         document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { if(ta.value.length > 0) hasUnsavedText = true; });
+        
         let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
         let isTradeInOpen = document.getElementById("form-tradein") && !document.getElementById("form-tradein").classList.contains("hidden");
         let isPointsOpen = document.getElementById("form-points") && !document.getElementById("form-points").classList.contains("hidden");
@@ -303,6 +311,7 @@
         document.querySelectorAll('[id^="fine-form-"], [id^="remark-form-"]').forEach(el => {
             if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
         });
+        
         return isTyping || hasUnsavedText || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
     }
 
