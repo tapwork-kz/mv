@@ -470,11 +470,31 @@
           } catch(e) { localStorage.removeItem("dashData_" + appState.iin); showLoader(); } 
         } else showLoader(); 
       } 
+      
       let data = await callBackend('getDashboardData', { token: appState.token }); 
       if (!data || data.error === "Оффлайн режим") { if (!isSilent) hideLoader(); return; } 
       if (data.authorized === false) { forceLogout(); return; } 
+      
+      // --- ИСПРАВЛЕНИЕ ЗДЕСЬ: ЗАЩИТА ФОКУСА ---
+      // Проверяем, не нажал ли юзер на поле ввода, пока мы ждали ответ сервера
+      let activeEl = document.activeElement;
+      let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
+      
+      // Проверяем, есть ли уже набранный, но не отправленный текст в полях обратной связи
+      let hasUnsavedText = false;
+      document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => {
+          if (ta.value.length > 0) hasUnsavedText = true;
+      });
+
+      // Сохраняем свежие данные в кэш в любом случае
       localStorage.setItem("dashData_" + appState.iin, JSON.stringify(data)); 
-      renderDashboardData(data, isSilent); 
+      
+      // Вызываем перерисовку ТОЛЬКО если юзер не пишет текст в данный момент
+      if (!isTyping && !hasUnsavedText) {
+          renderDashboardData(data, isSilent); 
+      }
+      // ----------------------------------------
+      
       if (!isSilent) hideLoader(); 
       
       let roleStr = String(appState.role).toLowerCase(); 
