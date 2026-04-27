@@ -486,22 +486,35 @@
         return `От ${decl} ${shortName}`;
     }
 
-    function formatRemarkText(text) {
+    function formatRemarkText(text, targetName = null) {
         if (!text) return "";
         let str = String(text);
         let splitRegex = /\n\n>\s*(.*?)\n/i;
         let parts = str.split(splitRegex);
+        
+        // Если уже есть ответ от сотрудника
         if (parts.length >= 3) {
             let main = parts[0];
             let authorLabel = parts[1];
             let quote = parts.slice(2).join("");
             return `${main}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid var(--btn-color); border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:var(--btn-color); font-style:normal;">${authorLabel}</b><br>${quote}</div>`;
         }
+        
         let oldRegex = /(Ответ.*?:\s*)/i;
         let oldParts = str.split(oldRegex);
         if (oldParts.length >= 3) {
             return `${oldParts[0]}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid var(--btn-color); border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:var(--btn-color); font-style:normal;">${oldParts[1]}</b><br>${oldParts.slice(2).join("")}</div>`;
         }
+        
+        // НОВОЕ: Если ответа еще нет, но мы передали имя сотрудника (для Истории)
+        if (targetName) {
+            let targetShort = targetName;
+            let tParts = String(targetName).trim().split(/\s+/);
+            if (tParts.length > 1 && tParts[1]) targetShort = tParts[0] + " " + tParts[1].charAt(0).toUpperCase() + ".";
+            
+            return `${str}<div style="margin-top:8px; padding:8px 12px; background:var(--inner-bg); border-left:3px solid gray; border-radius:0 8px 8px 0; font-style:italic; font-size:12px;"><b style="color:gray; font-style:normal;">${targetShort}</b><br><span style="color:gray;">Ожидает ответа...</span></div>`;
+        }
+        
         return str;
     }
 
@@ -740,7 +753,7 @@
                   }
 
                   let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
-                  desc = formatRemarkText(desc);
+                  desc = formatRemarkText(desc, r.type === 'Замечание' ? r.targetName : null);
                   if (r.type === "Запрос на штраф") { let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){} desc = `Нарушитель: <b>${r.targetName}</b><br>Причина: ${metaObj.reason || desc}<br>Баллы: <b style="color:#e74c3c;">${metaObj.amount}</b> | Сумма: <b style="color:#e74c3c;">${metaObj.moneyAmount} ₸</b>`; }
                   let authorStr = r.type === "Замечание" || r.type === "Запрос на штраф" ? `<b style="color:#f39c12;">${formatRemarkAuthor(r.authorName, r.authorRole)}</b>` : `<b>От:</b> ${r.authorName || ''}`;
                   let finalDescHtml = r.type === "Замечание" ? `<b>${r.targetName}</b> — ${desc}` : `<b>Суть:</b> ${desc}`;
@@ -1024,7 +1037,7 @@
         }
         
         let desc = r.type === "Обмен сменами" ? `Сменщик: ${r.targetName || ''}<br>${r.details || ''}` : (r.details || ''); 
-        desc = formatRemarkText(desc);
+        desc = formatRemarkText(desc, r.type === 'Замечание' ? r.targetName : null);
 
         if (r.type === "Запрос на штраф") {
             let metaObj = {}; try { metaObj = JSON.parse(r.meta || r.metadata); } catch(e){}
