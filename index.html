@@ -290,18 +290,29 @@
         setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
     }
 
-    // Жесткая блокировка обновлений при фокусе на полях ввода
-    let focusLock = false;
-    document.addEventListener('focusin', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') focusLock = true; });
-    document.addEventListener('focusout', e => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') focusLock = false; });
+    // Жесткая блокировка обновлений при взаимодействии с вводом
+    window.typingLockTime = 0;
+    
+    // Отслеживаем касание поля и сам процесс печати
+    document.addEventListener('focusin', e => { 
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') window.typingLockTime = Date.now(); 
+    });
+    document.addEventListener('input', e => { 
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') window.typingLockTime = Date.now(); 
+    });
 
     function isSensitiveState() {
-        if (focusLock) return true; // Блокируем, если клавиатура поднята
-        
         let activeEl = document.activeElement;
         let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
+        
         let hasUnsavedText = false;
-        document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { if(ta.value.length > 0) hasUnsavedText = true; });
+        document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { 
+            if(ta.value.length > 0) hasUnsavedText = true; 
+        });
+        
+        // ВАЖНО: Защита от "моргания" фокуса в Telegram WebApp
+        // Если юзер касался ввода или печатал в последние 10 секунд - блокируем фоновое обновление
+        let isRecentlyTyping = (Date.now() - window.typingLockTime) < 10000;
         
         let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
         let isTradeInOpen = document.getElementById("form-tradein") && !document.getElementById("form-tradein").classList.contains("hidden");
@@ -312,7 +323,8 @@
             if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
         });
         
-        return isTyping || hasUnsavedText || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
+        // Теперь даже если фокус пропадет на секунду, isRecentlyTyping спасет ситуацию
+        return isTyping || isRecentlyTyping || hasUnsavedText || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
     }
 
     function startPolling() {
