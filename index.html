@@ -332,20 +332,22 @@
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
+            // 🛑 ЖЕСТКАЯ БЛОКИРОВКА: Если открыты "Входящие", полностью отключаем опрос сервера
+            if (lastActiveTab === 'inbox') return;
+
             if(appState.token && !document.hidden) {
-                // ЖЕСТКАЯ БЛОКИРОВКА: Если юзер печатает или открыта форма, даже не отправляем запрос
                 if (isSensitiveState()) return;
 
                 let data = await callBackend('getDashboardData', { token: appState.token }); 
                 if (!data || data.error === "Оффлайн режим") return; 
                 if (data.authorized === false) { forceLogout(); return; } 
                 
-                // Двойная проверка перед перерисовкой (на случай если юзер тапнул пока запрос летел)
-                if (!isSensitiveState()) {
+                // Двойная проверка перед перерисовкой
+                if (!isSensitiveState() && lastActiveTab !== 'inbox') {
                     renderDashboardData(data, true);
                 }
                 
-                if (!isSensitiveState()) {
+                if (!isSensitiveState() && lastActiveTab !== 'inbox') {
                     let state = await callBackend('startupCheck', { token: appState.token, iin: appState.iin, tgUserId: null }); 
                     if(state && state.authorized !== false) { 
                         globalActiveOuts = state.activeOuts || [];
@@ -362,9 +364,15 @@
             }
         }, 3000);
     }
-
-    document.addEventListener('visibilitychange', () => { if (!document.hidden && appState.token && !isSensitiveState()) loadDashboard(true); });
-
+    
+    document.addEventListener('touchstart', function(e) {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        if (!document.activeElement.contains(e.target)) {
+          document.activeElement.blur();
+        }
+      }
+    }, {passive: true});
+    
     async function manualLogin(el) {
       if (el && el.value && el.value.length === 12) {
         document.getElementById("iin-input").disabled = true; showToast("Авторизация...", false, 9999); let res = await callBackend('loginByIIN', { iin: el.value });
