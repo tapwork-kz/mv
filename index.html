@@ -294,7 +294,7 @@
         let activeEl = document.activeElement;
         let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
         let hasUnsavedText = false;
-        document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { if(ta.value.trim().length > 0) hasUnsavedText = true; });
+        document.querySelectorAll("textarea[id^='remark-reply-']").forEach(ta => { if(ta.value.length > 0) hasUnsavedText = true; });
         let isScOpen = document.getElementById("form-sc") && !document.getElementById("form-sc").classList.contains("hidden");
         let isTradeInOpen = document.getElementById("form-tradein") && !document.getElementById("form-tradein").classList.contains("hidden");
         let isPointsOpen = document.getElementById("form-points") && !document.getElementById("form-points").classList.contains("hidden");
@@ -1214,18 +1214,14 @@
 
     // ГЛОБАЛЬНЫЙ ОБРАБОТЧИК КЛАВИАТУРЫ
     document.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      // Убираем TEXTAREA из условия, чтобы Enter делал перенос строки, а не скрывал клавиатуру
+      if (e.key === 'Enter' && document.activeElement && document.activeElement.tagName === 'INPUT') {
         document.activeElement.blur();
       }
     });
 
-    document.addEventListener('touchstart', function(e) {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
-        if (!document.activeElement.contains(e.target)) {
-          document.activeElement.blur();
-        }
-      }
-    }, {passive: true});
+    // Агрессивный сброс фокуса по touchstart удален.
+    // Теперь клавиатура не будет дергаться при случайном касании экрана или попытке скролла.
 
   </script>
 </body>
