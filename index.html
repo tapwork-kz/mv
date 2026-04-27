@@ -289,8 +289,7 @@
         if(pollingTimer) clearInterval(pollingTimer); clearMemory(); appState.token = null; appState.iin = null; document.getElementById("main-screen").style.opacity = '0';
         setTimeout(() => { document.getElementById("main-screen").classList.add("hidden"); document.getElementById("auth-screen").classList.remove("hidden"); document.getElementById("auth-screen").style.opacity = '1'; document.getElementById("main-screen").style.opacity = '1'; document.getElementById("iin-input").value = ''; document.getElementById("iin-input").disabled = false; }, 600);
     }
-
-    // Жесткая блокировка обновлений при взаимодействии с вводом
+// Жесткая блокировка обновлений при взаимодействии с вводом
     window.typingLockTime = 0;
     
     // Отслеживаем касание поля и сам процесс печати
@@ -302,6 +301,10 @@
     });
 
     function isSensitiveState() {
+        // ЯДЕРНОЕ РЕШЕНИЕ: Если открыта вкладка Входящие, полностью блокируем фоновое обновление.
+        // Это на 100% гарантирует, что innerHTML не перерисует DOM и не "убьет" поле ввода при поднятии клавиатуры.
+        if (lastActiveTab === 'inbox') return true;
+
         let activeEl = document.activeElement;
         let isTyping = activeEl && (activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'INPUT' || activeEl.tagName === 'SELECT');
         
@@ -323,10 +326,9 @@
             if (!el.classList.contains("hidden")) isDetailsFormOpen = true;
         });
         
-        // Теперь даже если фокус пропадет на секунду, isRecentlyTyping спасет ситуацию
+        // Теперь даже если фокус пропадет на секунду, isRecentlyTyping спасет ситуацию на других вкладках
         return isTyping || isRecentlyTyping || hasUnsavedText || isScOpen || isTradeInOpen || isPointsOpen || isSwapOpen || isDetailsFormOpen;
     }
-
     function startPolling() {
         if(pollingTimer) clearInterval(pollingTimer);
         pollingTimer = setInterval(async () => {
